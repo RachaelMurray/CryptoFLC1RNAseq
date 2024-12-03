@@ -262,7 +262,7 @@ git pull
 
 # make hisat2 index
 mkdir input/annotation/index/ # make directory
-hisat2-build input/annotation/ANNID_RENAME.fa \
+hisat2-build input/annotation/Cryptococcus_neoformans_var_grubii_h99.CNA3.31.dna.genome.fa \
   input/annotation/index/CNA3_hisat2
 
 # set up nextflow work dir in scratch space
@@ -271,5 +271,55 @@ mkdir ${nfworkdir}
 
 # try running actual pipeline
 nextflow run quantseqfwd.nf -with-dag flowchart.png -with-report -work-dir /exports/eddie/scratch/ewallac2/nfwork
+
+# move report & flowchart to results directory so that we see what happened
+mv report.html results_init10000/report.html
+mv flowchart.png results_init10000/flowchart.png
+
+git add results_init10000/
+git commit -m "results from initial 10000 1-sample run"
+git push
 ```
- 
+
+That worked!
+
+## Run on full size sample
+
+```bash
+# try running actual pipeline
+nextflow run quantseqfwd.nf -with-dag results/counts/flowchart.png -with-report -work-dir /exports/eddie/scratch/ewallac2/nfwork
+```
+
+It worked! Output:
+
+```
+(QS2022) [ewallac2@node1c32(eddie) CryptoFLC1RNAseq]$ nextflow run quantseqfwd.nf -with-dag results/counts/flowchart.png -with-report -work-dir /exports/eddie/scratch/ewallac2/nfwork
+N E X T F L O W  ~  version 21.10.6
+Launching `quantseqfwd.nf` [compassionate_kare] - revision: 53e76a33ae
+executor >  local (182)
+[fb/ab63f7] process > runFastQC (11308_18_S18_R2_001)       [100%] 30 of 30 ✔
+[9b/7ec8c6] process > cutAdapters (11308_13_S13_R2_001)     [100%] 30 of 30 ✔
+[d8/572216] process > alignHisat2 (11308_13_S13_R2_001)     [100%] 30 of 30 ✔
+[52/422f46] process > samViewSort (11308_13_S13_R2_001)     [100%] 30 of 30 ✔
+[24/2e4b9d] process > makeBedgraphs (11308_13_S13_R2_001)   [100%] 30 of 30 ✔
+[25/137b70] process > renameBamSample (11308_13_S13_R2_001) [100%] 30 of 30 ✔
+[14/7c5947] process > countAllmRNA (1)                      [100%] 1 of 1 ✔
+[58/b52f98] process > runMultiQC (multiQC)                  [100%] 1 of 1 ✔
+Completed at: 03-Dec-2024 14:04:59
+Duration    : 1h 3m 14s
+CPU hours   : 4.2
+Succeeded   : 182
+```
+
+Share on GitHub repository.
+
+```bash
+mv report.html results/counts/report.html
+git add results/counts/
+git status
+git commit -m "initial count results on all samples"
+git push
+```
+
+Logged out of Eddie and done for today!
+
