@@ -255,4 +255,21 @@ Conda took a long while to solve the environment. About ten minutes and done.
 - edit directory name in pipeline (/exports/eddie/scratch/ewallac2/fastq_2024-12_10000reads) DONE.
 - try running pipeline on downsampled data
 
-There 
+```bash
+# go to directory & update
+cd CryptoFLC1RNAseq 
+git pull
+
+# make hisat2 index
+mkdir input/annotation/index/ # make directory
+hisat2-build input/annotation/ANNID_RENAME.fa \
+  input/annotation/index/CNA3_hisat2
+
+# set up nextflow work dir in scratch space
+nfworkdir=/exports/eddie/scratch/ewallac2/nfwork
+mkdir ${nfworkdir}
+
+# try running actual pipeline
+nextflow run quantseqfwd.nf -with-dag flowchart.png -with-report -work-dir /exports/eddie/scratch/ewallac2/nfwork
+```
+ 
