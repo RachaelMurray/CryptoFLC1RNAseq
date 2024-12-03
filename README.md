@@ -1,10 +1,12 @@
-# QuantSeqFwd_template
+# CryptoFLC1RNAseq
 
-Template repository for QuantSeq Fwd analysis, for RNA-seq data.
+Cryptococcus neoformans RNA-seq analysis for effect of FLC1 on transcriptome.
+
+Rachael Murray and Edward Wallace, December 2024.
 
 This contains a pipeline to process from reads to counts-per-mRNA, and a directory structure for some quality control using R/Rmarkdown.
 
-EDIT THIS README FILE to describe the dataset that you are analysing
+Work in progress!
 
 
 # Contents
@@ -27,7 +29,7 @@ It is written in nextflow (DSL 1.0), see https://www.nextflow.io/.
 ## Install software dependencies
 
 We tested package installation using miniconda and bioconda, see:
-- [miniconda installation instructions[(https://docs.conda.io/en/latest/miniconda.html)
+- [miniconda installation instructions](https://docs.conda.io/en/latest/miniconda.html)
 - [bioconda installation instructions](https://bioconda.github.io/user/install.html).
 
 Once you have bioconda installed, create a conda environment called `QS2022` by running the command:
