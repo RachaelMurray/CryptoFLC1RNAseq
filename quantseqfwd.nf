@@ -14,8 +14,8 @@ e.g. "params.featurename" is used in the featureCounts call.
 params.input_fq_dir = 'EXPERIMENT_RENAME_fastq' // input directory containing all of your fastq files 
 params.output_dir = 'results/counts' // output directory where you would like all the outputs stored.
 params.index_dir = 'input/annotation/index' // directory with input annotation index in it
-params.index_prefix = 'ANNID_RENAME_hisat2' // name of hisat2 index
-params.mRNAgff = 'input/annotation/ANNID_RENAME_mRNAonly.gff' // name of gff file describing mRNA locations
+params.index_prefix = 'CNA3_hisat2' // name of hisat2 index
+params.mRNAgff = 'input/annotation/H99.mRNAonly.2018-12-03.gff' // name of gff file describing mRNA locations
 params.featuretype = 'mRNA' // in the mRNA gff file Type column, the feature corresponding to mRNA that you want to count
 params.featurename = 'Name' // in the mRNA gff file Attributes column, the field that contains the name of the feature to use in the counts file
 params.num_processes = 4 // number of processes to use for parallelising adapter trimming and alignment. Increasing this can speed up running the pipeline on larger computers

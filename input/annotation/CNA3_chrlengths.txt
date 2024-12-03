@@ -1,0 +1,21 @@
+# Assembly name:  CNA3	
+# Organism name:  Cryptococcus neoformans var. grubii H99 (basidiomycetes)	
+# Infraspecific name:  strain=H99	
+# Taxid:          235443	
+# BioSample:      SAMN03081441	
+# BioProject:     PRJNA411	
+1	2291499
+2	1621675
+3	1575141
+4	1084805
+5	1814975
+6	1422463
+7	1399503
+8	1398693
+9	1186808
+10	1059964
+11	1561994
+12	774062
+13	756744
+14	942867
+MT	24919
