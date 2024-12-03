@@ -11,8 +11,10 @@ To find where they are used, search the document for the name,
 e.g. "params.featurename" is used in the featureCounts call.
 */
 
-params.input_fq_dir = 'EXPERIMENT_RENAME_fastq' // input directory containing all of your fastq files 
-params.output_dir = 'results/counts' // output directory where you would like all the outputs stored.
+params.input_fq_dir = '/exports/eddie/scratch/ewallac2/fastq_2024-12_10000reads' // input directory containing downsampled fastq file 
+params.output_dir = 'results_init10000/counts' // output directory where you would like all the outputs stored.
+// REAL DATA FOR LATER params.input_fq_dir = '/exports/eddie/scratch/ewallac2/fastq_2024-12' // input directory containing all of your fastq files 
+// REAL DATA FOR LATER params.output_dir = 'results/counts' // output directory where you would like all the outputs stored.
 params.index_dir = 'input/annotation/index' // directory with input annotation index in it
 params.index_prefix = 'CNA3_hisat2' // name of hisat2 index
 params.mRNAgff = 'input/annotation/H99.mRNAonly.2018-12-03.gff' // name of gff file describing mRNA locations
