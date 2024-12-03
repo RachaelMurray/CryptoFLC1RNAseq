@@ -1,0 +1,193 @@
+---
+title: "Quality control and PCA Template EDIT ME"
+author: "Edward Wallace"
+date: "13/06/2022"
+output: 
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(cowplot)
+library(GGally)
+library(here)
+library(DESeq2)
+library(biobroom)
+
+theme_set(theme_cowplot(font_size = 12) +
+    theme(# panel.grid.major = element_line(colour = "grey80", size = 0.5),
+          strip.background = element_blank())
+    )
+
+# Count header columns from featurecounts
+count_header_columns <- c("Geneid", "Chr", "Start",
+                          "End", "Strand", "Length")
+
+# unwanted string in filename; may need to be edited
+unwanted_filename_string <- "_L001_R1_001_aln.bam"
+
+```
+
+# Summary - EDIT TO DESCRIBE YOUR DATA
+
+Quality control of RNA-seq data after read processing.
+
+This analysis does:
+
+- Scatter plot of counts showing log-scale correlations
+- PCA plot showing how samples are similar to one another
+
+It concludes that... EDIT
+
+# Load and organise raw count data
+
+## Load the raw counts
+
+```{r load_counts}
+counts_raw <- 
+  here::here("results", "counts", "counts.txt") %>%
+  readr::read_tsv(comment = "#")
+counts_raw
+```
+
+## Load the sample sheet
+
+```{r load_samplesheet}
+sample_sheet <- 
+  here::here("input", "experiment",
+             "samplesheet_RENAME.txt") %>%
+  readr::read_tsv(comment = "#") 
+
+sample_sheet 
+```
+
+## Organise the counts using the sample sheet
+
+```{r organise_counts}
+counts_all <- 
+  counts_raw %>%
+  dplyr::select(sample_sheet$Filename)  %>%
+  dplyr::rename_with(stringr::str_remove,
+                     pattern = unwanted_filename_string)%>%
+  magrittr::set_rownames(counts_raw$Geneid)
+
+counts_all
+```
+
+# Check reproducibility by paired scatter plot in log10-plus-1-space
+
+_Note: This is set to `eval=FALSE` as it can run very slowly for large datasets._ 
+
+```{r paired_scatter, fig.height=16, fig.width=16, eval = FALSE}
+counts_all %>%
+  magrittr::add(1) %>%
+  log10() %>%
+  GGally::ggpairs()
+```
+
+# Normalize counts by regularized log (rlog) with DESeq2
+
+The [rlog function from DESeq2](https://rdrr.io/bioc/DESeq2/man/rlog.html) "transforms the count data to the log2 scale in a way which minimizes differences between samples for rows with small counts, and which normalizes with respect to library size."
+
+## Construct DESeq dataset object
+
+EDIT: the `design` formula may need to be edited.
+
+```{r dds_counts_all}
+dds_all <- DESeqDataSetFromMatrix(countData = counts_all,
+                                  colData = sample_sheet,
+                                  design = ~ .)
+```
+
+# Do the rlog transformation
+
+```{r rlog_dds_all}
+rlog_all <- rlog(dds_all)
+head(assay(rlog_all))
+```
+
+# Check reproducibility by principal component analysis (PCA) of rlog
+
+## Calculate PCs from the rlog output
+
+```{r calculate_pca_rlog}
+# calculate principal components of rlog, after extracting from the dataset
+pca_rlog <- rlog_all %>%
+  assay() %>%
+  t() %>%
+  prcomp()
+
+# convert principal components to data frame
+pcdf_rlog <- bind_cols(
+  as_tibble(colData(rlog_all)),
+  as_tibble(pca_rlog$x)
+)
+
+pcdf_rlog
+```
+
+## Calculate proportion of variance explained by each PC
+
+
+```{r calculate_propvar}
+propvar_rlog_df <- tibble(
+  PC = seq.int(1L, ncol(pca_rlog$x) ),
+  prop_var = pca_rlog$sdev^2/sum(pca_rlog$sdev^2)
+)
+```
+
+## Plot PCA percentage variance explained to find how many PCs to pay attention to.
+
+```{r plot_percentvar, fig.width = 3, fig.height = 2}
+plot_percentvar_rlog <- 
+  ggplot(data = propvar_rlog_df, 
+         aes(x = PC, y = prop_var)) +
+  geom_col(fill = "blue") +
+  scale_x_continuous("principal component",
+                     limits = c(0.4,10.6), 
+                     # hack limits to include the bars and a little space.
+                     breaks = 1L:10L,
+                     expand = c(0,0)) + 
+  scale_y_continuous("prop. of variance", expand = c(0,0))
+plot_percentvar_rlog
+```
+
+## Plot PC1 vs PC2 with default values
+
+EDIT: the colour and other aesthetics may need to be edited to highlight features of the data
+
+```{r plot_PC12_default, fig.height=6, fig.width=6}
+ggplot(data = pcdf_rlog,
+       aes(colour = SampleID)
+       ) +
+  geom_point(aes(x = PC1, y = PC2)) 
+```
+
+## Plot PC1 vs PC2, 3, 4, also with default values
+
+```{r plot_PC1234_text, fig.height=8, fig.width=8}
+# This could be wraped in a function
+pc_baseplot <- 
+  ggplot(data = pcdf_rlog,
+         aes(colour = SampleID, 
+             label = SampleID)
+  ) + 
+  geom_hline(yintercept = 0, size = 0.5, colour = "grey80") +
+  geom_vline(xintercept = 0, size = 0.5, colour = "grey80") +
+  theme(legend.position = "none")
+
+pcplot_12 <- pc_baseplot + geom_text(aes(x = PC1, y = PC2))
+pcplot_13 <- pc_baseplot + geom_text(aes(x = PC1, y = PC3))
+pcplot_14 <- pc_baseplot + geom_text(aes(x = PC1, y = PC4))
+pcplot_23 <- pc_baseplot + geom_text(aes(x = PC2, y = PC3))
+pcplot_24 <- pc_baseplot + geom_text(aes(x = PC2, y = PC4))
+pcplot_34 <- pc_baseplot + geom_text(aes(x = PC3, y = PC4))
+
+pcplot_legend <- get_legend(pcplot_12 + theme(legend.position = "right"))
+
+plot_grid(pcplot_12, NULL, pcplot_legend, 
+          pcplot_13, pcplot_23, NULL, 
+          pcplot_14, pcplot_24, pcplot_34)
+```
