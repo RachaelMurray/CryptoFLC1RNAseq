@@ -135,7 +135,8 @@ install.packages("tidyverse","cowplot","GGally","here")
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-BiocManager::install("biobroom","DESeq2")
+BiocManager::install("DESeq2")
+BiocManager::install("biobroom")
 ```
 
 More info at Jeffrey Leek's Data Scientist Toolbox:

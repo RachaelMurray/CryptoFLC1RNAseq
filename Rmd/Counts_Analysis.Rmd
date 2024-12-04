@@ -82,7 +82,7 @@ counts_bygene_long <- counts_bygene_wide %>%
 counts_bygene_long
 
 ```
-### Write out to file `quantseqfwd_EH_050221_tidy.txt`
+### Write out to file `counts_quantseqfwd_CryptoRNAseqFLC1_tidy.txt`
 
 ```{r write_tidy_counts, dependson = "make_tidy_counts"}
 file_counts_long <- here::here("results",
@@ -103,7 +103,7 @@ write_lines(c("# counts_quantseqfwd_CryptoRNAseqFLC1_tidy.txt",
               "#   TPM: Transcripts per million (normalized Count for each sample)",
               "# "),
             file = file_counts_long)
-#write_tsv(counts_bygene_long %>% select(-Condition), file = file_counts_long, col_names = TRUE, append = TRUE)
+write_tsv(counts_bygene_long %>% select(-Condition), file = file_counts_long, col_names = TRUE, append = TRUE)
 ```
 
 ## Plot some individual genes
@@ -135,5 +135,8 @@ plot_my_genes_TPM("CNAG_05818") + labs(title = "CHS5"),
 plot_my_genes_TPM("CNAG_01232") + labs(title = "PMC1"),
 plot_my_genes_TPM("CNAG_02714") + labs(title = "EFB1"),
 rows = 3)
+
+
 ```
+
 
