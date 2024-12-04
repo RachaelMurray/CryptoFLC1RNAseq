@@ -1,0 +1,161 @@
+---
+title: "Differential Gene Expression of WT vs delta at 37°C in YPD samples"
+author: "Edward Wallace"
+date: "2024-12-04"
+output: 
+  html_document:
+    toc: true
+---
+
+
+# Summary
+
+Differential Gene Expression WT vs delta at 37°C in YPD samples, using DESeq2
+
+This analysis produces files:
+
+- `deseq_df_WTvsdelta_37C_YPD.txt`
+- `deglist_WTvsdelta_37C_YPD_up2x_FDR5.txt`
+- `deglist_WTvsdelta_37C_YPD_down2x_FDR5.txt`
+
+## Load count data from shared script load_count_data.Rmd
+
+```{r call_load_count_data, child = "load_count_data.Rmd"}
+```
+
+# DESeq on a subset of data, only 37C in YPD
+
+```{r subset_WTvsdelta_37C_YPD, fig.height=8, fig.width=8}
+sample_sheet_WTvsdelta_37C_YPD <-
+  dplyr::filter(sample_sheet,
+                Temperature == "37", Media == "YPD")
+
+dds_WTvsdelta_37C_YPD <- 
+  DESeqDataSetFromMatrix(
+    countData = counts_all %>%
+      dplyr::select(sample_sheet_WTvsdelta_37C_YPD$SampleName) %>%
+      magrittr::set_rownames(counts_all$Gene),
+    colData = sample_sheet_WTvsdelta_37C_YPD,
+    design = ~ FLC1) %>%
+  DESeq()
+
+dds_WTvsdelta_37C_YPD
+```
+```{r results_WTvsdelta_37C_YPD}
+results(dds_WTvsdelta_37C_YPD)
+
+resultsNames(dds_WTvsdelta_37C_YPD)
+```
+
+```{r deseq_df_WTvsdelta_37C_YPD}
+deseq_df_WTvsdelta_37C_YPD <- 
+  biobroom::tidy.DESeqDataSet(dds_WTvsdelta_37C_YPD) %>%
+  dplyr::filter(term == "FLC1_WT_vs_delta") %>%
+  dplyr::left_join(gene_info_df,
+                   by = "gene") %>% 
+  dplyr::select(gene, 
+                geneName, 
+                baseMean, 
+                log2FC = estimate, 
+                stderror,
+                padj = p.adjusted)
+```
+
+## List DEGs most UP in WT vs delta
+
+We cut off at 2x changes with 5% FDR here.
+
+
+```{r DEGs_WT_up, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_WT_up2x_FDR5 <- 
+  dplyr::filter(deseq_df_WTvsdelta_37C_YPD,
+                log2FC > 1, padj < 0.05) %>%
+  dplyr::arrange(desc(log2FC))
+print(DEGdf_WT_up2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_WT_up_named}
+DEGdf_WT_up2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+
+## List DEGs most DOWN in WT vs delta
+
+
+```{r DEGs_WT_down, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_WT_down2x_FDR5 <- 
+  dplyr::filter(deseq_df_WTvsdelta_37C_YPD,
+                log2FC < -1, padj < 0.05) %>%
+  dplyr::arrange(log2FC)
+print(DEGdf_WT_down2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_37C_down_named}
+DEGdf_WT_down2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+## Volcano plot of DEGs
+
+```{r volcano_WTvsdelta_37C_YPD, fig.width = 6, fig.height = 3}
+volcano_WTvsdelta_37C_YPD <- 
+  ggplot(data = deseq_df_WTvsdelta_37C_YPD,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = 0.5, colour = "grey50") +
+  geom_point(data = DEGdf_WT_up2x_FDR5,
+             size = 1, colour = "darkblue") +
+  geom_point(data = DEGdf_WT_down2x_FDR5,
+             size = 1, colour = "darkred") +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,20), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change, WT vs FLC1∆, YPD 37°C",
+                     breaks = -5:5,
+                     limits = c(-4,4), expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") 
+volcano_WTvsdelta_37C_YPD
+```
+
+The volcano plot shows extensive differential gene expression, with more genes substantially down in WT (i.e. up in FLC1∆).
+
+
+
+## Write outputs to files
+
+```{r write_DEGs}
+deseq_df_WTvsdelta_37C_YPD %>%
+  dplyr::mutate(
+    across(c(baseMean, log2FC, stderror), round, digits = 3)
+  ) %>%
+  dplyr::mutate(padj = signif(padj, digits = 4)) %>%
+  write_tsv(file = here::here("results", "DEGs",
+                              "deseq_df_WTvsdelta_37C_YPD.txt"))
+
+DEGdf_WT_up2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_WTvsdelta_37C_YPD_up2x_FDR5.txt"))
+
+DEGdf_WT_down2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_WTvsdelta_37C_YPD_down2x_FDR5.txt"))
+```
+
+# Session Info
+
+Package versions, etc., that ran this file.
+
+```{r session_info,results="show",message=TRUE}
+sessionInfo()
+```

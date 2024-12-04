@@ -1,0 +1,70 @@
+---
+title: "load_count_data"
+author: "Edward Wallace"
+date: "2024-12-04"
+output: html_document
+---
+
+# Load and organise count data
+
+`load_count_data.Rmd` is just to load and organise the raw count data in R, as well as loading libraries for data analysis.
+Other scripts can just run this one instead of duplicating code, especially scripts for differential gene expression analysis.
+
+This runs *after* `QC_PCA.Rmd`, which does the organisation.
+This just loads the organised counts from the file `results/summaries/counts_bysamplecode.txt`.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(cowplot)
+library(GGally)
+library(here)
+library(DESeq2)
+library(biobroom)
+
+theme_set(theme_cowplot(font_size = 12) +
+    theme(# panel.grid.major = element_line(colour = "grey80", size = 0.5),
+          strip.background = element_blank())
+    )
+```
+
+
+## Load the organised counts
+
+```{r load_counts}
+counts_all <- 
+  here::here("results", "summaries", "counts_bysamplecode.txt") %>%
+  readr::read_tsv(comment = "#",
+                  col_types = "ciiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")   %>%
+  magrittr::set_rownames(.$Gene)
+counts_all
+```
+
+## Load the sample sheet
+
+```{r load_samplesheet}
+sample_sheet <- 
+  here::here("input", "experiment",
+             "CryptoRNAseqFLC1SampleKey.csv") %>%
+  readr::read_csv(comment = "#", col_types = "ccccccc") %>%
+  dplyr::mutate(Condition = stringr::str_sub(SampleName,start = 1L, end = -3L)) %>%
+  dplyr::transmute(SampleID = as_factor(SampleID), 
+                   SampleName = as_factor(SampleName),
+                   Condition = as_factor(Condition),
+                   FLC1 = factor(FLC1, levels = c("delta", "WT")),
+                   Temperature = factor(Temperature, levels = c("30", "37")),
+                   Media = as_factor(Media),
+                   BioRep = as_factor(BioRep))
+
+sample_sheet 
+```
+
+## Load H99 Gene information
+
+```{r load_gene_info}
+gene_info_df <- 
+  here::here("input", "annotation",
+             "H99_geneinfo_FungiDB59.txt") %>%
+  readr::read_tsv(comment = "#")  %>% 
+  dplyr::rename(gene = GeneID, geneName = GeneName)
+```
