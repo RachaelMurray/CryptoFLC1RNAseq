@@ -84,6 +84,19 @@ counts_all <-
 counts_all
 ```
 
+## Write out counts with sample codes as column names
+
+```{r write_counts_samplenames}
+bind_cols(
+  counts_raw %>% 
+    dplyr::select(Gene = Geneid, Length = Length),
+  counts_all 
+) %>%
+  readr::write_tsv(
+    file = here::here("results", "summaries", "counts_bysamplecode.txt"))
+```
+
+
 # Check reproducibility by paired scatter plot in log10-plus-1-space
 
 _Note: This is set to `eval=FALSE` as it can run very slowly for large datasets._ 
@@ -212,4 +225,12 @@ plot_grid(pcplot_12, pcplot_legend, plot_percentvar_rlog,
           pcplot_13, pcplot_23, NULL, 
           pcplot_14, pcplot_24, pcplot_34,
           axis = "tblr", align = "hv")
+```
+
+# Session Info
+
+Package versions, etc., that ran this file.
+
+```{r session_info,results="show",message=TRUE}
+sessionInfo()
 ```
