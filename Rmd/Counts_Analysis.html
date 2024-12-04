@@ -472,8 +472,9 @@ counts_bygene_long</code></pre>
 ## 10       19 WT_37_E_1  WT    &quot;37°C\n + EG… YPD_…          37 1      CNAG_…   345
 ## # ℹ 203,840 more rows
 ## # ℹ 1 more variable: TPM &lt;dbl&gt;</code></pre>
-<div id="write-out-to-file-quantseqfwd_eh_050221_tidy.txt" class="section level3">
-<h3>Write out to file <code>quantseqfwd_EH_050221_tidy.txt</code></h3>
+<div id="write-out-to-file-counts_quantseqfwd_cryptornaseqflc1_tidy.txt" class="section level3">
+<h3>Write out to file
+<code>counts_quantseqfwd_CryptoRNAseqFLC1_tidy.txt</code></h3>
 <pre class="r"><code>file_counts_long &lt;- here::here(&quot;results&quot;,
                                &quot;counts_quantseqfwd_CryptoRNAseqFLC1_tidy.txt&quot;
                                )
@@ -492,7 +493,7 @@ write_lines(c(&quot;# counts_quantseqfwd_CryptoRNAseqFLC1_tidy.txt&quot;,
               &quot;#   TPM: Transcripts per million (normalized Count for each sample)&quot;,
               &quot;# &quot;),
             file = file_counts_long)
-#write_tsv(counts_bygene_long %&gt;% select(-Condition), file = file_counts_long, col_names = TRUE, append = TRUE)</code></pre>
+write_tsv(counts_bygene_long %&gt;% select(-Condition), file = file_counts_long, col_names = TRUE, append = TRUE)</code></pre>
 </div>
 </div>
 <div id="plot-some-individual-genes" class="section level2">
