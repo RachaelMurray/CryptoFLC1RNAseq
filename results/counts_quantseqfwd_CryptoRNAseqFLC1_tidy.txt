@@ -1,0 +1,13 @@
+# counts_quantseqfwd_CryptoRNAseqFLC1_tidy.txt
+# Tidy/long-format counts from QuantSeq FLC1∆ RNAseq in Cryptococcus neoformans
+#  Wed Dec  4 13:45:24 2024
+# Columns:
+#   SampleName: encodes Strain, Tepmerature, Media, Replicate
+#   FLC1: genotype for FLC1, either WT (present) or delta (deletion/disruption)
+#   Media: growth media  YPD, YPD_CFW (50uM CFW), YPD_EGTA (10mM EGTA), YPD_CFW_EGTA (50uM CFW + 10mM EGTA)
+#   Temperature: 30°C or 37°C
+#   BioRep: biological replicate (1, 2 or 3)
+#   Geneid: Geneid with systematic Cryptococcus H99 gene name
+#   Count: QuantSeq 3'-end counts assigned to gene
+#   TPM: Transcripts per million (normalized Count for each sample)
+# 

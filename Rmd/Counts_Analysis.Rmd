@@ -1,0 +1,139 @@
+---
+title: "Counts Analysis"
+author: "Rachael Murray"
+date: "2024-12-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(cowplot)
+library(stringr)
+theme_set(theme_cowplot(font_size = 7) + theme(strip.background = element_blank()))
+```
+# Summary
+
+This file analyses the counts per gene across samples.
+
+* reads in the sample sheet `input/experiment/CryptoRNAseqFLC1SampleKey.csv`
+* reads in raw count data for all samples from file `results/counts/counts.txt`, output by `featureCounts` running in the nextflow pipeline, which has gene (Geneid) as rows and counts as columns
+* normalizes to counts per million for each sample using function `calculate_cpm`
+* makes a "tidy" or long-format dataset with counts and CPM spread out by Geneid and Sampleid and sample information
+* uses tidy data to plot expression against time for individual genes
+
+This analysis has largely been superseded by rlog (regularized logarithm) normalisation.
+
+
+### Define functions
+
+Define some functions that will be useful for the analysis
+
+```{r count_functions}
+calculate_cpm <- function(x, round_digits = NA) {
+    cpm <- x / sum(x, na.rm=TRUE) * 1e6
+    if( !is.na(round_digits) ) {
+        cpm <- round(cpm, digits = round_digits)
+    }
+    cpm
+}
+```
+
+
+## Load counts and sample sheet
+
+```{r load_counts}
+sample_sheet <- 
+  here::here("input", "experiment","CryptoRNAseqFLC1SampleKey.csv") %>%
+  read_csv() %>%
+  select(!Strain) %>%
+  mutate(FLC1 = factor(FLC1, 
+                       levels = c("WT", "delta")),
+         Condition = paste(Media, "_", Temperature, sep = ""),
+         BioRep = as.character(BioRep)
+  ) %>% 
+  mutate(Condition = factor(Condition, 
+                            levels = c("YPD_30", "YPD_37", "YPD_CFW_37", "YPD_EGTA_37", "YPD_CFW_EGTA_37"),
+                            labels = c("30°C", "37°C", "37°C\n + CFW", "37°C\n + EGTA", "37°C\n + CFW\n + EGTA"))
+  )
+
+
+counts_bygene_wide <- 
+  here::here("results","counts", "counts.txt") %>%
+  read_tsv(comment = "#")
+counts_bygene_wide
+```
+
+
+## Make tidy (long-format) counts for plotting
+
+```{r make_tidy_counts, dependson = "load_counts"}
+counts_bygene_long <- counts_bygene_wide %>%
+    select(-Chr,-Start,-End,-Strand,-Length) %>%
+    pivot_longer(ends_with(".bam"), names_to = "SampleID", values_to = "Count") %>%
+    mutate(SampleID = as.numeric(word(SampleID, 2, sep = "_"))) %>%
+    group_by(SampleID) %>%
+    mutate(TPM = calculate_cpm(Count, round_digits = 2)) %>%
+    ungroup() %>%
+    left_join(sample_sheet, by = "SampleID") %>%
+    select(SampleID, SampleName, FLC1, Condition, Media, Temperature, BioRep, Geneid, Count, TPM) %>%
+    arrange(Geneid, FLC1, Condition, Media, Temperature, BioRep)
+
+counts_bygene_long
+
+```
+### Write out to file `quantseqfwd_EH_050221_tidy.txt`
+
+```{r write_tidy_counts, dependson = "make_tidy_counts"}
+file_counts_long <- here::here("results",
+                               "counts_quantseqfwd_CryptoRNAseqFLC1_tidy.txt"
+                               )
+
+write_lines(c("# counts_quantseqfwd_CryptoRNAseqFLC1_tidy.txt",
+              "# Tidy/long-format counts from QuantSeq FLC1∆ RNAseq in Cryptococcus neoformans",
+              paste("# ", date()),
+              "# Columns:",
+              "#   SampleName: encodes Strain, Tepmerature, Media, Replicate",
+              "#   FLC1: genotype for FLC1, either WT (present) or delta (deletion/disruption)",
+              "#   Media: growth media  YPD, YPD_CFW (50uM CFW), YPD_EGTA (10mM EGTA), YPD_CFW_EGTA (50uM CFW + 10mM EGTA)",
+              "#   Temperature: 30°C or 37°C",
+              "#   BioRep: biological replicate (1, 2 or 3)",
+              "#   Geneid: Geneid with systematic Cryptococcus H99 gene name",
+              "#   Count: QuantSeq 3'-end counts assigned to gene",
+              "#   TPM: Transcripts per million (normalized Count for each sample)",
+              "# "),
+            file = file_counts_long)
+#write_tsv(counts_bygene_long %>% select(-Condition), file = file_counts_long, col_names = TRUE, append = TRUE)
+```
+
+## Plot some individual genes
+
+
+```{r plot_my_gene, dependson = "make_tidy_counts", fig.height = 8, fig.width = 8.5}
+plot_my_genes_TPM <- function(mygenes = "CNAG_06125",
+                                  mydata = counts_bygene_long) {
+    ggplot(data = filter(mydata, 
+                         Geneid %in% mygenes),
+           aes(x = Condition, y = TPM, colour = FLC1)) +
+        geom_point(aes(shape = BioRep)) +
+         stat_summary(aes(group=FLC1), fun.min="mean",fun.max="mean",
+                     geom="errorbar",linewidth=1,width=0.2) +
+        scale_y_log10() +
+        theme(axis.title.x=element_blank()) + 
+        facet_grid(.~Geneid) 
+}
+
+
+cowplot::plot_grid(
+plot_my_genes_TPM("CNAG_04283") + labs(title = "FLC1"),
+plot_my_genes_TPM("CNAG_01208") + labs(title = "CCH1"),
+plot_my_genes_TPM("CNAG_00036") + labs(title = "SEC14"),
+plot_my_genes_TPM("CNAG_01230") + labs(title = "chitin deacetylase 2"),
+plot_my_genes_TPM("CNAG_01562") + labs(title = "pr4/barwin domain protein"),
+plot_my_genes_TPM("CNAG_06501") + labs(title = "GAS1"),
+plot_my_genes_TPM("CNAG_05818") + labs(title = "CHS5"),
+plot_my_genes_TPM("CNAG_01232") + labs(title = "PMC1"),
+plot_my_genes_TPM("CNAG_02714") + labs(title = "EFB1"),
+rows = 3)
+```
+
