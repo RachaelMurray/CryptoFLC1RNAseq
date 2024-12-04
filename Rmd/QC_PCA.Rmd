@@ -1,7 +1,7 @@
 ---
-title: "Quality control and PCA Template EDIT ME"
+title: "Quality control and PCA for FLC1 RNA-seq"
 author: "Edward Wallace"
-date: "13/06/2022"
+date: "2024-12-04"
 output: 
   html_document:
     toc: true
@@ -26,11 +26,12 @@ count_header_columns <- c("Geneid", "Chr", "Start",
                           "End", "Strand", "Length")
 
 # unwanted string in filename; may need to be edited
-unwanted_filename_string <- "_L001_R1_001_aln.bam"
+unwanted_filename_string1 <- "11308_"
+unwanted_filename_string2 <- "_S{[0-9]}+_R2_001_aln.bam"
 
 ```
 
-# Summary - EDIT TO DESCRIBE YOUR DATA
+# Summary
 
 Quality control of RNA-seq data after read processing.
 
@@ -39,7 +40,12 @@ This analysis does:
 - Scatter plot of counts showing log-scale correlations
 - PCA plot showing how samples are similar to one another
 
-It concludes that... EDIT
+It concludes that:
+
+- Replicates group together in PCA space, so the experiment is reproducible
+- PC1 contrasts WT with FLC1delta, capturing about 65% of variance
+- PC2 contrasts temperature (for WT) and EGTA treatment (more for FLC1delta)
+- There is a lot more to be understood here.
 
 # Load and organise raw count data
 
@@ -57,8 +63,9 @@ counts_raw
 ```{r load_samplesheet}
 sample_sheet <- 
   here::here("input", "experiment",
-             "samplesheet_RENAME.txt") %>%
-  readr::read_tsv(comment = "#") 
+             "CryptoRNAseqFLC1SampleKey.csv") %>%
+  readr::read_csv(comment = "#", col_types = "ccccccc") %>%
+  dplyr::mutate(Condition = stringr::str_sub(SampleName,start = 1L, end = -3L))
 
 sample_sheet 
 ```
@@ -68,9 +75,10 @@ sample_sheet
 ```{r organise_counts}
 counts_all <- 
   counts_raw %>%
-  dplyr::select(sample_sheet$Filename)  %>%
-  dplyr::rename_with(stringr::str_remove,
-                     pattern = unwanted_filename_string)%>%
+  dplyr::rename_with(stringr::word,
+                     start = 2L, sep = fixed("_"), .cols = ends_with(".bam")) %>%
+  dplyr::select(sample_sheet$SampleID)  %>%
+  magrittr::set_colnames(sample_sheet$SampleName)  %>%
   magrittr::set_rownames(counts_raw$Geneid)
 
 counts_all
@@ -80,11 +88,14 @@ counts_all
 
 _Note: This is set to `eval=FALSE` as it can run very slowly for large datasets._ 
 
-```{r paired_scatter, fig.height=16, fig.width=16, eval = FALSE}
+```{r paired_scatter, fig.height=20, fig.width=20, eval=FALSE}
 counts_all %>%
   magrittr::add(1) %>%
   log10() %>%
   GGally::ggpairs()
+
+here::here("results", "figures","paired_scatter_log10countsplusone_all_samples.png") %>%
+ggsave(width = 32, height = 32)
 ```
 
 # Normalize counts by regularized log (rlog) with DESeq2
@@ -98,10 +109,11 @@ EDIT: the `design` formula may need to be edited.
 ```{r dds_counts_all}
 dds_all <- DESeqDataSetFromMatrix(countData = counts_all,
                                   colData = sample_sheet,
-                                  design = ~ .)
+                                  design = ~ SampleName)
 ```
 
 # Do the rlog transformation
+
 
 ```{r rlog_dds_all}
 rlog_all <- rlog(dds_all)
@@ -111,6 +123,8 @@ head(assay(rlog_all))
 # Check reproducibility by principal component analysis (PCA) of rlog
 
 ## Calculate PCs from the rlog output
+
+Principal component analysis focused on comparing samples to other samples, hence take the transpose.
 
 ```{r calculate_pca_rlog}
 # calculate principal components of rlog, after extracting from the dataset
@@ -158,11 +172,15 @@ plot_percentvar_rlog
 
 EDIT: the colour and other aesthetics may need to be edited to highlight features of the data
 
-```{r plot_PC12_default, fig.height=6, fig.width=6}
+```{r plot_PC12_default, fig.height=5, fig.width=6, eval = FALSE}
 ggplot(data = pcdf_rlog,
-       aes(colour = SampleID)
+       aes(colour = interaction(Temperature,Media), 
+           shape = FLC1)
        ) +
-  geom_point(aes(x = PC1, y = PC2)) 
+  scale_shape_manual(values = c(2, 20)) +
+  scale_colour_brewer("Temp., Media", 
+                      type = "qual", palette = 2) + 
+  geom_point(aes(x = PC1, y = PC2))
 ```
 
 ## Plot PC1 vs PC2, 3, 4, also with default values
@@ -171,23 +189,27 @@ ggplot(data = pcdf_rlog,
 # This could be wraped in a function
 pc_baseplot <- 
   ggplot(data = pcdf_rlog,
-         aes(colour = SampleID, 
-             label = SampleID)
-  ) + 
+       aes(colour = interaction(Temperature,Media), 
+           shape = FLC1)
+       ) +
+  scale_shape_manual(values = c(2, 20)) +
+  scale_colour_brewer("Temp., Media", 
+                      type = "qual", palette = 2) + 
   geom_hline(yintercept = 0, size = 0.5, colour = "grey80") +
   geom_vline(xintercept = 0, size = 0.5, colour = "grey80") +
   theme(legend.position = "none")
 
-pcplot_12 <- pc_baseplot + geom_text(aes(x = PC1, y = PC2))
-pcplot_13 <- pc_baseplot + geom_text(aes(x = PC1, y = PC3))
-pcplot_14 <- pc_baseplot + geom_text(aes(x = PC1, y = PC4))
-pcplot_23 <- pc_baseplot + geom_text(aes(x = PC2, y = PC3))
-pcplot_24 <- pc_baseplot + geom_text(aes(x = PC2, y = PC4))
-pcplot_34 <- pc_baseplot + geom_text(aes(x = PC3, y = PC4))
+pcplot_12 <- pc_baseplot + geom_point(aes(x = PC1, y = PC2))
+pcplot_13 <- pc_baseplot + geom_point(aes(x = PC1, y = PC3))
+pcplot_14 <- pc_baseplot + geom_point(aes(x = PC1, y = PC4))
+pcplot_23 <- pc_baseplot + geom_point(aes(x = PC2, y = PC3))
+pcplot_24 <- pc_baseplot + geom_point(aes(x = PC2, y = PC4))
+pcplot_34 <- pc_baseplot + geom_point(aes(x = PC3, y = PC4))
 
-pcplot_legend <- get_legend(pcplot_12 + theme(legend.position = "right"))
+pcplot_legend <- get_legend(pcplot_12 + theme(legend.position = "right", legend.margin = margin(t = 0, r = 0, b = 20, l = 40, unit = "pt")))
 
-plot_grid(pcplot_12, NULL, pcplot_legend, 
+plot_grid(pcplot_12, pcplot_legend, plot_percentvar_rlog,
           pcplot_13, pcplot_23, NULL, 
-          pcplot_14, pcplot_24, pcplot_34)
+          pcplot_14, pcplot_24, pcplot_34,
+          axis = "tblr", align = "hv")
 ```
