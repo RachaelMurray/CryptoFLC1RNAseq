@@ -1,0 +1,278 @@
+---
+title: "Clustered heatmap of Cryptococcus FLC1 RNAseq "
+author: "Edward Wallace"
+date: "2022-11-22"
+output: 
+  html_document:
+    toc: true
+---
+
+
+# Summary
+
+Clustered heatmap of Cryptococcus FLC1 RNAseq 
+
+This analysis does:
+
+- Heatmap per condition, of log2 fold-change
+
+It concludes that the biggest difference in average log2-fold-change across samples is between wild-type (especially at 30°C) and flc1∆ (especially at 37°C). This supports conclusions of the PCA.
+
+
+## Load count data from shared script load_count_data.Rmd
+
+```{r call_load_count_data, child = "load_count_data.Rmd"}
+```
+
+```{r load_libraries}
+library(ggdendro)
+library(vegan)
+```
+
+
+
+# Calculate read count statistics by gene
+
+## Check distribution of counts and baseMean
+
+```{r count_distribution}
+count_stats_bygene <- 
+  counts_all %>%
+  dplyr::select(-Gene, -Length) %>%
+  as.matrix() %>%
+  tibble(gene = rownames(counts_all),
+         count_min = rowMins(.),
+         count_mean = rowMeans(.),
+         count_max = rowMaxs(.)) %>%
+  select( - ".") # removes pipe behaviour leading to inclusion of "."
+
+genelist_mincount_10 <- 
+  count_stats_bygene %>%
+  filter(count_min >= 10) %>%
+  pull(gene)
+
+ggplot(data = count_stats_bygene) +
+  geom_density(aes(x=count_min + 1, colour = "min"), 
+               size = 1, kernel = "rectangular") +
+  geom_density(aes(x=count_max + 1, colour = "max"), 
+               size = 1, kernel = "rectangular") +
+  geom_density(aes(x=count_mean + 1, colour = "mean"), 
+               size = 1, kernel = "rectangular") +
+  scale_colour_manual(values = c("min" = "lightblue",
+                                 "mean" = "grey20",
+                                 "max" = "pink")) + 
+  scale_x_log10("log10(count per gene + 1)")
+```
+
+# DESeq on all data.
+
+```{r subset, fig.height=8, fig.width=8}
+dds_all <- DESeqDataSetFromMatrix(
+  countData = counts_all %>%
+    dplyr::select(sample_sheet$SampleName) %>%
+    magrittr::set_rownames(counts_all$Gene),
+  colData = sample_sheet,
+  design = ~ Condition - 1 ) %>%
+  DESeq()
+
+dds_all
+resultsNames(dds_all)
+```
+
+```{r results}
+results(dds_all)
+```
+
+## Select Condition-dependent log2FC at each timepoint
+
+```{r tidy_deseq_Condition}
+# Create a tidy data frame that contains only the GAT201-dependent log2FC
+# in a helpful format for plotting
+deseq_df_Condition <- 
+  biobroom::tidy.DESeqDataSet(dds_all) %>%
+  dplyr::mutate(Condition = term %>%
+           stringr::str_remove("Condition") %>%
+           factor(levels = levels(sample_sheet$Condition))) %>%
+  dplyr::select(Condition, gene, baseMean, log2estimate = estimate) %>%
+  dplyr::group_by(gene) %>%
+  dplyr::mutate(log2FC = log2estimate - mean(log2estimate)) %>%
+  dplyr::ungroup()
+
+# restrict to genes with mincount 10
+deseq_df_Condition_mincount_10 <- 
+  deseq_df_Condition %>%
+  filter(gene %in% genelist_mincount_10)
+
+# check we retained all the levels
+unique(deseq_df_Condition$Condition)
+```
+
+## Calculate gene expression hierarchical clusters
+
+Here we restrict to genes with at least 10 counts in each sample.
+This list was calculated earlier as `genelist_mincount_10`. 
+
+This avoids a problem with numeric errors in calculations for all genes, that probably came from genes with low/zero counts.
+
+```{r hclust_genes}
+log2FC_Condition_m10_wide <-
+  deseq_df_Condition_mincount_10  %>%
+  select(gene, Condition, log2FC) %>%
+  pivot_wider(id_cols = gene, names_from = Condition, values_from = log2FC)
+
+preferred_gene_ordering <- 
+  log2FC_Condition_m10_wide %>% 
+  dplyr::pull(WT_30_Y)
+
+# Function to allow calculation of distance by correlation
+# not exactly as euclidean distance
+distcort <- function(x) {
+  as.dist(1 - cor(t(x)))
+}
+  
+hclust_log2FC <- 
+  log2FC_Condition_m10_wide %>%
+  dplyr::select(-gene) %>%
+  as.matrix() %>%
+  magrittr::set_rownames(log2FC_Condition_m10_wide$gene) %>%
+  # head(n= 100) %>%
+  # dist() %>%
+  distcort() %>%
+  hclust(method = "average") %>%
+  reorder(wts = preferred_gene_ordering)
+```
+
+## Plot clustering dendrogram by itself
+
+```{r plot_dendrogram_log2FC_m10}
+# dendrogram data
+hclust_log2FC_dendrodf <- 
+  hclust_log2FC %>% dendro_data()
+
+
+plot_dendrogram_log2FC_m10 <- 
+  ggplot(data = hclust_log2FC_dendrodf$segments) + 
+  geom_segment(aes(x = x, xend = xend, y = y, yend = yend)) +
+  # geom_label(data = hclust_log2FC_dendrodf$labels %>%
+  #              filter(label %in% c("CNAG_06963", "CNAG_03143")),
+  #            aes(x = x, y = y, label = label)) +
+  theme_void() +
+  scale_y_reverse() +
+  coord_flip(expand = FALSE, clip = "off")
+plot_dendrogram_log2FC_m10
+```
+
+## Plot the log2 fold-change in same order as clustering dendrogram
+
+```{r plot_log2FC_m10_dorder, fig.height = 7, fig.width = 5}
+
+deseq_df_Condition_mincount_10_dorder <- 
+  deseq_df_Condition_mincount_10 %>%
+  mutate(gene_dorder = 
+           factor(gene,
+                  levels = log2FC_Condition_m10_wide$gene[hclust_log2FC$order],
+                  ordered = TRUE)
+         )
+
+plot_log2FC_m10_dorder <- 
+  ggplot(data = deseq_df_Condition_mincount_10_dorder,
+         aes(x = Condition, fill = log2FC, y = gene_dorder)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "cyan", mid = "black", high = "yellow",
+                       limits = c(-2, 2), oob = scales::squish,
+                       guide = guide_colorbar(nbin = 36, raster = FALSE)) +
+  coord_cartesian(expand = FALSE, clip = "off") + 
+  theme(axis.text.x = element_text(angle = -45, hjust = 0.1),
+        panel.grid.major = element_blank(),
+        axis.line = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
+  labs(x = "Condition",
+       y = "Gene, ordered by clustering")
+
+plot_log2FC_m10_dorder
+
+# ggsave(filename = "../results/clustered_heatmap_CryptoWakeupMediumTemperatureTime_tall.pdf", 
+#       plot_log2FC_m1_dorder + theme(axis.text.y = element_text(size = 2)),
+#       width = 6, height = 72, limitsize = FALSE)
+```
+
+The next code chunk selects individual genes to highlight, so we can see where they are on the heatmap. Commenting out for now but could be useful later.
+
+```{r heatmap_genes_select, eval = FALSE}
+genes_translation <- c(RPS3 = "CNAG_00116", 
+                       RPL2 = "CNAG_05232", 
+                       TEF1 = "CNAG_06125")
+genes_stationary <- c(CQS1 = "CNAG_03012", 
+                      HSP12 = "CNAG_03143", 
+                      BLP2 = "CNAG_06347")
+genes_heat <- c(SSA1 = "CNAG_06443", 
+                HSP90 = "CNAG_06150", 
+                # HSP10 = "CNAG_03892"
+                TSA3 = "CNAG_06917")
+genes_GAT201 <- c(GAT201 = "CNAG_01551", 
+                  GAT204 = "CNAG_06762", 
+                  LIV3 = "CNAG_05835")
+
+genes_select <- c(genes_translation, genes_stationary, 
+                  genes_heat, genes_GAT201)
+
+ggplot(data = deseq_df_MTT_mincount_1_dorder %>% 
+         dplyr::filter(gene %in% genes_select),
+       aes(x = MediumTempTime, fill = log2FC, y = gene_dorder)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "cyan", mid = "black", high = "yellow",
+                       limits = c(-3, 3), oob = scales::squish) +
+  scale_y_discrete(breaks = genes_select, labels = names(genes_select)) +
+  coord_cartesian(expand = c(0,0), clip = "off") + 
+  theme(axis.text.x = element_text(angle = -45, hjust = 0.1),
+        panel.grid.major = element_blank())
+
+# plot_log2FC_m1_dorder + 
+#   geom_text(deseq_df_MTT_mincount_1_dorder %>% 
+#          dplyr::filter(gene %in% genes_select,
+#                        MediumTempTime == "YPD_25C_0"),
+#          mapping = aes(x=0, y = gene_dorder, label = str_remove(gene, "CNAG_0")),
+#          size = 2, colour = "red")
+```
+
+
+# Combined plot of dendrogram and heatmap
+
+This combines the previous plot panels into a single plot, showing the dendrogram aligned with the clustered heatmap, and with nice x-axis labels.
+
+```{r combine_dendrogram_heatmap, fig.height = 6, fig.width = 7}
+plot_dh_nolegend <- 
+  plot_grid(plot_dendrogram_log2FC_m10 + 
+              theme(plot.margin = unit(c(0, 0, 0, 0), "cm")),
+          plot_log2FC_m10_dorder +
+            theme(axis.title.y = element_blank(),
+                  legend.position = "none",
+                  plot.margin = unit(c(0, 0.3, 0, 0), "cm")),
+          ncol = 2,
+          align = "hv",
+          rel_widths = c(1,5)
+          )
+
+plot_grid(
+  get_plot_component(
+    plot_log2FC_m10_dorder + 
+      labs(fill = "mRNA log2 fold-change") +
+      theme(legend.box.margin = margin(0, 0, 0, 2, unit = "cm"), 
+            legend.position = "top"),
+    'guide-box-top', return_all = TRUE),
+  plot_dh_nolegend,
+  ncol = 1,
+  rel_heights = c(1,7))
+
+ggsave(filename = "../results/clustered_heatmap_Condition.png", width = 6, height = 6)
+
+```
+
+
+
+# Session info for reproducibility
+
+```{r session_info}
+sessionInfo()
+```
+
