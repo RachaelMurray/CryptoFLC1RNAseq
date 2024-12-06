@@ -1,0 +1,174 @@
+---
+title: "Differential Gene Expression of FLC1 and EGTA effects with interactions"
+author: "Edward Wallace"
+date: "2024-12-06"
+output: 
+  html_document:
+    toc: true
+---
+
+
+# Summary
+
+Differential Gene Expression of WT vs delta and EGTA vs none with interaction, at 37°C in YPD samples, using DESeq2,
+
+This analysis produces files focused on the interaction term:
+
+- `deseq_df_FLC1EGTAinteraction.txt`
+- `deglist_FLC1EGTAinteraction_up2x_FDR5.txt`
+- `deglist_FLC1EGTAinteraction_down2x_FDR5.txt`
+
+This analysis confirms that there is a significant interaction between the strain and the effect of EGTA. Many genes are differently effect by EGTA in the presence or absence of FLC1. There are noticeable signals of:
+
+- genes involved in divalent cations (CTR4, FRE, etc.)
+- chitin synthesis (CHS6, CHS7)
+- some secreted or cell surface proteins (CIG1, etc)
+- transporters (HXS1, etc)
+
+
+## Load count data from shared script load_count_data.Rmd
+
+```{r call_load_count_data, child = "load_count_data.Rmd"}
+```
+
+# DESeq on a subset of data, only 37C in YPD
+
+```{r subset_FLC1EGTAinteraction, fig.height=8, fig.width=8}
+sample_sheet_FLC1EGTAinteraction <-
+  dplyr::filter(sample_sheet,
+                Temperature == "37", Media %in% c("YPD", "YPD_EGTA")) %>%
+  dplyr::mutate(EGTA = factor(Media, 
+                              levels = c("YPD","YPD_EGTA"),
+                              labels = c("No","Yes")))
+
+dds_FLC1EGTAinteraction <- 
+  DESeqDataSetFromMatrix(
+    countData = counts_all %>%
+      dplyr::select(sample_sheet_FLC1EGTAinteraction$SampleName) %>%
+      magrittr::set_rownames(counts_all$Gene),
+    colData = sample_sheet_FLC1EGTAinteraction,
+    design = ~ FLC1 + EGTA + FLC1:EGTA) %>%
+  DESeq()
+
+dds_FLC1EGTAinteraction
+```
+```{r results_FLC1EGTAinteraction}
+results(dds_FLC1EGTAinteraction)
+
+resultsNames(dds_FLC1EGTAinteraction)
+```
+
+```{r deseq_df_FLC1EGTAinteraction}
+deseq_df_FLC1EGTAinteraction <- 
+  biobroom::tidy.DESeqDataSet(dds_FLC1EGTAinteraction) %>%
+  dplyr::filter(term == "FLC1WT.EGTAYes") %>%
+  dplyr::left_join(gene_info_df,
+                   by = "gene") %>% 
+  dplyr::select(gene, 
+                geneName, 
+                baseMean, 
+                log2FC = estimate, 
+                stderror,
+                padj = p.adjusted)
+```
+
+## List DEGs most UP in WT vs delta
+
+We cut off at 2x changes with 5% FDR here.
+
+
+```{r DEGs_WT_up, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_interact_up2x_FDR5 <- 
+  dplyr::filter(deseq_df_FLC1EGTAinteraction,
+                log2FC > 1, padj < 0.05) %>%
+  dplyr::arrange(desc(log2FC))
+print(DEGdf_interact_up2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_WT_up_named}
+DEGdf_interact_up2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+
+## List DEGs most DOWN in WT vs delta
+
+
+```{r DEGs_WT_down, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_interact_down2x_FDR5 <- 
+  dplyr::filter(deseq_df_FLC1EGTAinteraction,
+                log2FC < -1, padj < 0.05) %>%
+  dplyr::arrange(log2FC)
+print(DEGdf_interact_down2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_37C_down_named}
+DEGdf_interact_down2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+## Volcano plot of DEGs
+
+ADD volcano plots for the other terms as sanity check?
+
+```{r volcano_FLC1EGTAinteraction, fig.width = 6, fig.height = 3}
+volcano_FLC1EGTAinteraction <- 
+  ggplot(data = deseq_df_FLC1EGTAinteraction,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = 0.5, colour = "grey50") +
+  geom_point(data = DEGdf_interact_up2x_FDR5,
+             size = 1, colour = "darkblue") +
+  geom_point(data = DEGdf_interact_down2x_FDR5,
+             size = 1, colour = "darkred") +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,20), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change,\nInteraction term FLC1 and EGTA",
+                     breaks = -5:5,
+                     limits = c(-4,4), expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") 
+volcano_FLC1EGTAinteraction
+```
+
+The volcano plot shows extensive differential effects of EGTA in flc1∆ compared to wild-type cells.
+
+
+
+## Write outputs to files
+
+```{r write_DEGs}
+deseq_df_FLC1EGTAinteraction %>%
+  dplyr::mutate(
+    across(c(baseMean, log2FC, stderror), round, digits = 3)
+  ) %>%
+  dplyr::mutate(padj = signif(padj, digits = 4)) %>%
+  write_tsv(file = here::here("results", "DEGs",
+                              "deseq_df_FLC1EGTAinteraction.txt"))
+
+DEGdf_interact_up2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_FLC1EGTAinteraction_up2x_FDR5.txt"))
+
+DEGdf_interact_down2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_FLC1EGTAinteraction_down2x_FDR5.txt"))
+```
+
+# Session Info
+
+Package versions, etc., that ran this file.
+
+```{r session_info,results="show",message=TRUE}
+sessionInfo()
+```
