@@ -1,0 +1,1031 @@
+---
+title: "RM_thesis_WTvsdelta"
+author: "Rachael Murray"
+date: "2025-04-22"
+output: html_document
+---
+# Summary
+
+In this document I explore differences in the transciptome of KN99alpha cells (FLC1) and flc1∆ cells grown in YPD at 30°C, YPD at 37°C and YPD + EGTA at 37°C. 
+Differential gene expression analysis was previously performed (see Rmd/DGE_Wtvsdelta_30C_YPD.rmd, Rmd/DGE_Wtvsdelta_37C_YPD.rmd, Rmd/DGE_Wtvsdelta_37C_EGTA.rmd) and GO term enrichment analysis was carried out at fungidb.com. Here I make nice figures for my PhD thesis. 
+
+Input files: 
+- results/DEGs/deseq_df_WTvsdelta_30C_YPD.txt
+- results/DEGs/deseq_df_WTvsdelta_37C_YPD.txt
+- results/DEGs/deseq_df_WTvsdelta_37C_EGTA.txt
+- results/GOanalysis/GO_WTvsdelta_30C_YPD/
+- results/GOanalysis/GO_WTvsdelta_37C_YPD/
+- results/GOanalysis/GO_WTvsdelta_37C_EGTA/
+- results/gene_info/genes_to_highlight.csv
+
+# Load count data from shared script load_count_data.Rmd
+
+```{r call_load_count_data, child = "load_count_data.Rmd"}
+```
+
+
+# FLC1 vs flc1∆ at 30°C and 37°C 
+
+## Volcano plots
+
+Open results from differential gene expression analysis and create volcano plot of FLC1 vs flc1∆ at 30°C and FLC1 vs flc1∆ at 37°C. Differentially expressed gene cutoff = log2-fold change > 1 and pvalue < 0.05. 
+
+Open results from differential gene expression analysis. 
+```{r Open DEseq results from FLC1 vs flc1∆ at 30°C and 37°C}
+# FLC1 vs flc1∆ in YPD at 30°C 
+deseq_df_WTvsdelta_30C_YPD <- read_tsv(
+ file = here::here("results", "DEGs",
+                              "deseq_df_WTvsdelta_30C_YPD.txt"))
+# Number up in flc1∆ at 30°C 
+DEGs_down_30 <- deseq_df_WTvsdelta_30C_YPD %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     arrange(log2FC)
+# Number up in FLC1 at 30°C %>% 
+DEGs_up_30 <- deseq_df_WTvsdelta_30C_YPD %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     arrange(log2FC)
+  
+# FLC1 vs flc1∆ in YPD at 37°C 
+deseq_df_WTvsdelta_37C_YPD <- read_tsv(
+ file = here::here("results", "DEGs",
+                              "deseq_df_WTvsdelta_37C_YPD.txt"))
+
+# Number up in flc1∆ at 37°C 
+DEGs_down_37 <- deseq_df_WTvsdelta_37C_YPD %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     arrange(log2FC)
+
+# Number up in FLC1 at 37°C %>% 
+DEGs_up_37 <- deseq_df_WTvsdelta_37C_YPD %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     arrange(log2FC)
+
+# FLC1 vs flc1∆ in YPD + EGTA at 37°C 
+deseq_df_WTvsdelta_37C_EGTA <- read_tsv(
+ file = here::here("results", "DEGs",
+                              "deseq_df_WTvsdelta_37C_EGTA.txt"))
+
+# Number up in flc1∆ YPD + EGTA at 37°C 
+DEGs_down_37_EGTA <- deseq_df_WTvsdelta_37C_EGTA %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     arrange(log2FC)
+
+# Number up in FLC1 YPD + EGTA at 37°C %>% 
+DEGs_up_37_EGTA <- deseq_df_WTvsdelta_37C_EGTA %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     arrange(log2FC)
+```
+Take a quick look at most up in flc1∆ across all conditions 
+```{r}
+DEGs_down_37_new_col_name <- DEGs_down_37 %>% 
+  select(1, 2, 4, 6) %>% 
+  dplyr::rename(log2FC_37 = log2FC,
+                padj_37 = padj) %>% 
+  filter(gene %in% DEGs_down_30$gene) %>% 
+  filter(gene %in% DEGs_down_37_EGTA$gene)
+
+DEGs_down_30_new_col_name <- DEGs_down_30 %>% 
+  select(1, 2, 4, 6) %>% 
+  dplyr::rename(log2FC_30 = log2FC,
+                padj_30 = padj) %>% 
+  filter(gene %in% DEGs_down_37$gene) %>% 
+  filter(gene %in% DEGs_down_37_EGTA$gene)
+
+
+DEGs_down_EGTA_new_col_name <- DEGs_down_37_EGTA %>% 
+  select(1, 2, 4, 6) %>% 
+  dplyr::rename(log2FC_EGTA = log2FC,
+                padj_EGTA = padj) %>% 
+  filter(gene %in% DEGs_down_30$gene) %>% 
+  filter(gene %in% DEGs_down_37$gene)
+
+left_join(DEGs_down_30_new_col_name, DEGs_down_37_new_col_name) %>% 
+  left_join(DEGs_down_EGTA_new_col_name) %>% 
+  mutate(total = log2FC_30 + log2FC_37 + log2FC_EGTA) %>% 
+  arrange(total) %>% 
+  write_tsv(here("results", "DEGs_fungiDB_info", "Most_down_WTvsdelta.tsv"))
+
+
+A <- DEGs_down_30 %>% slice_head(n = 20) 
+B <- DEGs_down_37 %>% slice_head(n = 20) 
+C <- DEGs_down_37_EGTA %>% slice_head(n = 20)
+
+TOP_genes <- bind_rows(A, B, C) %>% 
+  select(1, 2, 4, 6) 
+
+X <- deseq_df_WTvsdelta_30C_YPD %>% 
+  select(1, 2, 4, 6) %>% 
+  dplyr::rename(log2FC_30 = log2FC,
+                padj_30 = padj)
+
+Y <- deseq_df_WTvsdelta_37C_YPD %>% 
+  select(1, 2, 4, 6) %>% 
+  dplyr::rename(log2FC_37 = log2FC,
+                padj_37 = padj)
+
+Z <- deseq_df_WTvsdelta_37C_EGTA %>% 
+  select(1, 2, 4, 6) %>% 
+  dplyr::rename(log2FC_EGTA  = log2FC,
+                padj_EGTA  = padj)
+
+left_join(X, Y) %>% 
+  left_join(Z) %>% 
+  filter(gene %in% TOP_genes$gene) %>% 
+  arrange(log2FC_30) %>% 
+  mutate(sig_30 = case_when((log2FC_30 < 1 & padj_30 < 0.05) ~ 'yes'),
+         sig_37 = case_when((log2FC_37 < 1 & padj_37 < 0.05) ~ 'yes'),
+         sig_EGTA = case_when((log2FC_EGTA < 1 & padj_EGTA < 0.05) ~ 'yes'),
+         ) %>%
+  write_tsv(here("results", "DEGs_fungiDB_info", "Most_down_WTvsdelta_each_condition_sig.tsv"))
+  
+```
+
+
+
+Make volcano plots for each growth temperature. 
+```{r Volcano plots for each comparison, fig.width = 4, fig.height=3}
+geom_point_size <- 0.3
+limits_x <- c(-6, 6)
+colour_positive <- "blue3"
+colour_negative <- "firebrick"
+colour_neutral <- "grey70"
+
+# Volcano YPD 30°C
+volcano_WTvsdelta_30C_YPD <- 
+ ggplot(data = deseq_df_WTvsdelta_30C_YPD,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = geom_point_size - 0.1, colour = colour_neutral) +
+  geom_point(data = deseq_df_WTvsdelta_30C_YPD %>% 
+               dplyr::filter(
+                 log2FC  > 1, padj < 0.05),
+             size = geom_point_size, colour = colour_positive) +
+  geom_point(data = deseq_df_WTvsdelta_30C_YPD %>% 
+               dplyr::filter(
+                 log2FC < -1, padj < 0.05),
+             size = geom_point_size, colour = colour_negative) +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,50), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change\n← up in flc1∆       up in FLC1 →",
+                     breaks = -6:6,
+                     limits = limits_x, expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") + 
+  ggtitle("*FLC1* vs *flc1*∆<br>YPD, 30°C") +
+  theme(plot.title = element_markdown(colour = "black", size = 18, face = "plain"),
+        axis.text.x = element_text(size = 14, colour = "black"),
+        axis.title.x = element_text(size = 14, colour = "black"),
+        axis.text.y = element_text(size = 14, colour = "black"),
+        axis.title.y = element_text(size = 14, colour = "black")) 
+
+volcano_WTvsdelta_30C_YPD
+
+# Volcano YPD 37°C
+volcano_WTvsdelta_37C_YPD <- 
+ ggplot(data = deseq_df_WTvsdelta_37C_YPD,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = geom_point_size - 0.1, colour = colour_neutral) +
+  geom_point(data = deseq_df_WTvsdelta_37C_YPD %>% 
+               dplyr::filter(
+                 log2FC  > 1, padj < 0.05),
+             size = geom_point_size, colour = colour_positive) +
+  geom_point(data = deseq_df_WTvsdelta_37C_YPD %>% 
+               dplyr::filter(
+                 log2FC < -1, padj < 0.05),
+             size = geom_point_size, colour = colour_negative) +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,50), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change\n← up in flc1∆       up in FLC1 →",
+                     breaks = -6:6,
+                     limits = limits_x, expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") + 
+  ggtitle("*FLC1* vs *flc1*∆<br>YPD, 37°C") +
+  theme(plot.title = element_markdown(colour = "black", size = 18, face = "plain"),
+        axis.text.x = element_text(size = 14, colour = "black"),
+        axis.title.x = element_text(size = 14, colour = "black"),
+        axis.text.y = element_text(size = 14, colour = "black"),
+        axis.title.y = element_text(size = 14, colour = "black")) 
+
+volcano_WTvsdelta_37C_YPD
+
+# Volcano YPD 37°C
+volcano_WTvsdelta_37C_EGTA <- 
+ ggplot(data = deseq_df_WTvsdelta_37C_EGTA,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = geom_point_size - 0.1, colour = colour_neutral) +
+  geom_point(data = deseq_df_WTvsdelta_37C_EGTA %>% 
+               dplyr::filter(
+                 log2FC  > 1, padj < 0.05),
+             size = geom_point_size, colour = colour_positive) +
+  geom_point(data = deseq_df_WTvsdelta_37C_EGTA %>% 
+               dplyr::filter(
+                 log2FC < -1, padj < 0.05),
+             size = geom_point_size, colour = colour_negative) +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,50), expand = c(0,0),
+                     oob=scales::squish) +
+ scale_x_continuous("log2 fold-change\n← up in flc1∆       up in FLC1 →",
+                     breaks = -6:6,
+                     limits = limits_x, expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") + 
+  ggtitle("*FLC1* vs *flc1*∆<br>YPD + EGTA, 37°C") +
+  theme(plot.title = element_markdown(colour = "black", size = 18, face = "plain"),
+        axis.text.x = element_text(size = 14, colour = "black"),
+        axis.title.x = element_text(size = 14, colour = "black"),
+        axis.text.y = element_text(size = 14, colour = "black"),
+        axis.title.y = element_text(size = 14, colour = "black")) 
+
+volcano_WTvsdelta_37C_EGTA
+```
+
+## Overlap of differentially expressed genes at 30°C and 37°C in FLC1 vs flc1∆
+
+I wanted to know if the same set of genes are differentially expressed genes in flc1∆ at 30°C and 37°C. I first made some venn diagrams but found that a stacked barplot looks much neater. 
+
+Get genes list of up in flc1∆ at 30°C, up in flc1∆ at 37°C, up in FLC1 at 30°C and up in FLC1 at 37°C. 
+```{r fig.width=10, fig.height=7}
+# Get list of down genes (up in flc1∆) for each growth condition
+DGE_30C_YPD_down <- deseq_df_WTvsdelta_30C_YPD %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     .$gene 
+
+DGE_37C_YPD_down <- deseq_df_WTvsdelta_37C_YPD %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     .$gene
+
+# Get list of up genes (up in FLC1) for each growth condition
+DGE_30C_YPD_up <- deseq_df_WTvsdelta_30C_YPD %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     .$gene 
+
+DGE_37C_YPD_up <- deseq_df_WTvsdelta_37C_YPD %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     .$gene
+```
+
+Plot Venn diagrams
+```{r Venn diagram, fig.width=5, fig.height=10}
+eulerr_list_down <- list( 
+  'YPD, 30°C' = DEGs_down_30 %>% .$gene,
+  'YPD, 37°C' = DEGs_down_37 %>% .$gene, 
+  'YPD + EGTA, 37°C' = DEGs_down_37_EGTA %>% .$gene)
+
+eulerr_list_up <- list( 
+  'YPD, 30°C' = DEGs_up_30 %>% .$gene,
+  'YPD, 37°C' = DEGs_up_37 %>% .$gene, 
+  'YPD + EGTA, 37°C' = DEGs_up_37_EGTA %>% .$gene)
+
+eulerr_plot_down <- plot(
+  euler(eulerr_list_down), 
+  quantities = list(col = "firebrick"), 
+  fills = list(fill = c("grey90", "grey40", "orange"), alpha = 0.4),
+  edges = F,
+  legend = F,
+  fontsize = 20, 
+  labels = list(col = "firebrick", font = 3, cex = 1)
+  ) 
+eulerr_plot_down
+
+eulerr_plot_up <- plot(
+  euler(eulerr_list_up), 
+  quantities = list(col = "blue3"), 
+  fills = list(fill = c("grey90", "grey40", "orange"), alpha = 0.4),
+  edges = F,
+  legend = F,
+  fontsize = 20, 
+  labels = list(col = "blue3", font = 3, cex = 1)
+  ) 
+eulerr_plot_up
+
+eulerr_plots <- plot_grid(
+  eulerr_plot_down, 
+  eulerr_plot_up,
+  ncol = 2
+)
+
+
+ggvenn_plot_down <- ggvenn(
+  eulerr_list_down,
+  show_percentage = F,
+  fill_color = c("grey95","grey95","grey95"),
+  fill_alpha = 0.4,
+  set_name_size = 5,
+  text_color = "firebrick",
+  text_size = 5,
+  stroke_color = "firebrick",
+  stroke_size = 0.5
+) + ggtitle("Up in *flc1*∆") + 
+  theme(plot.title = element_markdown(hjust = 0.5, face = 'plain', size = 18))
+ggvenn_plot_down
+
+ggvenn_plot_up <- ggvenn(
+  eulerr_list_up,
+  show_percentage = F,
+  fill_color = c("grey95","grey95","grey95"),
+  fill_alpha = 0.4,
+  set_name_size = 5,
+  text_color = "blue3",
+  text_size = 5,
+  stroke_color = "blue3",
+  stroke_size = 0.5
+) + ggtitle("Up in *FLC1*") + 
+  theme(plot.title = element_markdown(hjust = 0.5, face = 'plain', size = 18))
+
+ggvenn_plot_up
+
+cowplot::plot_grid(
+  ggvenn_plot_down,
+  ggvenn_plot_up,
+  ncol = 1,
+  scale = 0.8
+)
+
+```
+
+8338 total transcripts 
+
+((733+201)/8338)*100
+((601+40)/8338)*100
+((909+139)/8338)*100
+
+```{r Percentage of genes DE in mutant in three condition, fig.width = 5, fig.height=6}
+### Table showing the number of differentially expressed genes and 
+DEGs_and_EGs <- tibble(
+  condition = rep(c("YPD\n30°C", "YPD\n37°C", "YPD +\nEGTA\n37°C"), times = 3), 
+  direction = rep(c("Up in *flc1*∆", "Up in *FLC1*", "Not differentially<br>expressed"), each = 3),
+  gene_count = c(733, 610, 909, 201, 40, 139, 7404, 7688, 7290)
+) %>% 
+  mutate(direction = factor(direction, levels = c("Up in *flc1*∆", "Up in *FLC1*", "Not differentially<br>expressed")))
+
+
+DEGs_and_EGs_barplot <- ggplot(DEGs_and_EGs, aes(y = gene_count, x = condition, fill = direction)) + 
+  geom_bar(stat="identity", position ="fill") + 
+  scale_fill_manual(values = c("firebrick", "blue3", "grey90")) + 
+  ylab("Proportion of Genes") + 
+  xlab("") +
+  scale_y_continuous(expand = c(0.001,0.001)) + 
+  theme(axis.text.y = element_markdown(size = 16),
+        legend.title = element_blank(),
+        axis.text = element_text(size = 14, colour = "black"),
+        axis.title.y = element_text(size = 14, colour = "black"),
+        legend.text = element_markdown(size = 12, colour = "black"),
+        legend.spacing.y = unit(0.3, 'cm'),
+        legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0.5, unit = 'cm'),
+        plot.margin = margin(b = -0.4, unit = 'cm'),
+        legend.justification = "top")
+
+DEGs_and_EGs_barplot
+
+
+DEGs_and_EGs_table <- DEGs_and_EGs %>% 
+  filter(direction != "Not differentially<br>expressed") %>%
+  mutate(direction = factor(direction, 
+                            levels = c("Up in *FLC1*", "Up in *flc1*∆"), 
+                            labels = c("DEGs up in *FLC1*", "DEGs Up in *flc1*∆"))
+  )
+
+
+DEGs_and_EGs_table_plot <- 
+ggplot(data = DEGs_and_EGs_table,
+       aes(x=condition, y=direction, label=gene_count)) +
+  geom_tile(fill = "white", colour = "black", linewidth = 0.5) + 
+  geom_text(aes(colour = direction), size = 4) + 
+  scale_colour_manual(values = c("blue3", "firebrick")) + 
+xlab("") +
+ylab("No. DEGs") +
+theme(legend.position="none",
+panel.grid.major.x = element_blank(),
+panel.grid.major.y = element_blank(),
+panel.grid.minor.x = element_line(),
+panel.grid.minor.y = element_line(),
+axis.title.y = element_text(size = 14),
+axis.line = element_blank(),
+axis.ticks = element_blank(),
+axis.text.y=element_blank(),
+axis.text.x=element_blank(),
+panel.ontop = TRUE,
+axis.ticks.x=element_blank(),
+panel.background = element_rect(fill = "transparent",colour = NA)
+)
+
+
+DEGs_and_EGs_grid <- plot_grid(
+  DEGs_and_EGs_barplot, 
+  DEGs_and_EGs_table_plot,
+  ncol =1,
+  align = "v", rel_heights = c(4, 1)
+)
+```
+
+
+
+Stakced barplot 
+```{r Barplot, fig.width = 4, fig.height=5}
+### Barplot Venn alternative 
+DEG_counts <- tibble(
+  condition = rep(c("YPD, 30°C only", "YPD, 37°C only", "YPD, 30°C & 37°C"), times = 2), 
+  direction = rep(c("up in flc1∆", "up in FLC1"), each = 3),
+  count = c(276, 153, 457, 172, 11, 29)
+) %>% 
+  mutate(
+    condition = factor(condition, levels = c("YPD, 30°C only", "YPD, 37°C only", "YPD, 30°C & 37°C")),
+    direction = factor(direction, levels = c("up in flc1∆", "up in FLC1"))
+  ) 
+
+# Horizonatl bars 
+DEG_barplot_30C_37C <- ggplot(DEG_counts, aes(y = direction, x = count, fill = condition)) + 
+  geom_bar(stat="identity", colour = "black") + 
+  scale_fill_manual(values = c("grey95", "grey65", "grey30")) + 
+  xlab("DEGs") + 
+  ylab("") +
+  scale_x_continuous(limits = c(0,900), expand = c(0.01,0.01)) + 
+  theme(axis.text.y = element_markdown(size = 16, colour = c("blue3", "firebrick")),
+        legend.title = element_blank(),
+        axis.text.x = element_text(size = 12, colour = "black"),
+        axis.title.x = element_text(size = 14, colour = "black"),
+        legend.text = element_text(size = 14, colour = "black"),
+        legend.spacing.y = unit(0.3, 'cm'),
+        legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0.5, unit = 'cm'),
+        legend.justification = "top")
+
+#DEG_barplot_30C_37C
+
+# Vertical bars
+DEG_barplot_30C_37C <- ggplot(DEG_counts, aes(x = direction, y = count, fill = condition)) + 
+  geom_bar(stat="identity", width = 0.7, colour = "black") + 
+  scale_fill_manual(values = c("grey98", "grey65", "grey30")) + 
+  ylab("Number of DEGs") + 
+  xlab("") +
+  scale_y_continuous(limits = c(0,900), expand = c(0.01,0.01)) + 
+  theme(axis.text.x = element_markdown(size = 14, colour = c("firebrick", "blue3"), angle = 45, hjust =1),
+        legend.title = element_blank(),
+        axis.text.y = element_text(size = 14, colour = "black"),
+        axis.title.y = element_text(size = 14, colour = "black"),
+        legend.text = element_text(size = 14, colour = "black"),
+        legend.key.size = unit(0.5,"line"),
+        legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0.5, unit = 'cm'),
+        legend.justification = "top") 
+
+DEG_barplot_30C_37C
+
+# Percentages useful for adding to chapter results
+# Total up in flc1∆ = 886 
+# Both = 51.6%
+# 30°C = 31.1%
+# 37°C = 17.3%
+# Total up in FLC1 = 212
+# Both = 29/212 = 13.7%
+# 30°C = 81.1% 
+# 37°C = 29/212 = 5.2%
+```
+## GO term analysis
+GO term analysis FLC1 vs flc1∆ in YPD, 30°C and FLC1 vs flc1∆ in YPD, 37°C. 
+
+```{r Open GO analysis results}
+# Open GO analysis for down regulated gene in WT vs flc1∆ at 30°C
+MF_slim_30_down <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_30C_YPD/GO_WTvsdelta_30C_YPD_down2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_30C_YPD",
+    GO_type = "MF",
+    DEG = "down"
+  )
+
+BP_slim_30_down <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_30C_YPD/GO_WTvsdelta_30C_YPD_down2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_30C_YPD",
+    GO_type = "BP",
+    DEG = "down"
+  )
+
+CC_slim_30_down <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_30C_YPD/GO_WTvsdelta_30C_YPD_down2x_FDR5_cellular_component_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_30C_YPD",
+    GO_type = "CC",
+    DEG = "down"
+  )
+
+GO_slim_30_down <- bind_rows(
+  MF_slim_30_down,
+  BP_slim_30_down,
+  CC_slim_30_down) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_30_down$name <- factor(GO_slim_30_down$name, levels = rev(GO_slim_30_down$name))
+  
+
+# Open GO analysis for downregulated gene in WT vs flc1∆ at 37°C
+MF_slim_37_down <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_YPD/GO_WTvsdelta_37C_YPD_down2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_YPD",
+    GO_type = "MF",
+    DEG = "down"
+  )
+
+BP_slim_37_down <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_YPD/GO_WTvsdelta_37C_YPD_down2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_YPD",
+    GO_type = "BP",
+    DEG = "down"
+  )
+
+CC_slim_37_down <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_YPD/GO_WTvsdelta_37C_YPD_down2x_FDR5_cellular_component_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_YPD",
+    GO_type = "CC",
+    DEG = "down"
+  )
+
+GO_slim_37_down <- bind_rows(
+  MF_slim_37_down,
+  BP_slim_37_down,
+  CC_slim_37_down) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_37_down$name <- factor(GO_slim_37_down$name, levels = rev(GO_slim_37_down$name))
+
+# Open GO analysis for downregulated gene in WT vs flc1∆ in EGTA at 37°C
+MF_slim_EGTA_37_down <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_EGTA/GO_WTvsdelta_37C_EGTA_down2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_EGTA",
+    GO_type = "MF",
+    DEG = "down"
+  )
+
+BP_slim_EGTA_37_down <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_EGTA/GO_WTvsdelta_37C_EGTA_down2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_EGTA",
+    GO_type = "BP",
+    DEG = "down"
+  )
+
+CC_slim_EGTA_37_down <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_EGTA/GO_WTvsdelta_37C_EGTA_down2x_FDR5_cellular_component_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_EGTA",
+    GO_type = "CC",
+    DEG = "down"
+  )
+
+GO_slim_EGTA_37_down <- bind_rows(
+  MF_slim_EGTA_37_down,
+  BP_slim_EGTA_37_down,
+  CC_slim_EGTA_37_down) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_EGTA_37_down$name <- factor(GO_slim_EGTA_37_down$name, levels = rev(GO_slim_EGTA_37_down$name))
+
+
+# Open GO analysis upregulated gene in WT vs flc1∆ at 30°C
+MF_slim_30_up <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_30C_YPD/GO_WTvsdelta_30C_YPD_up2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_30C_YPD",
+    GO_type = "MF",
+    DEG = "up"
+  )
+
+BP_slim_30_up <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_30C_YPD/GO_WTvsdelta_30C_YPD_up2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_30C_YPD",
+    GO_type = "BP", ,
+    DEG = "up"
+  )
+
+CC_slim_30_up <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_30C_YPD/GO_WTvsdelta_30C_YPD_up2x_FDR5_cellular_component_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_30C_YPD",
+    GO_type = "CC", ,
+    DEG = "up"
+  )
+
+GO_slim_30_up <- bind_rows(
+  MF_slim_30_up,
+  BP_slim_30_up,
+  CC_slim_30_up) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_30_up$name <- factor(GO_slim_30_up$name, levels = rev(GO_slim_30_up$name))
+  
+
+# Open GO analysis for upregulated gene in WT vs flc1∆ at 37°C
+MF_slim_37_up <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_YPD/GO_WTvsdelta_37C_YPD_up2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_YPD",
+    GO_type = "MF",
+    DEG = "up"
+  )
+
+BP_slim_37_up <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_YPD/GO_WTvsdelta_37C_YPD_up2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_YPD",
+    GO_type = "BP",
+    DEG = "up"
+  )
+
+CC_slim_37_up <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_YPD/GO_WTvsdelta_37C_YPD_up2x_FDR5_cellular_component_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_YPD",
+    GO_type = "CC",
+    DEG = "up"
+  )
+
+GO_slim_37_up <- bind_rows(
+  MF_slim_37_up,
+  BP_slim_37_up,
+  CC_slim_37_up) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_37_up$name <- factor(GO_slim_37_up$name, levels = rev(GO_slim_37_up$name))
+
+# Open GO analysis for upregulated gene in WT vs flc1∆ in EGTA at 37°C
+MF_slim_EGTA_37_up <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_EGTA/GO_WTvsdelta_37C_EGTA_up2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_EGTA",
+    GO_type = "MF",
+    DEG = "up"
+  )
+
+BP_slim_EGTA_37_up <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_EGTA/GO_WTvsdelta_37C_EGTA_up2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_EGTA",
+    GO_type = "BP",
+    DEG = "up"
+  )
+
+CC_slim_EGTA_37_up <- read_tsv(
+  here("results/GOanalysis/GO_WTvsdelta_37C_EGTA/GO_WTvsdelta_37C_EGTA_up2x_FDR5_cellular_component_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "WTvsdelta_37C_EGTA",
+    GO_type = "CC",
+    DEG = "up"
+  )
+
+GO_slim_EGTA_37_up <- bind_rows(
+  MF_slim_EGTA_37_up,
+  BP_slim_EGTA_37_up,
+  CC_slim_EGTA_37_up) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_EGTA_37_up$name <- factor(GO_slim_EGTA_37_up$name, levels = rev(GO_slim_EGTA_37_up$name))
+
+
+#Combine into a single dataframe!
+GOslim <- bind_rows(GO_slim_EGTA_37_up, GO_slim_37_up, GO_slim_30_up, GO_slim_EGTA_37_down, GO_slim_37_down, GO_slim_30_down) %>% 
+  mutate(comparison = factor(comparison, 
+                             levels = c("WTvsdelta_30C_YPD", "WTvsdelta_37C_YPD", "WTvsdelta_37C_EGTA"),
+                             labels = c("FLC1 vs flc1∆ in YPD, 30°C", "FLC1 vs flc1∆ in YPD, 37°C", "FLC1 vs flc1∆ in YPD+EGTA, 37°C")),
+         deg = factor(deg, levels = c("down", "up"), labels = c("up in flc1∆", "up in FLC1"))) %>% 
+  ungroup() %>%
+  group_by(go_type, comparison) %>% 
+  arrange(desc(fold_enrichment), .by_group = T) %>% 
+  filter(!name %in% c("cellular component", "molecular function", "biological process", "organelle", "intracellular anatomical structure")) 
+
+GOslim$name <- factor(GOslim$name, levels = rev(unique(GOslim$name)))
+```
+Plot GO term results with fold-enrichment on x-axis, GOterms on y-axis. Size of point = number of genes found for each term, linetype indicates GO term category. Facet by temperature. 
+```{r Plot GO terms for 30°C and 37°C, fig.width = 10, fig.height=7}
+GOslim_WTvsdelat_YPD_30 <- ggplot(
+  data = GOslim %>% filter(comparison == "FLC1 vs flc1∆ in YPD, 30°C")) + 
+  geom_segment(aes(x = 0, xend = fold_enrichment, y = name, linetype = go_type)) +
+  scale_linetype_manual(values = c("solid", "twodash", "dotted")) + 
+  ggnewscale::new_scale_color() +  
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, colour = deg)) +
+  scale_size_continuous(limits = c(1,85), breaks = c(20, 40, 60, 80)) + 
+  scale_colour_manual(values = c("firebrick", "blue3")) + 
+    labs(size="Number of Genes", linetype="GO term", colour = "Gene Expression") + 
+    xlab("Fold enrichment") + 
+    ylab("") + 
+    scale_x_continuous(breaks = c(0,2,4,6,8,10,12,14), limits = c(0,14), expand = c(0.01,0.01)) +
+    facet_grid2(deg~., scales = "free_y", axes = "all", space = "free") +
+    #ggtitle("FLC1 vs flc1∆ in YPD, 30°C") +
+    theme(strip.text = element_text(colour = "white"),
+          axis.text.y = element_text(size = 14, colour = "black"),
+          axis.text.x = element_text(size = 14, colour = "black"),
+          axis.title.x = element_text(size = 14, colour = "black"),
+          legend.title = element_text(size = 16, colour = "black"),
+          legend.text = element_text(size = 14, colour = "black"),
+          legend.justification = "top",
+          legend.spacing.y = unit(0.3, 'cm'),
+          legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0.5, unit = 'cm')
+          ) + 
+  guides(linetype = guide_legend(order=1),
+         colour = guide_legend(order=2),
+         size = guide_legend(order=3)) 
+
+GOslim_WTvsdelat_YPD_30
+
+GOslim_WTvsdelat_YPD_37 <- ggplot(
+  data = GOslim %>% filter(comparison == "FLC1 vs flc1∆ in YPD, 37°C")) + 
+  geom_segment(aes(x = 0, xend = fold_enrichment, y = name, linetype = go_type)) +
+  scale_linetype_manual(values = c("solid", "twodash", "dotted")) + 
+  ggnewscale::new_scale_color() +  
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, colour = deg)) +
+  scale_size_continuous(limits = c(1,85), breaks = c(20, 40, 60, 80)) + 
+  scale_colour_manual(values = c("firebrick", "blue3")) + 
+    labs(size="Number of Genes", linetype="GO term", colour = "Gene Expression") + 
+    xlab("Fold enrichment") + 
+    ylab("") + 
+    scale_x_continuous(breaks = c(0,2,4,6,8,10,12,14), limits = c(0,14), expand = c(0.01,0.01)) +
+    facet_grid2(deg~., scales = "free_y", axes = "all", space = "free") +
+    #ggtitle("FLC1 vs flc1∆ in YPD, 37°C") +
+    theme(strip.text = element_text(colour = "white"),
+          axis.text.y = element_text(size = 14, colour = "black"),
+          axis.text.x = element_text(size = 14, colour = "black"),
+          axis.title.x = element_text(size = 14, colour = "black"),
+          legend.title = element_text(size = 16, colour = "black"),
+          legend.text = element_text(size = 14, colour = "black"),
+          legend.justification = "top",
+          legend.spacing.y = unit(0.3, 'cm'),
+          legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0.5, unit = 'cm')
+          ) + 
+  guides(linetype = guide_legend(order=1),
+         colour = guide_legend(order=2),
+         size = guide_legend(order=3))
+
+GOslim_WTvsdelat_YPD_37
+
+GOslim_WTvsdelat_EGTA_37 <- ggplot(
+  data = GOslim %>% filter(comparison == "FLC1 vs flc1∆ in YPD+EGTA, 37°C")) + 
+  geom_segment(aes(x = 0, xend = fold_enrichment, y = name, linetype = go_type)) +
+  scale_linetype_manual(values = c("solid", "twodash", "dotted")) + 
+  ggnewscale::new_scale_color() +  
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, colour = deg)) +
+  scale_size_continuous(limits = c(1,85), breaks = c(20, 40, 60, 80)) + 
+  scale_colour_manual(values = c("firebrick", "blue3")) + 
+    labs(size="Number of Genes", linetype="GO term", colour = "Gene Expression") + 
+    xlab("Fold enrichment") + 
+    ylab("") + 
+    scale_x_continuous(breaks = c(0,2,4,6,8,10,12,14), limits = c(0,14), expand = c(0.01,0.01)) +
+    facet_grid2(deg~., scales = "free_y", axes = "all", space = "free") +
+    #ggtitle("FLC1 vs flc1∆ in YPD, 37°C") +
+    theme(strip.text = element_text(colour = "white"),
+          axis.text.y = element_text(size = 14, colour = "black"),
+          axis.text.x = element_text(size = 14, colour = "black"),
+          axis.title.x = element_text(size = 14, colour = "black"),
+          legend.title = element_text(size = 16, colour = "black"),
+          legend.text = element_text(size = 14, colour = "black"),
+          legend.justification = "top",
+          legend.spacing.y = unit(0.3, 'cm'),
+          legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0.5, unit = 'cm')
+          ) + 
+  guides(linetype = guide_legend(order=1),
+         colour = guide_legend(order=2),
+         size = guide_legend(order=3))
+
+GOslim_WTvsdelat_EGTA_37
+
+```
+
+
+```{r}
+GOslim_up_delta <- ggplot(
+  data= GOslim %>% 
+    filter(deg == 'up in flc1∆') %>%
+    mutate(comparison = factor(comparison, 
+                              levels = c("FLC1 vs flc1∆ in YPD, 30°C", "FLC1 vs flc1∆ in YPD, 37°C", "FLC1 vs flc1∆ in YPD+EGTA, 37°C"),
+                              labels = c("YPD\n30°C", "YPD\n37°C", "YPD +\nEGTA\n37°C")),
+            go_type = factor(go_type, 
+                            levels = c("Biological process", "Molecular function", "Cellular component"),
+                            labels = c("Biological\nprocess", "Molecular\nfunction", "Cellular\ncomponent"))
+           ),
+  aes(y = name, x = comparison, size = result_count, colour = fold_enrichment)
+) + 
+  geom_point() +
+  scale_size_continuous(limits = c(1,85), breaks = c(20, 40, 60, 80)) + 
+  scale_colour_gradient2(low = "grey95", high = "firebrick", limits =  c(1,12), breaks = c(2, 4, 6, 8, 10, 12)) + 
+  geom_point(shape = 1, colour = "black") + 
+  labs(size="Number of\nGenes", colour = "Fold\nEnrichment") + 
+  guides(colour = guide_legend(order=2),
+         size = guide_legend(order=1, override.aes=list(shape = 1))) + 
+  facet_grid2(go_type~., scales = 'free_y', space = "free")  + 
+  ggtitle('Up in *flc1*∆') +
+  theme(plot.title = element_markdown(face = "plain", size = 18),
+        strip.text.y = element_text(size = 14, colour = "black", angle = 0, hjust = 0),
+        panel.background = element_rect(fill = "grey98"),
+        strip.background = element_rect(fill = "grey90"),
+        axis.text.y = element_text(size = 12, colour = "black"),
+        axis.text.x = element_text(size = 14, colour = "black"),
+        axis.title = element_blank(),
+        legend.title = element_text(size = 16, colour = "black"),
+        legend.text = element_text(size = 14, colour = "black"),
+        legend.justification = "top",
+        legend.spacing.y = unit(0.3, 'cm'),
+        legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0.5, unit = 'cm')
+    
+  )
+  
+GOslim_up_delta
+
+
+GOslim_up_WT <- ggplot(
+  data= GOslim %>% 
+    filter(deg == 'up in FLC1') %>%
+    mutate(comparison = factor(comparison, 
+                              levels = c("FLC1 vs flc1∆ in YPD, 30°C", "FLC1 vs flc1∆ in YPD, 37°C", "FLC1 vs flc1∆ in YPD+EGTA, 37°C"),
+                              labels = c("YPD\n30°C", "YPD\n37°C", "YPD +\nEGTA\n37°C")),
+           go_type = factor(go_type, 
+                            levels = c("Biological process", "Molecular function", "Cellular component"),
+                            labels = c("Biological\nprocess", "Molecular\nfunction", "Cellular\ncomponent"))
+           ),
+  aes(y = name, x = comparison, size = result_count, colour = fold_enrichment)
+) + 
+  geom_point() +
+  scale_size_continuous(limits = c(1,85), breaks = c(20, 40, 60, 80)) + 
+  scale_colour_gradient2(low = "grey95", high = "blue3", limits =  c(1,14), breaks = c(2, 4, 6, 8, 10, 12)) + 
+  geom_point(shape = 1, colour = "black") + 
+  labs(size="Number of\nGenes", colour = "Fold\nEnrichment") + 
+  guides(colour = guide_legend(order=2),
+         size = guide_legend(order=1, override.aes=list(shape = 1))) + 
+  facet_grid2(go_type~., scales = 'free_y', space = "free") +
+  ggtitle('Up in *FLC1*') +
+  theme(plot.title = element_markdown(face = "plain", size = 18),
+        strip.text.y = element_text(size = 14, colour = "black", angle = 0, hjust = 0),
+        panel.background = element_rect(fill = "grey98"),
+        strip.background = element_rect(fill = "grey90"),
+        axis.text.y = element_text(size = 12, colour = "black"),
+        axis.text.x = element_text(size = 14, colour = "black"),
+        axis.title = element_blank(),
+        legend.title = element_text(size = 16, colour = "black"),
+        legend.text = element_text(size = 14, colour = "black"),
+        legend.justification = "top",
+        legend.spacing.y = unit(0.3, 'cm'),
+        legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0.5, unit = 'cm')
+    
+  )  
+GOslim_up_WT
+
+
+GOslim_grid <- plot_grid(
+  GOslim_up_delta,
+  GOslim_up_WT,
+  ncol = 1,
+  axis = "lr",
+  align = "v",
+  rel_heights = c(12, 25),
+  scale = 0.95
+)
+```
+
+
+## Muti-panel figure DGE in FLC1vsflc1∆ at 30°C and 37°C
+
+```{r Mulitpannel FLC1vsflc1∆ fig.width=30, fig.height=40}
+Volcano <- cowplot::plot_grid(
+  volcano_WTvsdelta_30C_YPD,
+  volcano_WTvsdelta_37C_YPD,
+  volcano_WTvsdelta_37C_EGTA, 
+  eulerr_plots,
+  axis = "l",
+  align = "v",
+  ncol =1, 
+  rel_heights = c(1,1,1,1),
+  rel_widths = c(1, 1, 1, 2),
+  scale = 0.9
+)
+
+Volcano_grid <- cowplot::plot_grid(
+  volcano_WTvsdelta_30C_YPD,
+  volcano_WTvsdelta_37C_YPD,
+  volcano_WTvsdelta_37C_EGTA, 
+  axis = "l",
+  align = "v",
+  ncol =1, 
+  rel_heights = c(1,1,1),
+  rel_widths = c(1, 1, 1),
+  scale = 0.95
+)
+
+
+DEG_GO <- cowplot::plot_grid(
+  GOslim_WTvsdelat_YPD_30,
+  GOslim_WTvsdelat_YPD_37 + theme(legend.position = "none"),
+  GOslim_WTvsdelat_EGTA_37 + theme(legend.position = "none"),
+  axis = "lr",
+  align = "v", 
+  ncol =1, 
+  rel_heights = c(23,15, 28),
+  scale = 0.9)
+
+plot_grid(
+  Volcano_grid,
+  GOslim_grid,
+  axis = "tb",
+  align = "h", 
+  rel_widths = c(1,2)
+)
+
+#ggsave(here("results", "figures", "WTvsDelta_YPD30C_YPD37C_EGTA37C_pannel_noVenn.png"), width = 16, height = 13, dpi = 1000)
+```
+
+
+```{r fig.width=16, fig.height=19}
+Volcano_grid <- cowplot::plot_grid(
+  volcano_WTvsdelta_30C_YPD,
+  volcano_WTvsdelta_37C_YPD,
+  volcano_WTvsdelta_37C_EGTA, 
+  axis = "l",
+  align = "v",
+  ncol =3, 
+  rel_heights = c(1,1,1),
+  rel_widths = c(1, 1, 1),
+  scale = 0.95
+)
+
+Venn_grid <- cowplot::plot_grid(
+  DEGs_and_EGs_grid, 
+  ggvenn_plot_down,
+  ggvenn_plot_up,
+  ncol = 1,
+  scale = 0.9)
+
+
+GOterm_grid <- cowplot::plot_grid(
+  Venn_grid, 
+  GOslim_grid, 
+  axis = "t",
+  align = "h",
+  ncol = 2,
+  rel_widths = c(1, 2)
+)
+
+
+
+plot_grid(
+  Volcano_grid,
+  GOterm_grid,
+  axis = "lr",
+  align = "h", 
+  ncol =1,
+  rel_heights = c(1,3),
+  scale = 0.95
+)
+
+ggsave(here("results", "figures", "WTvsDelta_YPD30C_YPD37C_EGTA37C_multipannel.png"), width = 16, height = 20, dpi = 1000)
+```
+

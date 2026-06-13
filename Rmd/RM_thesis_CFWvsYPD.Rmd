@@ -1,0 +1,143 @@
+---
+title: "RM_thesis_CFWvsYPD"
+author: "Rachael Murray"
+date: "2025-05-06"
+output: html_document
+---
+
+```{r call_load_count_data, child = "load_count_data.Rmd"}
+```
+Open results from differential gene expression analysis. 
+```{r Open DEseq results from FLC1 vs flc1∆ at 30°C and 37°C}
+# CFW vs YPD in FLC1
+deseq_df_CFWvsYPD_WT <- read_tsv(
+ file = here::here("results", "DEGs",
+                              "deseq_df_CFWvsYPD_WT_37C.txt"))
+# Number down in CFW in FLC1
+DEGs_down_CFW_WT <- deseq_df_CFWvsYPD_WT %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     arrange(log2FC)
+# Number up in YPD in FLC1
+DEGs_up_CFW_WT<- deseq_df_CFWvsYPD_WT %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     arrange(log2FC)
+
+# CFW vs YPD in flc1∆
+deseq_df_CFWvsYPD_delta <- read_tsv(
+ file = here::here("results", "DEGs",
+                              "deseq_df_CFWvsYPD_delta_37C.txt"))
+# Number down in CFW in flc1∆
+DEGs_down_CFW_delta <- deseq_df_CFWvsYPD_delta %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     arrange(log2FC)
+# Number up in CFW in flc1∆
+DEGs_up_CFW_delta <- deseq_df_CFWvsYPD_delta %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     arrange(log2FC)
+
+```
+
+Make volcano plots for each growth temperature. 
+```{r Volcano plots for each comparison, fig.width = 10, fig.height=4.5}
+library(ggrepel)
+
+geom_point_size <- 0.3
+limits_x <- c(-5, 5)
+colour_positive <- "blue3"
+colour_negative <- "firebrick"
+colour_neutral <- "grey70"
+
+# Volcano 37C vs 30C in WT
+volcano_CFWvsYPD_WT <- 
+ ggplot(data = deseq_df_CFWvsYPD_WT,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = geom_point_size - 0.1, colour = colour_neutral) +
+  geom_point(data = deseq_df_CFWvsYPD_WT %>% 
+               dplyr::filter(
+                 log2FC  > 1, padj < 0.05),
+             size = geom_point_size, colour = colour_positive) +
+  geom_point(data = deseq_df_CFWvsYPD_WT %>% 
+               dplyr::filter(
+                 log2FC < -1, padj < 0.05),
+             size = geom_point_size, colour = colour_negative) +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,50), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change\n← down in YPD + CFW       up in YPD + CFW →",
+                     breaks = -5:5,
+                     limits = limits_x, expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") + 
+  ggtitle("YPD + CFW, 37°C vs YPD, 37°C<br>*FLC1*") +
+  geom_text_repel(data = DEGs_up_CFW_WT %>% filter(!is.na(geneName)), aes(label = geneName), colour = colour_positive, 
+                  min.segment.length = 0, fontface = "italic", size = 4,  max.overlaps = 5, xlim = c(5, 1)) + 
+  geom_text_repel(data = DEGs_down_CFW_WT %>% filter(!is.na(geneName)), aes(label = geneName), colour = colour_negative,
+                  min.segment.length = 0, fontface = "italic", size = 4, max.overlaps = 5, xlim = c(-5, -1)) + 
+  theme(plot.title = element_markdown(colour = "black", size = 18, face = "plain"),
+        axis.text.x = element_text(size = 14, colour = "black"),
+        axis.title.x = element_text(size = 14, colour = "black"),
+        axis.text.y = element_text(size = 14, colour = "black"),
+        axis.title.y = element_text(size = 14, colour = "black")) 
+
+volcano_CFWvsYPD_WT
+
+volcano_CFWvsYPD_delta <- 
+ ggplot(data = deseq_df_CFWvsYPD_delta,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = geom_point_size - 0.1, colour = colour_neutral) +
+  geom_point(data = deseq_df_CFWvsYPD_delta %>% 
+               dplyr::filter(
+                 log2FC  > 1, padj < 0.05),
+             size = geom_point_size, colour = colour_positive) +
+  geom_point(data = deseq_df_CFWvsYPD_delta %>% 
+               dplyr::filter(
+                 log2FC < -1, padj < 0.05),
+             size = geom_point_size, colour = colour_negative) +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,50), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change\n← down in YPD + CFW       up in YPD + CFW →",
+                     breaks = -5:5,
+                     limits = limits_x, expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") + 
+  ggtitle("YPD + CFW, 37°C vs YPD, 37°C<br>*flc1*∆") +
+  geom_text_repel(data = DEGs_up_CFW_delta %>% filter(!is.na(geneName)), aes(label = geneName), colour = colour_positive, 
+                  min.segment.length = 0, fontface = "italic", size = 3,  max.overlaps = 5, xlim = c(5, 1)) + 
+  geom_text_repel(data = DEGs_down_CFW_delta %>% filter(!is.na(geneName)), aes(label = geneName), colour = colour_negative,
+                  min.segment.length = 0, fontface = "italic", size = 3, max.overlaps = 5, xlim = c(-5, -1)) + 
+  theme(plot.title = element_markdown(colour = "black", size = 18, face = "plain"),
+        axis.text.x = element_text(size = 14, colour = "black"),
+        axis.title.x = element_text(size = 14, colour = "black"),
+        axis.text.y = element_text(size = 14, colour = "black"),
+        axis.title.y = element_text(size = 14, colour = "black")) 
+
+volcano_CFWvsYPD_delta
+
+
+plot_grid(
+  volcano_CFWvsYPD_WT,
+  volcano_CFWvsYPD_delta,
+  ncol = 2,
+  scale = 0.95
+)
+
+#ggsave(here("results", "figures", "CFWvsYPD_volcano.png"), width = 10, height = 4.5, dpi = 1000)
+```
+
+
+```{r}
+DEGs_up_CFW_WT<- deseq_df_CFWvsYPD_WT %>% 
+                     dplyr::filter(log2FC > 0.5, padj < 0.05) %>% 
+                     arrange(log2FC)
+
+deseq_df_CFWvsYPD_WT %>% 
+ dplyr::filter(padj < 0.05) %>%
+ arrange(desc(log2FC))
+
+
+deseq_df_CFWvsYPD_delta %>% 
+ dplyr::filter(padj < 0.05) %>%
+ arrange(desc(log2FC))
+```
+

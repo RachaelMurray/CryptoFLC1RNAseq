@@ -65,7 +65,14 @@ sample_sheet <-
   here::here("input", "experiment",
              "CryptoRNAseqFLC1SampleKey.csv") %>%
   readr::read_csv(comment = "#", col_types = "ccccccc") %>%
-  dplyr::mutate(Condition = stringr::str_sub(SampleName,start = 1L, end = -3L))
+  dplyr::mutate(Condition = stringr::str_sub(SampleName,start = 1L, end = -3L)) %>% 
+  dplyr::mutate(Media = factor(Media,
+                               levels = c("YPD","YPD_CFW", "YPD_EGTA", "YPD_CFW_EGTA"),
+                               labels = c("YPD", "YPD + CFW", "YPD + EGTA", "YPD + EGTA + CFW")
+                                ),
+                Temperature = factor(Temperature,
+                                     levels = c("30", "37"),
+                                     labels = c("30°C", "37°C")))
 
 sample_sheet 
 ```
@@ -102,13 +109,13 @@ bind_cols(
 _Note: This is set to `eval=FALSE` as it can run very slowly for large datasets._ 
 
 ```{r paired_scatter, fig.height=20, fig.width=20, eval=FALSE}
-counts_all %>%
-  magrittr::add(1) %>%
-  log10() %>%
-  GGally::ggpairs()
+#counts_all %>%
+ # magrittr::add(1) %>%
+  #log10() %>%
+  #GGally::ggpairs()
 
-here::here("results", "figures","paired_scatter_log10countsplusone_all_samples.png") %>%
-ggsave(width = 32, height = 32)
+#here::here("results", "figures","paired_scatter_log10countsplusone_all_samples.png") %>%
+#ggsave(width = 32, height = 32)
 ```
 
 # Normalize counts by regularized log (rlog) with DESeq2
@@ -147,13 +154,82 @@ pca_rlog <- rlog_all %>%
   prcomp()
 
 # convert principal components to data frame
-pcdf_rlog <- bind_cols(
+pcdf_rlog_df <- bind_cols(
   as_tibble(colData(rlog_all)),
   as_tibble(pca_rlog$x)
-)
+) %>% 
+  mutate(FLC1 = factor(FLC1, levels = c("WT", "delta"), labels = c("*FLC1*", "*flc1*∆")))
 
-pcdf_rlog
+pcdf_rlog_df 
 ```
+
+```{r}
+pc_loadings <- pca_rlog$rotation
+
+pc_loadings <- pc_loadings %>% 
+  as_tibble(rownames = "gene")
+
+# print the result
+pc_loadings
+
+
+top_genes <- pc_loadings %>% 
+  # select only the PCs we are interested in
+  select(gene, PC1, PC2, PC3) %>%
+  # convert to a "long" format
+  pivot_longer(matches("PC"), names_to = "PC", values_to = "loading") %>% 
+  # for each PC
+  group_by(PC) %>% 
+  # arrange by descending order of loading
+  arrange(desc(abs(loading))) %>% 
+  # take the 10 top rows
+  slice_head(n = 10) #%>% 
+  # pull the gene column as a vector
+  #pull(gene) %>% 
+  # ensure only unique genes are retained
+ # unique()
+
+top_loadings <- pc_loadings %>% 
+  filter(gene %in% top_genes$gene)
+
+loadings_plot_base <- ggplot(data = top_loadings) + 
+  geom_hline(yintercept = 0, size = 0.5, colour = "grey90") +
+  geom_vline(xintercept = 0, size = 0.5, colour = "grey90") 
+
+loadings_plot_PC1_PC2 <- loadings_plot_base +
+  geom_segment(aes(x = 0, y = 0, xend = PC1, yend = PC2), 
+               arrow = arrow(length = unit(0.1, "in")),
+               colour = "grey70") +
+  geom_text_repel(aes(x = PC1, y = PC2, label = gene),
+            nudge_y = 0.005, size = 3, colour = "blue", max.overlaps = 20) +
+  scale_x_continuous(expand = c(0.02, 0.02)) + xlab("PC1") + ylab("PC2") 
+
+loadings_plot_PC1_PC3 <- loadings_plot_base +
+  geom_segment(aes(x = 0, y = 0, xend = PC1, yend = PC3), 
+               arrow = arrow(length = unit(0.1, "in")),
+               colour = "grey70") +
+  geom_text_repel(aes(x = PC1, y = PC3, label = gene),
+            nudge_y = 0.005, size = 3, colour = "blue", , max.overlaps = 20) +
+  scale_x_continuous(expand = c(0.02, 0.02)) + xlab("PC1") + ylab("PC3")
+
+loadings_plot_PC2_PC3 <- loadings_plot_base +
+  geom_segment(aes(x = 0, y = 0, xend = PC2, yend = PC3), 
+               arrow = arrow(length = unit(0.1, "in")),
+               colour = "grey70") +
+  geom_text_repel(aes(x = PC2, y = PC3, label = gene),
+            nudge_y = 0.005, size = 3, colour = "blue", , max.overlaps = 20) +
+  scale_x_continuous(expand = c(0.02, 0.02)) + xlab("PC2") + ylab("PC3") 
+
+plot_grid(loadings_plot_PC1_PC2, "",
+          loadings_plot_PC1_PC3, loadings_plot_PC2_PC3,
+          axis = "tblr", align = "hv") 
+
+#ggsave(
+ # here("results/figures/PC1vsPC2vsPC3_loadings_plot.png"), width = 10, height = 9, dpi = 1000, bg = "white"
+#)
+```
+
+
 
 ## Calculate proportion of variance explained by each PC
 
@@ -171,7 +247,7 @@ propvar_rlog_df <- tibble(
 plot_percentvar_rlog <- 
   ggplot(data = propvar_rlog_df, 
          aes(x = PC, y = prop_var)) +
-  geom_col(fill = "blue") +
+  geom_col(fill = "grey20") +
   scale_x_continuous("principal component",
                      limits = c(0.4,10.6), 
                      # hack limits to include the bars and a little space.
@@ -179,6 +255,10 @@ plot_percentvar_rlog <-
                      expand = c(0,0)) + 
   scale_y_continuous("prop. of variance", expand = c(0,0))
 plot_percentvar_rlog
+
+ggsave(
+  here("results/figures/percentvar_rlog.png"), width = 3, height = 2, dpi = 1000
+)
 ```
 
 ## Plot PC1 vs PC2 with default values
@@ -186,45 +266,101 @@ plot_percentvar_rlog
 EDIT: the colour and other aesthetics may need to be edited to highlight features of the data
 
 ```{r plot_PC12_default, fig.height=5, fig.width=6, eval = FALSE}
-ggplot(data = pcdf_rlog,
+ggplot(data = pcdf_rlog_df,
        aes(colour = interaction(Temperature,Media), 
            shape = FLC1)
        ) +
-  scale_shape_manual(values = c(2, 20)) +
-  scale_colour_brewer("Temp., Media", 
-                      type = "qual", palette = 2) + 
-  geom_point(aes(x = PC1, y = PC2))
+  scale_shape_manual(values = c(20, 2)) +
+  scale_color_manual("Temp., Media", values = c("darkblue","cornflowerblue", "red3", "orange", "darkolivegreen")) +
+  #scale_colour_brewer("Temp., Media", 
+   #                   type = "qual", palette = 7) + 
+  geom_point(aes(x = PC1, y = PC2), size = 3) + 
+  xlab("PC1, 64.8% var.") + 
+  ylab("PC2, 11.6% var.")
+
+#ggsave(
+ # here("results/figures/PC1vsPC2.png"), width = 5.5, height = 2.5, dpi = 1000
+  #)
 ```
 
 ## Plot PC1 vs PC2, 3, 4, also with default values
 
-```{r plot_PC1234_text, fig.height=8, fig.width=8}
+```{r plot_PC1234_text, fig.height=10, fig.width=8}
+
+Design_tbl <- tibble(
+  FLCstatus = rep(c("*FLC1*", "*flc1*∆"), each = 5),
+  Condition = rep(c("30°C\nYPD\n \n ", "37°C\nYPD\n \n ", "37°C\nYPD\n+ CFW\n ", "37°C\nYPD\n+ EGTA\n ", "37°C\nYPD\n+ CFW\n+ EGTA"), times = 2)
+) %>% 
+  mutate(Condition = factor(Condition, levels = c("30°C\nYPD\n \n ", "37°C\nYPD\n \n ", "37°C\nYPD\n+ CFW\n ", "37°C\nYPD\n+ EGTA\n ", "37°C\nYPD\n+ CFW\n+ EGTA")),
+         FLCstatus = factor(FLCstatus, levels = rev(c("*FLC1*", "*flc1*∆"))))
+
+
+Design_plot <- ggplot(data = Design_tbl, aes(y = FLCstatus, x = Condition)) +
+  scale_x_discrete(position = 'top') +
+  #ggtitle(expression(underline('     3 hr, 180 rpm    '))) +
+  theme(axis.text.y = element_markdown(),
+        plot.title = element_text(hjust = 0.5, face = "plain", size = 12),
+        axis.text.x = element_text(hjust=1),
+        axis.title = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(), 
+        legend.position = "none")
+
 # This could be wraped in a function
 pc_baseplot <- 
-  ggplot(data = pcdf_rlog,
+  ggplot(data = pcdf_rlog_df,
        aes(colour = interaction(Temperature,Media), 
            shape = FLC1)
        ) +
-  scale_shape_manual(values = c(2, 20)) +
-  scale_colour_brewer("Temp., Media", 
-                      type = "qual", palette = 2) + 
+  scale_shape_manual(values = c(20, 2)) +
+  scale_color_manual("Temp., Media", values = c("darkblue","cornflowerblue", "red3", "orange", "darkolivegreen")) +
+  #scale_colour_brewer("Temp., Media", 
+   #                   type = "qual", palette = 2) + 
   geom_hline(yintercept = 0, size = 0.5, colour = "grey80") +
   geom_vline(xintercept = 0, size = 0.5, colour = "grey80") +
   theme(legend.position = "none")
 
-pcplot_12 <- pc_baseplot + geom_point(aes(x = PC1, y = PC2))
-pcplot_13 <- pc_baseplot + geom_point(aes(x = PC1, y = PC3))
-pcplot_14 <- pc_baseplot + geom_point(aes(x = PC1, y = PC4))
-pcplot_23 <- pc_baseplot + geom_point(aes(x = PC2, y = PC3))
-pcplot_24 <- pc_baseplot + geom_point(aes(x = PC2, y = PC4))
-pcplot_34 <- pc_baseplot + geom_point(aes(x = PC3, y = PC4))
+pcplot_12 <- pc_baseplot + geom_point(aes(x = PC1, y = PC2), size = 3) + xlab("PC1, 64.8% var.") + ylab("PC2, 11.6% var.")
+pcplot_13 <- pc_baseplot + geom_point(aes(x = PC1, y = PC3), size = 3) + xlab("PC1, 64.8% var.") + ylab("PC3, 6.3% var.")
+#pcplot_14 <- pc_baseplot + geom_point(aes(x = PC1, y = PC4))
+pcplot_23 <- pc_baseplot + geom_point(aes(x = PC2, y = PC3), size = 3) + xlab("PC2, 11.6% var.") + ylab("PC3, 6.3% var.")
+#pcplot_24 <- pc_baseplot + geom_point(aes(x = PC2, y = PC4))
+#pcplot_34 <- pc_baseplot + geom_point(aes(x = PC3, y = PC4))
 
-pcplot_legend <- get_legend(pcplot_12 + theme(legend.position = "right", legend.margin = margin(t = 0, r = 0, b = 20, l = 40, unit = "pt")))
+pcplot_legend <- get_legend(
+  pcplot_12 + 
+    theme(legend.position = "right", legend.margin = margin(t = 0, r = 0, b = 20, l = 40, unit = "pt"),
+          legend.spacing.y = unit(0.0, 'cm'),
+          legend.text = element_markdown()) + 
+  guides(shape = guide_legend("FLC1 gene", order=2),
+         colour = guide_legend(order=1))
+)
 
-plot_grid(pcplot_12, pcplot_legend, plot_percentvar_rlog,
-          pcplot_13, pcplot_23, NULL, 
-          pcplot_14, pcplot_24, pcplot_34,
-          axis = "tblr", align = "hv")
+
+grid <-plot_grid(Design_plot, plot_percentvar_rlog, rel_widths = c(1, 0.6), axis = 'b', align = "h")
+
+grid2 <- plot_grid(
+          pcplot_12, pcplot_legend,
+          pcplot_13, pcplot_23)
+
+grid3 <- plot_grid(
+  grid,
+  grid2,
+  rel_heights = c(1, 3),
+  axis = "lr",
+  ncol = 1
+)
+
+plot_grid(grid, NULL, 
+          pcplot_12, pcplot_legend,
+          pcplot_13, pcplot_23,
+          axis = "tblr", align = "hv",
+          rel_heights = c(1.5, 2, 2, 1.5, 2, 2),
+          ncol = 2)
+
+ggsave(
+  here("results/figures/PC1vsPC2vsPC3.png"), width = 8, height = 8, dpi = 1000
+)
 ```
 
 # Session Info

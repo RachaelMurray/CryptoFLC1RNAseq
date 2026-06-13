@@ -41,6 +41,7 @@ dds_WTvsdelta_37C_YPD <-
 
 dds_WTvsdelta_37C_YPD
 ```
+
 ```{r results_WTvsdelta_37C_YPD}
 results(dds_WTvsdelta_37C_YPD)
 
@@ -102,6 +103,9 @@ Print the top 20 *named* DEGs
 DEGdf_WT_down2x_FDR5 %>%
   dplyr::filter(!is.na(geneName)) %>%
   print(n = 20)
+
+plot_labels_down <- DEGdf_WT_down2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName))
 ```
 
 ## Volcano plot of DEGs
@@ -115,12 +119,13 @@ volcano_WTvsdelta_37C_YPD <-
              size = 1, colour = "darkblue") +
   geom_point(data = DEGdf_WT_down2x_FDR5,
              size = 1, colour = "darkred") +
+  #geom_text_repel(data = plot_labels_down, aes(label = geneName), size = 3, colour = "darkred") + 
   scale_y_continuous("-log10(p)",
                      limits = c(0,20), expand = c(0,0),
                      oob=scales::squish) +
   scale_x_continuous("log2 fold-change, WT vs FLC1∆, YPD 37°C",
                      breaks = -5:5,
-                     limits = c(-4,4), expand = c(0.01,0.01),
+                     limits = c(-5,5), expand = c(0.01,0.01),
                      oob = scales::squish) +
   coord_cartesian(clip = "off") 
 volcano_WTvsdelta_37C_YPD

@@ -1,0 +1,294 @@
+---
+title: "RM_thesis_DEGs_literature_comparison"
+author: "Rachael Murray"
+date: "2025-05-05"
+output: html_document
+---
+
+ 
+```{r call_load_count_data, child = "load_count_data.Rmd"}
+```
+
+```{r}
+library(GeneOverlap)
+```
+
+
+Open results from differential gene expression analysis. 
+```{r Open DEseq results from FLC1 vs flc1∆ at 30°C and 37°C}
+# FLC1 vs flc1∆ in YPD at 30°C 
+deseq_df_WTvsdelta_30C_YPD <- read_tsv(
+ file = here::here("results", "DEGs",
+                              "deseq_df_WTvsdelta_30C_YPD.txt"))
+# Number up in flc1∆ at 30°C 
+DEGs_down_30 <- deseq_df_WTvsdelta_30C_YPD %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     arrange(log2FC)
+# Number up in FLC1 at 30°C %>% 
+DEGs_up_30 <- deseq_df_WTvsdelta_30C_YPD %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     arrange(log2FC)
+  
+# FLC1 vs flc1∆ in YPD at 37°C 
+deseq_df_WTvsdelta_37C_YPD <- read_tsv(
+ file = here::here("results", "DEGs",
+                              "deseq_df_WTvsdelta_37C_YPD.txt"))
+
+# Number up in flc1∆ at 37°C 
+DEGs_down_37 <- deseq_df_WTvsdelta_37C_YPD %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     arrange(log2FC)
+
+# Number up in FLC1 at 37°C %>% 
+DEGs_up_37 <- deseq_df_WTvsdelta_37C_YPD %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     arrange(log2FC)
+
+# FLC1 vs flc1∆ in YPD + EGTA at 37°C 
+deseq_df_WTvsdelta_37C_EGTA <- read_tsv(
+ file = here::here("results", "DEGs",
+                              "deseq_df_WTvsdelta_37C_EGTA.txt"))
+
+# Number up in flc1∆ YPD + EGTA at 37°C 
+DEGs_down_37_EGTA <- deseq_df_WTvsdelta_37C_EGTA %>% 
+                     dplyr::filter(log2FC < -1, padj < 0.05) %>% 
+                     arrange(log2FC)
+
+# Number up in FLC1 YPD + EGTA at 37°C %>% 
+DEGs_up_37_EGTA <- deseq_df_WTvsdelta_37C_EGTA %>% 
+                     dplyr::filter(log2FC > 1, padj < 0.05) %>% 
+                     arrange(log2FC)
+```
+
+
+gene_info_df <- 
+  here::here("input", "annotation",
+             "H99_geneinfo_FungiDB59.txt") %>%
+  readr::read_tsv(comment = "#")  %>% 
+  dplyr::rename(gene = GeneID, geneName = GeneName)
+
+
+```{r fig.height=6, fig.width=12}
+# Open DEGs list from Chow et al. 2017 (thermal stress only)
+Crz1Cna1 <- read_csv(
+  here("Chow2017_Crz1_Cna1_targets/Chow2017_DEG_summary_log2foldchange.csv")
+) %>% 
+  mutate(gene = case_when(nchar(gene) == 4 ~ paste("CNAG_0", gene, sep = ""),
+                            nchar(gene) == 3 ~ paste("CNAG_00", gene, sep = ""),
+                            nchar(gene) == 2 ~ paste("CNAG_000", gene, sep = ""),
+                            nchar(gene) == 1 ~ paste("CNAG_0000", gene, sep = "")))
+# Turn into lists of genes
+flc1_delta_DEGs_37 <- bind_rows(DEGs_down_37, DEGs_up_37) %>% 
+                      .$gene
+
+flc1_delta_DEGs_30 <- bind_rows(DEGs_down_30, DEGs_up_30) %>% 
+                      .$gene
+
+cna1_delta_DEGs_down <- Crz1Cna1 %>% 
+                   filter(cna1 == "yes") %>% 
+                   filter(log2_foldchange < 0) %>%
+                   select(gene) %>% 
+                   unique() %>% 
+                   .$gene
+
+crz1_delta_DEGs_down <- Crz1Cna1 %>% 
+                   filter(crz1 == "yes") %>% 
+                   filter(log2_foldchange < 0) %>%
+                   select(gene) %>% 
+                   unique() %>%  
+                   .$gene
+
+cna1_delta_DEGs_up <- Crz1Cna1 %>% 
+                   filter(cna1 == "yes") %>% 
+                   filter(log2_foldchange > 0) %>%
+                   select(gene) %>% 
+                   unique() %>% 
+                   .$gene
+
+crz1_delta_DEGs_up <- Crz1Cna1 %>% 
+                   filter(crz1 == "yes") %>% 
+                   filter(log2_foldchange > 0) %>%
+                   select(gene) %>% 
+                   unique() %>%  
+                   .$gene
+                  
+
+euler_list_cna1 <- list( 
+  'Up *flc1*∆, 30°C' = DEGs_down_30 %>% .$gene,
+  'Up *flc1*∆, 37°C' = DEGs_down_37 %>% .$gene, 
+  'Down *cna1*∆, 37°C' = cna1_delta_DEGs_down)
+
+# Create the euler plot
+euler_plot_cna1 <- plot(
+  euler(euler_list_cna1), 
+  quantities = TRUE, 
+  legend = F,
+  label = F,
+  fills = c("grey95", "grey75", "lightblue"),
+  ) 
+
+euler_plot_cna1
+
+
+euler_list_crz1 <- list( 
+  'Up *flc1*∆, 30°C' = DEGs_down_30 %>% .$gene,
+  'Up *flc1*∆, 37°C' = DEGs_down_37 %>% .$gene, 
+  'Down *crz1*∆, 37°C' = crz1_delta_DEGs_down)
+
+# Create the euler plot
+euler_plot_crz1 <- plot(
+  euler(euler_list_crz1), 
+  quantities = TRUE, 
+  legend = F,
+  label = F,
+  fills = c("grey95", "grey75", "orange")
+  ) 
+
+euler_plot_crz1
+
+
+euler_legend <- tibble(
+DEGs = c('Up *flc1*∆<br>30°C', 'Up *flc1*∆<br>37°C', 'Down *cna1*∆<br>37°C (Chow et al. 2017)', 'Down *crz1*∆<br>37°C (Chow et al. 2017)'),
+fill_colour = c("grey95", "grey75", "lightblue", "orange2")
+) %>% 
+  mutate(DEGs = factor(DEGs, levels = c('Up *flc1*∆<br>30°C', 'Up *flc1*∆<br>37°C', 'Down *cna1*∆<br>37°C (Chow et al. 2017)', 'Down *crz1*∆<br>37°C (Chow et al. 2017)')))
+  
+
+legend_plot <- ggplot(data = euler_legend, aes(x = DEGs, y = DEGs, colour = DEGs)) + 
+  geom_point(aes(fill = DEGs), shape = 21, colour = "black", size = 5, stroke = .5) + 
+  scale_fill_manual(values = c("grey95", "grey75", "lightblue", "orange2")) +
+  guides(colour = guide_legend(override.aes = list(size = 6))) + 
+  theme(legend.title = element_blank(),
+        legend.text = element_markdown(size = 14), 
+        legend.key.spacing.y = unit(0.5, "cm"))
+  
+legend_only <- get_legend(legend_plot)       
+         
+plot_grid(
+  euler_plot_cna1, 
+  euler_plot_crz1,
+  nrow = 1,
+  scale = 0.9
+  
+)
+
+plot_grid(
+  euler_plot_cna1, 
+  legend_only, 
+  euler_plot_crz1,
+  NULL,
+  nrow = 2,
+  scale = 1
+  
+)
+         
+
+ggsave(here("results", "figures", "Crz1_Cna1_overlap3.png"), width = 6, height = 4, dpi = 1200)
+```
+```{r}
+X <-   Crz1Cna1 %>% 
+                   filter(cna1 == "yes") %>% 
+                   filter(log2_foldchange < 0) %>%
+                   select(gene) %>% 
+                   unique() %>% 
+  filter(gene %in% DEGs_down_30$gene, gene %in% DEGs_down_37$gene) 
+
+
+write_csv(X, here("Chow2017_Crz1_Cna1_targets/common_genes_cna1_flc1.csv"))
+```
+
+
+```{r}
+Cna1Crz1List <- list(cna1_delta_DEGs_down, crz1_delta_DEGs_down)
+names(Cna1Crz1List) <- c('Cna1', 'Crz1')
+
+FLC1list <- list(DEGs_down_37 %>% .$gene , DEGs_down_30 %>% .$gene)
+names(FLC1list) <- c('Flc137', 'Flc130')
+
+
+
+gom.obj <- newGOM(Cna1Crz1List, FLC1list,
+                   genome.size=8338)
+drawHeatmap(gom.obj)
+ 
+print(gom.obj)
+ 
+```
+
+```{r}
+library(readxl)
+pka1 <- read_xlsx(here("/Users/s1427471/Downloads/tmcb_a_12275103_sm0001.xlsx")) %>% 
+  mutate(fold.change = exp(ln.fold.change)) %>% 
+  mutate(log2FC_pka1 = log2(fold.change)) %>% 
+  dplyr::rename(gene = locus) %>% 
+  select(gene, log2FC_pka1)
+
+
+pka1_down <- pka1 %>% filter(log2FC_pka1 >1) %>% 
+  .$gene
+
+hist(pka1$log2FC_pka1)
+
+B <- deseq_df_WTvsdelta_30C_YPD %>% 
+  left_join(pka1) 
+
+ggplot(B, aes(x = log2FC, y = log2FC_pka1)) + 
+  geom_point()
+
+
+
+
+euler_list_pka1 <- list( 
+  'Up *flc1*∆, 30°C' = DEGs_down_30 %>% .$gene,
+  'Up *flc1*∆, 37°C' = DEGs_down_37 %>% .$gene, 
+  'Down *pka1*∆' = pka1_down)
+
+
+euler_plot_pka1 <- plot(
+  euler(euler_list_pka1), 
+  quantities = TRUE, 
+  legend = F,
+  label = F,
+  fills = c("grey95", "grey75", "orange2")
+  ) 
+
+euler_plot_pka1
+
+
+
+euler_list_cna1 <- list( 
+  'Up *flc1*∆, 30°C' = DEGs_down_30 %>% .$gene,
+  'Up *flc1*∆, 37°C' = DEGs_down_37 %>% .$gene, 
+  'Up *cna1*∆, 37°C' = cna1_delta_DEGs_up)
+
+# Create the euler plot
+euler_plot_cna1 <- plot(
+  euler(euler_list_cna1), 
+  quantities = TRUE, 
+  legend = F,
+  label = F,
+  fills = c("grey95", "grey75", "lightblue"),
+  ) 
+
+euler_plot_cna1
+
+
+
+euler_list_crz1 <- list( 
+  'Up *flc1*∆, 30°C' = DEGs_down_30 %>% .$gene,
+  'Up *flc1*∆, 37°C' = DEGs_down_37 %>% .$gene, 
+  'Up *crz1*∆, 37°C' = crz1_delta_DEGs_up)
+
+# Create the euler plot
+euler_plot_crz1 <- plot(
+  euler(euler_list_crz1), 
+  quantities = TRUE, 
+  legend = F,
+  label = F,
+  fills = c("grey95", "grey75", "orange2")
+  ) 
+
+euler_plot_crz1
+
+```
+

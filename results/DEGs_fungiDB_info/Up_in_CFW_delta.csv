@@ -1,0 +1,55 @@
+Gene ID,Input Order,Product Description,Interpro ID,Interpro Description,Protein Length,CDS Length,Transcript Product Description,Curated GO Processes,Curated GO Functions,Curated GO Components,Computed GO Processes,Computed GO Functions,Computed GO Components,PFam Description,PFam ID,Gene Name or Symbol
+CNAG_02155,1,hypothetical protein,N/A,N/A,486,1461,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_04890,2,hypothetical protein,IPR002710,Dilute domain,469,1410,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,Dilute domain,PF01843,N/A
+CNAG_01873,3,hypothetical protein,N/A,N/A,266,801,hypothetical protein,N/A,N/A,N/A,N/A,N/A,integral component of membrane,N/A,N/A,N/A
+CNAG_03833,4,hypothetical protein,N/A,N/A,418,1257,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_02744,5,hypothetical protein,N/A,N/A,660,1983,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_01368,6,"hypothetical protein, variant, hypothetical protein",N/A,N/A,445,1338,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_07840,7,hypothetical protein,N/A,N/A,92,279,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_05381,8,"myo-inositol transporter, putative",IPR003663;IPR005828;IPR005829;IPR036259,"Sugar/inositol transporter;Major facilitator,  sugar transporter-like;Sugar transporter, conserved site;MFS transporter superfamily",590,1773,"myo-inositol transporter, putative",N/A,N/A,N/A,transmembrane transport,transmembrane transporter activity,integral component of membrane;membrane,"Major facilitator,  sugar transporter-like",PF00083,ITR3C
+CNAG_04623,9,hypothetical protein,N/A,N/A,300,903,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_04626,10,hypothetical protein,N/A,N/A,1179,3540,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_00813,11,hypothetical protein,N/A,N/A,573,1722,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_01601,12,lipase,IPR002921;IPR029058,Fungal lipase-like domain;Alpha/Beta hydrolase fold,529,1590,lipase,N/A,N/A,N/A,lipid metabolic process,N/A,N/A,Fungal lipase-like domain,PF01764,N/A
+CNAG_01252,13,thiosulfate/3-mercaptopyruvate sulfurtransferase,IPR001763;IPR036873,Rhodanese-like domain;Rhodanese-like domain superfamily,340,1023,thiosulfate/3-mercaptopyruvate sulfurtransferase,N/A,N/A,N/A,N/A,transferase activity,N/A,Rhodanese-like domain,PF00581,N/A
+CNAG_05021,14,"hypothetical protein, variant, hypothetical protein",IPR009784,Protein of unknown function DUF1349,231,696,"hypothetical protein, variant",N/A,N/A,N/A,N/A,N/A,N/A,Protein of unknown function DUF1349,PF07081,N/A
+CNAG_05168,15,"hypothetical protein, hypothetical protein, variant",IPR008397;IPR008929,Alginate lyase domain;Chondroitin AC/alginate lyase,211,636,hypothetical protein,N/A,N/A,N/A,N/A,lyase activity,periplasmic space,Alginate lyase domain,PF05426,N/A
+CNAG_05032,16,hypothetical protein,N/A,N/A,443,1332,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_02044,17,hypothetical protein,N/A,N/A,110,333,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_03002,18,hypothetical protein,N/A,N/A,164,495,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_05738,19,hypothetical protein,N/A,N/A,355,1068,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_03076,20,hypothetical protein,N/A,N/A,569,1710,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_01795,21,hypothetical protein,N/A,N/A,980,2943,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_02169,22,hypothetical protein,N/A,N/A,445,1338,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_04509,23,hypothetical protein,N/A,N/A,378,1137,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_06105,24,hypothetical protein,N/A,N/A,1037,3114,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_05736,25,hypothetical protein,N/A,N/A,307,924,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_07436,26,hypothetical protein,N/A,N/A,187,564,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_04837,27,bHLH family transcription factor,IPR011598;IPR036638,"Myc-type, basic helix-loop-helix (bHLH) domain;Helix-loop-helix DNA-binding domain superfamily",551,1656,bHLH family transcription factor,heat acclimation;melanin biosynthetic process;negative regulation of capsule organization;regulation of urease activity;response to diamide;response to tunicamycin,N/A,N/A,N/A,protein dimerization activity,N/A,"Myc-type, basic helix-loop-helix (bHLH) domain",PF00010,MLN1
+CNAG_02691,28,hypothetical protein,IPR003103;IPR036533,BAG domain;BAG domain superfamily,420,1263,hypothetical protein,N/A,N/A,N/A,N/A,chaperone binding,N/A,BAG domain,PF02179,N/A
+CNAG_00054,29,hypothetical protein,IPR010686,Oil body-associated protein-like,235,708,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,Oil body-associated protein-like,PF06884,N/A
+CNAG_02968,30,"Phosphatidylinositol-specific phospholipase C, putative",IPR000909;IPR017946,"Phosphatidylinositol-specific phospholipase C, X domain;PLC-like phosphodiesterase, TIM beta/alpha-barrel domain superfamily",430,1293,"Phosphatidylinositol-specific phospholipase C, putative",N/A,N/A,N/A,lipid metabolic process,phosphoric diester hydrolase activity,N/A,N/A,N/A,PLC2
+CNAG_01542,31,taurine catabolism dioxygenase TauD,IPR003819,TauD/TfdA-like domain,448,1347,taurine catabolism dioxygenase TauD,N/A,N/A,N/A,obsolete oxidation-reduction process,dioxygenase activity;oxidoreductase activity,N/A,TauD/TfdA-like domain,PF02668,N/A
+CNAG_01194,32,hypothetical protein,N/A,N/A,269,810,hypothetical protein,N/A,N/A,N/A,N/A,N/A,integral component of membrane,N/A,N/A,N/A
+CNAG_01862,33,hexose transporter,IPR003663;IPR005828;IPR005829;IPR036259,"Sugar/inositol transporter;Major facilitator,  sugar transporter-like;Sugar transporter, conserved site;MFS transporter superfamily",519,1560,hexose transporter,N/A,N/A,N/A,transmembrane transport,transmembrane transporter activity,integral component of membrane;membrane,"Major facilitator,  sugar transporter-like",PF00083,N/A
+CNAG_07843,34,hypothetical protein,N/A,N/A,116,351,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_00242,35,hypothetical protein,N/A,N/A,186,561,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_00269,36,Sorbitol dehydrogenase,IPR002328;IPR011032;IPR013149;IPR013154;IPR036291,"Alcohol dehydrogenase, zinc-type, conserved site;GroES-like superfamily;Alcohol dehydrogenase, C-terminal;Alcohol dehydrogenase, N-terminal;NAD(P)-binding domain superfamily",416,1251,Sorbitol dehydrogenase,N/A,N/A,N/A,obsolete oxidation-reduction process,oxidoreductase activity;zinc ion binding,N/A,"Alcohol dehydrogenase, C-terminal;Alcohol dehydrogenase, N-terminal",PF00107;PF08240,N/A
+CNAG_05387,37,galactose transporter,IPR003663;IPR005828;IPR005829;IPR036259,"Sugar/inositol transporter;Major facilitator,  sugar transporter-like;Sugar transporter, conserved site;MFS transporter superfamily",550,1653,galactose transporter,N/A,N/A,N/A,transmembrane transport,transmembrane transporter activity,integral component of membrane;membrane,"Major facilitator,  sugar transporter-like",PF00083,N/A
+CNAG_03233,38,"yippee-like, putative",IPR004910;IPR039058,Yippee/Mis18/Cereblon;Yippee family,134,405,"yippee-like, putative",filamentous growth,N/A,N/A,N/A,metal ion binding,N/A,Yippee/Mis18/Cereblon,PF03226,N/A
+CNAG_07493,39,hypothetical protein,N/A,N/A,350,1053,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_05662,40,Polyol transporter protein 1,IPR003663;IPR005828;IPR005829;IPR036259,"Sugar/inositol transporter;Major facilitator,  sugar transporter-like;Sugar transporter, conserved site;MFS transporter superfamily",631,1896,Polyol transporter protein 1,N/A,N/A,N/A,carbohydrate transport;transmembrane transport,transmembrane transporter activity,integral component of membrane;membrane,"Major facilitator,  sugar transporter-like",PF00083,PTP1
+CNAG_05031,41,3-oxoacid CoA-transferase,IPR004165;IPR012791;IPR012792;IPR014388;IPR037171,"Coenzyme A transferase family I;3-oxoacid CoA-transferase, subunit B;3-oxoacid CoA-transferase, subunit A;3-oxoacid CoA-transferase;NagB/RpiA transferase-like",561,1686,3-oxoacid CoA-transferase,N/A,N/A,N/A,ketone body catabolic process,3-oxoacid CoA-transferase activity;CoA-transferase activity,mitochondrion,Coenzyme A transferase family I,PF01144,N/A
+CNAG_03782,42,hypothetical protein,N/A,N/A,191,576,hypothetical protein,cellular response to heat,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_05547,43,hypothetical protein,N/A,N/A,507,1524,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_07755,44,"hypothetical protein, hypothetical protein, variant 1, hypothetical protein, variant 2",N/A,N/A,83,252,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_00537,45,Carnitine O-acetyltransferase,IPR000542;IPR039551,Acyltransferase ChoActase/COT/CPT;Choline/carnitine acyltransferase domain,630,1893,Carnitine O-acetyltransferase,N/A,N/A,N/A,N/A,acyltransferase activity,N/A,Choline/carnitine acyltransferase domain,PF00755,N/A
+CNAG_02706,46,hypothetical protein,N/A,N/A,328,987,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_03234,47,"cell wall surface anchor protein, cell wall surface anchor protein, variant",N/A,N/A,1078,3237,cell wall surface anchor protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_03650,48,hypothetical protein,N/A,N/A,67,204,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_05310,49,nipsnap family protein,IPR011008;IPR012577,Dimeric alpha-beta barrel;NIPSNAP,323,972,nipsnap family protein,N/A,N/A,N/A,N/A,N/A,N/A,NIPSNAP,PF07978,N/A
+CNAG_00864,50,"myo-inositol transporter, putative",IPR003663;IPR005828;IPR005829;IPR036259,"Sugar/inositol transporter;Major facilitator,  sugar transporter-like;Sugar transporter, conserved site;MFS transporter superfamily",555,1668,"myo-inositol transporter, putative",N/A,N/A,N/A,transmembrane transport,transmembrane transporter activity,integral component of membrane;membrane,"Major facilitator,  sugar transporter-like",PF00083,ITR2
+CNAG_02872,51,hypothetical protein,N/A,N/A,76,231,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_00080,52,hypothetical protein,N/A,N/A,484,1455,hypothetical protein,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_00937,53,"hypothetical protein, hypothetical protein, variant 2, hypothetical protein, variant 1",N/A,N/A,490,1473,"hypothetical protein, variant 1",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CNAG_04947,54,"high-affinity nicotinic acid transporter, high-affinity nicotinic acid transporter, variant 2, high-affinity nicotinic acid transporter, variant 1",IPR011701;IPR036259,Major facilitator superfamily;MFS transporter superfamily,355,1068,high-affinity nicotinic acid transporter,N/A,N/A,N/A,transmembrane transport,transmembrane transporter activity,integral component of membrane,Major facilitator superfamily,PF07690,N/A

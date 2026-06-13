@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+        <title>FungiDB</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="/fungidb/images/FungiDB/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
+    <script>
+            window.__asset_path_remove_me_please__ = "/fungidb/bundles/";
+
+            window.__SITE_CONFIG__ = {
+                requireLogin: "true" === "true",
+        rootElement: "#wdk-container",
+        rootUrl: "/fungidb/app",
+        endpoint: "/fungidb/service",
+        projectId: "FungiDB",
+        webAppUrl: "/fungidb",
+        facebookUrl: "https://facebook.com/pages/FungiDB/169472636469487",
+        twitterUrl: "https://twitter.com/VEuPathDB",
+        twitterUrl2: "https://twitter.com/FungiDB",
+        youtubeUrl: "https://youtube.com/user/EuPathDB/playlists",
+        discordUrl: "",
+        linkedinUrl: "https://www.linkedin.com/company/veupathdb/",
+        redditUrl: "https://www.reddit.com/r/BRC_users/",
+        vimeoUrl: "",
+        blueskyUrl: "https://veupathdb.bsky.social",
+        communitySite: "//static-content.veupathdb.org/",
+        siteSearchServiceUrl: "/site-search",
+                useEda: "true" === "true",
+        edaExampleAnalysesAuthor: "1926010",
+        edaServiceUrl: "/eda",
+                edaEnableFullScreenApps: "true" === "true",
+                        useUserDatasetsWorkspace: "true" === "true",
+        communityDatasetsEnabled: "true" === "False",
+        showExtraMetadata: "",
+        datasetImportUrl: "/dataset-import",
+        userDatasetsUploadTypes: "genelist,bigwigfiles,rnaseq",
+                showUnreleasedData: "true" === "False",
+                vdiServiceUrl: "/vdi",
+                      };
+    </script>
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-T5LY8KEW92"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-T5LY8KEW92');
+      </script>                    <script charset="utf8" src="/fungidb/bundles/site-client.bundle-c4e494a42767525fab31030b5ce521d7.js" ></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/fungidb/bundles/site-client.bundle-c4e494a42767525fab31030b5ce521d7.css"/>
+  </head>
+    <body class="vpdb-Body">
+    <div class="main-stack">
+      <div id="wdk-container">
+                  Loading...
+              </div>
+    </div>            <script>
+        ((window.gitter = {}).chat = {}).options = {
+          room: 'VEuPathDB-genomic/community'
+        };
+        document.addEventListener(
+          'gitter-sidecar-instance-started', 
+          function gitterSidecarHack() {
+            const gitterBtn = document.querySelector('.gitter-open-chat-button');
+            const gitterAside = document.querySelector('.gitter-chat-embed');
+
+            // we want to hide the aside and any loading indicators when button is clicked
+            gitterAside.style.display = 'none';
+            document.querySelector('.gitter-chat-embed-loading-wrapper').style.display = 'none';
+
+            if (gitterBtn.baseURI.includes('embed-record')) {
+              gitterBtn.style.display = 'none';
+            }
+
+            gitterBtn.addEventListener(
+              'click', 
+              function openGitterInNewTab(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                window.open('https://app.gitter.im/#/room/#VEuPathDB-genomic_community:gitter.im', "VEuPathDBGitterForum");
+              }, 
+              true
+            );
+
+            gitterAside.addEventListener(
+              'gitter-chat-toggle', 
+              function keepGitterBtnVisible() {
+                // we want the chat button to remain visible when clicked
+                gitterBtn.classList.remove('is-collapsed');
+              }
+            )
+          }
+        );
+        // Prioritize loading application data over this script
+        setTimeout(2000, function loadSideCar() {
+          const scriptTag = document.createElement('script');
+          scriptTag.src = 'https://cdn.jsdelivr.net/npm/gitter-sidecar@1.5.0/dist/sidecar.min.js';
+          document.head.appendChild(scriptTag);
+        });
+      </script>  </body>
+</html>

@@ -1,0 +1,368 @@
+---
+title: "RM_thesis_TPM_plots"
+author: "Rachael Murray"
+date: "2025-07-08"
+output: html_document
+---
+
+In this document I take the 
+
+
+```{r load_samplesheet}
+sample_sheet <- 
+  here::here("input", "experiment","CryptoRNAseqFLC1SampleKey.csv") %>%
+  read_csv() %>%
+  select(!Strain) %>%
+  mutate(FLC1 = factor(FLC1, 
+                       levels = c("WT", "delta"),
+                       labels = c("*FLC1*", "*flc1*∆")),
+         Condition = paste(Media, "_", Temperature, sep = ""),
+         BioRep = as.character(BioRep)
+  ) %>% 
+  mutate(Condition = factor(Condition, 
+                            levels = c("YPD_30", "YPD_37", "YPD_CFW_37", "YPD_EGTA_37", "YPD_CFW_EGTA_37"),
+                            labels = c("YPD\n30°C", "YPD\n37°C", "YPD+\nCFW\n37°C", "YPD+\nEGTA\n37°C", "YPD+\nCFW\n+EGTA\n37°C")),
+         BioRep = paste("BioRep", BioRep)
+  )
+
+
+sample_sheet
+```
+
+```{r load counts data}
+counts_bygene_wide <- 
+  here::here("results","counts", "counts.txt") %>%
+  read_tsv(comment = "#")
+
+counts_bygene_wide
+```
+
+```{r make_tidy_counts, dependson = "load_counts"}
+# Calculate TPM and combine with sample sheet 
+counts_bygene_long <- counts_bygene_wide %>%
+    select(-Chr,-Start,-End,-Strand,-Length) %>%
+    pivot_longer(ends_with(".bam"), names_to = "SampleID", values_to = "Count") %>%
+    mutate(SampleID = as.numeric(word(SampleID, 2, sep = "_"))) %>%
+    group_by(SampleID) %>%
+    mutate(TPM = calculate_cpm(Count, round_digits = 2)) %>%
+    ungroup() %>%
+    left_join(sample_sheet, by = "SampleID") %>%
+    select(SampleID, SampleName, FLC1, Condition, Media, Temperature, BioRep, Geneid, Count, TPM) %>%
+    arrange(Geneid, FLC1, Condition, Media, Temperature, BioRep)
+
+counts_bygene_long
+```
+
+```{r Get mean TPM of bioreps}
+mean_df <- counts_bygene_long %>% 
+  group_by(Condition, FLC1, Geneid) %>% 
+  summarise(mean= mean(TPM),
+            sd = sd(TPM),
+            se = sd(TPM)/sqrt(n())) %>% 
+  dplyr::rename("gene" = "Geneid") %>% 
+  left_join(gene_info_df) %>% 
+  mutate(label = case_when(is.na(geneName) ~ gene,
+                           .default = paste(gene, geneName))
+         ) 
+
+mean_df
+```
+
+
+
+```{r plot_my_gene, dependson = "make_tidy_counts"}
+plot_my_genes_TPM <- function(mygenes = "CNAG_06125",
+                              mydata = counts_bygene_long,
+                              mycondition = c("YPD", "YPD_EGTA", "YPD_CFW"),
+                              mytemperature = c(30, 37)){
+    ggplot(data = filter(mydata, 
+                         Geneid %in% mygenes,
+                         Condition %in% mycondition),
+                         aes(x = Condition, y = TPM, colour = FLC1)) +
+        geom_point(aes(shape = BioRep), size = 1, alpha = 0.7) +
+        stat_summary(aes(group=FLC1), fun.min="mean",fun.max="mean",
+                     geom="errorbar",linewidth=1,width=0.4) +  
+        guides(shape = guide_legend(override.aes = list(size = 1, alpha = 1)),
+               color = guide_legend(override.aes = list(linetype = 1, shape = NA))) +
+        #scale_y_log10() +
+        theme(axis.title.x=element_blank()) + 
+        facet_grid(.~Geneid) 
+}
+
+
+plot_my_genes_TPM
+```
+
+
+```{r}
+### Open select groups of genes 
+geneGroups <- read_csv(
+  here("results/gene_info/genes_to_highlight.csv")
+) %>% 
+  mutate(plot_title = case_when(is.na(geneName) ~ paste(geneNameLong, gene, sep = "\n"),
+                                .default = paste(geneNameLong, geneName, sep = "\n"))
+  ) %>% 
+  dplyr::rename('Geneid' = 'gene')
+```
+
+```{r  fig.width = 8, fig.height=9.5}
+Chitin_genes <- geneGroups %>% 
+  left_join(counts_bygene_long) %>%
+  filter(geneGroupSpecific %in% c("chitin_synthase", "chitin_deacetylase", "chitinase"))
+
+chitin_levels <- c("Chitin synthase 1\nCHS1", "Chitin synthase 2\nCHS2", "Chitin synthase 3\nCHS3", "Chitin synthase 4\nCHS4",   
+  "Chitin synthase 5\nCHS5", "Chitin synthase 6\nCHS6", "Chitin synthase 7\nCHS7", "Chitin synthase 8\nCHS8",   
+  "Chitin deacetylase 1\nCDA1", "Chitin deacetylase 2\nMP98", "Chitin deacetylase 3\nCDA3", "Polysaccharide deacetylase\nFPD1",
+  "Chitinase\nCHI2", "Chitinase\nCHI21", "Chitinase\nCHI22", "Endochitinase\nCHI4")
+
+chitin_labels <- c("Chitin synthase 1<br>CHS1", "Chitin synthase 2<br>CHS2", "Chitin synthase 3<br>CHS3", "Chitin synthase 4<br>CHS4<sup>*</sup>",
+  "Chitin synthase 5<br>CHS5<sup>*</sup>", "Chitin synthase 6<br>CHS6", "Chitin synthase 7<br>CHS7<sup>*</sup>", "Chitin synthase 8<br>CHS8<sup>†</sup>",   
+  "Chitin deacetylase 1<br>CDA1<sup>†</sup>", "Chitin deacetylase 2<br>MP98<sup>†</sup>", "Chitin deacetylase 3<br>CDA3", "Polysaccharide deacetylase<br>FPD1",
+  "Chitinase<br>CHI2<sup>*</sup>", "Chitinase<br>CHI21", "Chitinase<br>CHI22", "Endochitinase<br>CHI4")
+
+Chitin_genes$plot_title <- factor(Chitin_genes$plot_title,levels=chitin_levels, labels=chitin_levels)
+
+ggplot(data = filter(Chitin_genes, Condition %in% c("YPD\n30°C", "YPD\n37°C", "YPD+\nEGTA\n37°C")), 
+       aes(x = Condition, y = TPM, colour = FLC1)) +
+        geom_point(aes(shape = BioRep), size = 1.2, alpha = 1) +
+        stat_summary(aes(group=FLC1), fun.min="mean",fun.max="mean",
+                    geom="errorbar",linewidth=0.5,width=0.6) +  
+        guides(shape = guide_legend(override.aes = list(size = 1, alpha = 1)),
+               color = guide_legend(override.aes = list(linetype = 1, shape = NA, size = 2, linewidth = 1.5))) +
+  facet_wrap(~plot_title, scales = "free", ncol= 4, drop = F) + 
+  scale_y_continuous(expand = expansion(mult = c(0, 0.01)), limits = c(0, NA)) + 
+  #scale_y_log10()+
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.box="vertical",
+    legend.justification = "left",
+    legend.box.just = "left"
+  ) + 
+  xlab("") + 
+  ylab("Transcripts per Million") + 
+  theme(strip.text.x = element_text(hjust = 0, size = 8),
+        axis.text = element_text(hjust = 0.5, size = 9),
+        axis.title.y = element_text(size=12, margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        legend.text = element_markdown(size = 12),
+        legend.title = element_blank())
+
+
+
+#ggsave(here("results/figures/Chitin_genes_TPM_geom_point.png"), width = 8, height = 9.5, dpi = 1000)
+```
+
+
+```{r fig.width = 8, fig.height=11.5}
+Beta_glucan_genes <- geneGroups %>% 
+  left_join(counts_bygene_long) %>% 
+  filter(geneGroupSpecific %in% c("beta_1_3_glucan", "beta_1_6_glucan", "alpha_1_3_glucan"))
+
+beta_glucan_levels <- c("1,3-beta-glucan synthase component\nFKS1","Glucan 1,3-beta-glucosidase\nCNAG_00373","Glucan 1,3-beta-glucosidase\nCNAG_05138", "Glucan 1,3-beta-glucosidase\nEXG104","Glucan 1,3-beta-glucosidase\nCNAG_06336", "Exo-beta-1,3-glucanase\nCNAG_05803","Endo-1,3(4)-beta-glucanase\nEBG1","1,3-beta-glucanosyltransferase\nCNAG_06501", "Alpha-1,3-glucan synthase\nAGS1","Glucan endo-1,3-alpha-glucosidase\nCNAG_02850","Glucan endo-1,3-alpha-glucosidase\nCNAG_07736"," ", "Glucosyltransferase\nKRE5","Glucosidase\nKRE6","Putative glucosidase\nSKN1","Glucosidase\nKRE61","Glucosidase\nKRE62","Beta-glucan synthesis-associated protein\nKRE63","Glucosidase\nKRE64")
+
+beta_glucan_labels <- c("1,3-beta-glucan synthase component\nFKS1","Glucan 1,3-beta-glucosidase\nCNAG_00373","Glucan 1,3-beta-glucosidase\nCNAG_05138", "Glucan 1,3-beta-glucosidase\nEXG104","Glucan 1,3-beta-glucosidase\nBGL2", "Exo-beta-1,3-glucanase\nCNAG_05803","Endo-1,3(4)-beta-glucanase\nEBG1","1,3-beta-glucanosyltransferase\nGAS1", "Alpha-1,3-glucan synthase\nAGS1","Glucan endo-1,3-alpha-glucosidase\nCNAG_02850","Glucan endo-1,3-alpha-glucosidase\nCNAG_07736"," ", "Glucosyltransferase\nKRE5","Glucosidase\nKRE6","Putative glucosidase\nSKN1","Glucosidase\nKRE61","Glucosidase\nKRE62","Beta-glucan synthesis-associated\nKRE63","Glucosidase\nKRE64")
+
+Beta_glucan_genes$plot_title <- factor(Beta_glucan_genes$plot_title,levels=beta_glucan_levels,labels=beta_glucan_labels)
+
+
+
+ggplot(data = filter(Beta_glucan_genes, Condition %in% c("YPD\n30°C", "YPD\n37°C", "YPD+\nEGTA\n37°C")), 
+       aes(x = Condition, y = TPM, colour = FLC1)) +
+        geom_point(aes(shape = BioRep), size = 1.2, alpha = 1) +
+        stat_summary(aes(group=FLC1), fun.min="mean",fun.max="mean",
+                    geom="errorbar",linewidth=0.5,width=0.6) +  
+        guides(shape = guide_legend(override.aes = list(size = 1, alpha = 1)),
+               color = guide_legend(override.aes = list(linetype = 1, shape = NA, size = 2, linewidth = 1.5))) +
+  facet_wrap(~plot_title, scales = "free", ncol= 4, drop = F) + 
+  scale_y_continuous(expand = expansion(mult = c(0, 0.01)), limits = c(0, NA)) + 
+  #scale_y_log10()+
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.box="vertical",
+    legend.justification = "left",
+    legend.box.just = "left"
+  ) + 
+  xlab("") + 
+  ylab("Transcripts per Million") + 
+  theme(strip.text.x = element_text(hjust = 0, size = 8),
+        axis.text = element_text(hjust = 0.5, size = 9),
+        axis.title.y = element_text(size=12, margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        legend.text = element_markdown(size = 12),
+        legend.title = element_blank())
+
+
+ggsave(here("results/figures/Glucan_genes_TPM_geom_point.png"), width = 8, height = 11, dpi = 1000)
+```
+
+
+```{r fig.width=11, fig.height=8}
+my_genes <- geneGroups %>% 
+  filter(Geneid %in% c(
+    "CNAG_03326",
+    "CNAG_05581",
+    "CNAG_00546",
+    "CNAG_05818",
+    "CNAG_02217",
+    "CNAG_07499",
+    "CNAG_05799",
+    "CNAG_01230",
+    "CNAG_03412",
+    "CNAG_02351",
+    "CNAG_06508",
+    "CNAG_02225",
+    "CNAG_06336",
+    "CNAG_02860",
+    "CNAG_06501")
+  ) %>% 
+  left_join(counts_bygene_long)
+
+
+
+gene_levels <- c("Chitin synthase 2\nCHS2", "Chitin synthase 3\nCHS3", "Chitin synthase 4\nCHS4", "Chitin synthase 5\nCHS5", "Chitin synthase 7\nCHS7", "Chitin synthase 8\nCHS8",  "Chitin deacetylase 1\nCDA1", "Chitin deacetylase 2\nMP98","Chitinase\nCHI2", "Endochitinase\nCHI4", "1,3-beta-glucan synthase component\nFKS1", "Glucan 1,3-beta-glucosidase\nEXG104", "Glucan 1,3-beta-glucosidase\nCNAG_06336", "Endo-1,3(4)-beta-glucanase\nEBG1","1,3-beta-glucanosyltransferase\nCNAG_06501")
+
+gene_labels <- c("Chitin synthase 2\nCHS2", "Chitin synthase 3\nCHS3", "Chitin synthase 4\nCHS4", "Chitin synthase 5\nCHS5", "Chitin synthase 7\nCHS7", "Chitin synthase 8\nCHS8",  "Chitin deacetylase 1\nCDA1", "Chitin deacetylase 2\nMP98","Chitinase\nCHI2", "Endochitinase\nCHI4", "1,3-beta-glucan synthase\nFKS1", "Glucan 1,3-beta-glucosidase\nEXG104", "Glucan 1,3-beta-glucosidase\nBGL2", "Endo-1,3(4)-beta-glucanase\nEBG1","1,3-beta-glucanosyltransferase\nGAS1")
+
+
+my_genes$plot_title <- factor(my_genes$plot_title,levels=gene_levels, labels=gene_labels)
+
+ggplot(data = filter(my_genes, Condition %in% c("YPD\n30°C", "YPD\n37°C", "YPD+\nEGTA\n37°C")), 
+       aes(x = Condition, y = TPM, colour = FLC1)) +
+        geom_point(aes(shape = BioRep), size = 1.8, alpha = 1) +
+        stat_summary(aes(group=FLC1), fun.min="mean",fun.max="mean",
+                    geom="errorbar",linewidth=0.6,width=0.7) +  
+        guides(shape = guide_legend(override.aes = list(size = 1, alpha = 1)),
+               color = guide_legend(override.aes = list(linetype = 1, shape = NA, size = 2, linewidth = 1.5))) +
+  facet_wrap(~plot_title, scales = "free", ncol= 5, drop = F) + 
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)), limits = c(0, NA)) + 
+  scale_colour_manual(values = c("#E69F00", "#56B4E9")) + 
+  #scale_y_log10()+
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.box="vertical",
+    legend.justification = "left",
+    legend.box.just = "left"
+  ) + 
+  xlab("") + 
+  ylab("Transcripts per Million") + 
+  theme(strip.text.x = element_text(hjust = 0, size = 9),
+        axis.text = element_text(hjust = 0.5, size = 9),
+        axis.title.y = element_text(size=12, margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        legend.text = element_markdown(size = 12),
+        legend.title = element_blank())
+
+
+
+ggsave(here("results/figures/Cell_wall_genes_TPM_geom_point_poster.png"), width = 11, height = 8, dpi = 1000)
+```
+
+
+
+```{r fig.width=9, fig.height=6}
+my_genes_short <- geneGroups %>% 
+  filter(Geneid %in% c(
+    #"CNAG_00546",
+    "CNAG_05818",
+    "CNAG_02217",
+    "CNAG_07499",
+    "CNAG_06508",
+    "CNAG_02225",
+    "CNAG_06336"
+    #"CNAG_02860"
+    )
+  ) %>% 
+  left_join(counts_bygene_long)
+
+
+
+gene_levels_short <- c("Chitin synthase 5\nCHS5", "Chitin synthase 7\nCHS7", "Chitin synthase 8\nCHS8", "1,3-beta-glucan synthase component\nFKS1", "Glucan 1,3-beta-glucosidase\nEXG104", "Glucan 1,3-beta-glucosidase\nCNAG_06336")
+
+gene_labels_short <- c("Chitin synthase 5\nCHS5", "Chitin synthase 7\nCHS7", "Chitin synthase 8\nCHS8", "1,3-beta-glucan synthase\nFKS1", "Glucan 1,3-beta-glucosidase\nEXG104", "Glucan 1,3-beta-glucosidase\nBGL2")
+
+
+my_genes_short$plot_title <- factor(my_genes_short$plot_title,levels=gene_levels_short, labels=gene_labels_short)
+
+ggplot(data = filter(my_genes_short, Condition %in% c("YPD\n30°C", "YPD\n37°C", "YPD+\nEGTA\n37°C")), 
+       aes(x = Condition, y = TPM, colour = FLC1)) +
+        geom_point(aes(shape = BioRep), size = 1.4, alpha = 1) +
+        stat_summary(aes(group=FLC1), fun.min="mean",fun.max="mean",
+                    geom="errorbar",linewidth=0.6,width=0.7) +  
+        guides(shape = guide_legend(override.aes = list(size = 1, alpha = 1)),
+               color = guide_legend(override.aes = list(linetype = 1, shape = NA, size = 2, linewidth = 1.5))) +
+  facet_wrap(~plot_title, scales = "free", ncol= 4, drop = F) + 
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05)), limits = c(0, NA)) + 
+  scale_colour_manual(values = rev(c("#00A9FF", "#E68613"))) + 
+  #scale_y_log10()+
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.box="vertical",
+    legend.justification = "left",
+    legend.box.just = "left"
+  ) + 
+  xlab("") + 
+  ylab("Transcripts per Million") + 
+  theme(strip.text.x = element_text(hjust = 0, size = 9),
+        axis.text = element_text(hjust = 0.5, size = 9),
+        axis.title.y = element_text(size=12, margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        legend.text = element_markdown(size = 12),
+        legend.title = element_blank())
+
+
+
+ggsave(here("results/figures/Cell_wall_genes_TPM_geom_point_poster.png"), width = 9, height = 6, dpi = 1000)
+```
+
+
+```{r fig.width=12, fig.height=5}
+my_calcium_genes_short <- geneGroups %>% 
+  filter(geneGroup == "calcium_transport") %>% 
+  left_join(counts_bygene_long) %>% 
+  filter(!Geneid %in% c("CNAG_00025", "CNAG_03751"))
+
+calcium_gene_levels_short <- unique(my_calcium_genes_short$plot_title)
+
+calcium_gene_labels_short <- c("Calcium/proton exchanger\nCNAG_07538", "Calcium/proton exchanger\nCNAG_03805", "Calcium P-type ATPase\nPMC1", "Mechanosensitive channel\nIRK6", "CSC1-like cation channel\nCNAG_06060",    "Calcium-channel protein\nCCH1")
+
+my_calcium_genes_short$plot_title <- factor(my_calcium_genes_short$plot_title,levels=calcium_gene_levels_short, labels=calcium_gene_labels_short)
+
+poster_genes <- bind_rows(my_genes_short, my_calcium_genes_short)
+
+ggplot(data = filter(poster_genes, Condition %in% c("YPD\n30°C", "YPD\n37°C", "YPD+\nEGTA\n37°C")), 
+       aes(x = Condition, y = TPM, colour = FLC1)) +
+        geom_point(aes(shape = BioRep), size = 1.4, alpha = 1) +
+        stat_summary(aes(group=FLC1), fun.min="mean",fun.max="mean",
+                    geom="errorbar",linewidth=0.6,width=0.7) +  
+        guides(shape = guide_legend(override.aes = list(size = 1, alpha = 1)),
+               color = guide_legend(override.aes = list(linetype = 1, shape = NA, size = 2, linewidth = 1.5))) +
+  facet_wrap(~plot_title, scales = "free", ncol= 6, drop = F) + 
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05)), limits = c(0, NA)) + 
+  #scale_colour_manual(values = rev(c("#00A9FF", "#E68613"))) + 
+  #scale_y_log10()+
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.box="vertical",
+    legend.justification = "left",
+    legend.box.just = "left"
+  ) + 
+  xlab("") + 
+  ylab("Transcripts per Million") + 
+  theme(strip.text.x = element_text(hjust = 0, size = 9),
+        axis.text = element_text(hjust = 0.5, size = 9),
+        axis.title.y = element_text(size=12, margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        legend.text = element_markdown(size = 12),
+        legend.title = element_blank())
+
+ggsave(here("results/figures/BMS_poster_TPM_geom_point_col4.png"), width = 12, height = 5, dpi = 1000)
+```
+
+
+
+
+
+
+## Cell wall synthesis and remodelling genes
+
+I curated a list of genes involved in cell wall chitin and glucan synthesis/remodelling. Here I plot the mean transcripts per million calculated from 3 biological replicated of FLC1 and flc1∆ samples at 30°C and 37°C. Although not all genes were classified as differentially express, almost all cell wall genes are more highly exressed in flc1∆ samples that FLC1 at both growth temperatures. 

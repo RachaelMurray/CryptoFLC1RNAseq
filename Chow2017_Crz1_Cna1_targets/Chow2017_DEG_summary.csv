@@ -1,0 +1,588 @@
+GeneID,GeneName,GeneDescription,Dataset
+1230,CDA2,Chitin deactylase 2,cna1_crz1_thermal_stress
+6835,KRE61,Glucosidase,cna1_crz1_thermal_stress
+546,CHS6,Chitin synthase 6,cna1_crz1_thermal_stress
+5803,EXG1,"Exo-β-1,3-glucanase",cna1_crz1_thermal_stress
+5818,CHS5,Chitin synthase 5,cna1_crz1_thermal_stress
+6336,BGL2,"Glucan 1,3 β-glucosidase",cna1_crz1_thermal_stress
+6501,GAS1,"1,3-β-glucanosyltransferase",cna1_crz1_thermal_stress
+5458,,"Endo-1,3(4)-β-glucanase",cna1_crz1_thermal_stress
+5138,SPR1,"Exo-β-1,3-glucanase",cna1_crz1_thermal_stress
+3412,CTS1,Chitinase 1,cna1_crz1_thermal_stress
+2217,CHS7,Chitin synthase 7,cna1_crz1_thermal_stress
+663,,,cna1_crz1_thermal_stress
+3135,,Magnesium transporter NIPA2,cna1_crz1_thermal_stress
+3242,RIM2,Peroxisomal membrane protein,cna1_crz1_thermal_stress
+25,VCX1,Calcium ion transporter,cna1_crz1_thermal_stress
+1232,PMC1,Calcium-transporting ATPase,cna1_crz1_thermal_stress
+5632,,Cation-independent mannose-6-phosphate receptor ,cna1_crz1_thermal_stress
+7406,MFα,Pheromone alpha,cna1_crz1_thermal_stress
+7407,MFα3,Fungal mating-type pheromone,cna1_crz1_thermal_stress
+407,,Glyoxal oxidase,cna1_crz1_thermal_stress
+2030,,Glyoxal oxidase,cna1_crz1_thermal_stress
+3464,LAC2,Laccase,cna1_crz1_thermal_stress
+5731,,Glyoxal oxidase,cna1_crz1_thermal_stress
+2415,,Annexin XIV,cna1_crz1_thermal_stress
+3316,RDI1,Rho GDP-dissociation inhibitor 1,cna1_crz1_thermal_stress
+4634,,,cna1_crz1_thermal_stress
+7725,ROX1,Specific transcriptional repressor,cna1_crz1_thermal_stress
+6658,,Rhomboid family membrane protein,cna1_crz1_thermal_stress
+5889,,SH3YL1 protein,cna1_crz1_thermal_stress
+5521,,Aldose reductase,cna1_crz1_thermal_stress
+5072,,Endopeptidase,cna1_crz1_thermal_stress
+6748,UTP7,U3 snoRNA-associated protein 7 ,cna1_crz1_thermal_stress
+3463,LSP1,Sphingolipid long chain base-responsive protein ,cna1_crz1_thermal_stress
+6499,,Ppapdc1 protein,cna1_crz1_thermal_stress
+2602,,Flavonol synthase ,cna1_crz1_thermal_stress
+3019,,Long-chain acyl-CoA synthase,cna1_crz1_thermal_stress
+4016,,,cna1_crz1_thermal_stress
+3599,,Mandelate racemase/muconate lactonizing enzyme,cna1_crz1_thermal_stress
+4523,,Glyceraldehyde 3-phosphate dehydrogenase,cna1_crz1_thermal_stress
+588,,Ricin-type beta-trefoil lectin domain,cna1_crz1_thermal_stress
+4891,,Ricin-type beta-trefoil lectin domain,cna1_crz1_thermal_stress
+2864,,,cna1_crz1_thermal_stress
+3223,,Ser-Thr-rich glycosyl-phosphatidyl-inositol-anchored membrane family,cna1_crz1_thermal_stress
+2526,,,cna1_crz1_thermal_stress
+4903,,,cna1_crz1_thermal_stress
+2685,,Fasciclin domain,cna1_crz1_thermal_stress
+5641,,,cna1_crz1_thermal_stress
+1081,,NADH(P)-binding  domain,cna1_crz1_thermal_stress
+2156,,,cna1_crz1_thermal_stress
+5916,,,cna1_crz1_thermal_stress
+5158,,,cna1_crz1_thermal_stress
+7981,,,cna1_crz1_thermal_stress
+1506,,,cna1_crz1_thermal_stress
+587,,,cna1_crz1_thermal_stress
+3007,,,cna1_crz1_thermal_stress
+5660,,,cna1_crz1_thermal_stress
+5654,,SUR7/PalI family domain,cna1_crz1_thermal_stress
+586,,,cna1_crz1_thermal_stress
+3783,,ubiE/COQ5 methyltransferase family,cna1_crz1_thermal_stress
+3224,,,cna1_crz1_thermal_stress
+691,,,cna1_crz1_thermal_stress
+5915,,,cna1_crz1_thermal_stress
+7498,,DUF567 domain containing protein,cna1_crz1_thermal_stress
+6863,,,cna1_crz1_thermal_stress
+3782,,,cna1_crz1_thermal_stress
+1942,,,cna1_crz1_thermal_stress
+3154,,,cna1_crz1_thermal_stress
+5448,,,cna1_crz1_thermal_stress
+485,,,cna1_crz1_thermal_stress
+3227,,Avr1-like family domain,cna1_crz1_thermal_stress
+4459,,,cna1_crz1_thermal_stress
+4606,,,cna1_crz1_thermal_stress
+7658,,,cna1_crz1_thermal_stress
+1121,,,cna1_crz1_thermal_stress
+301,,,cna1_crz1_thermal_stress
+4094,,,cna1_crz1_thermal_stress
+2510,,,cna1_crz1_thermal_stress
+4256,,Zinc finger with UFM1-specific peptidase domain ,cna1_crz1_thermal_stress
+1525,,,cna1_crz1_thermal_stress
+1272,,,cna1_crz1_thermal_stress
+4737,,,cna1_crz1_thermal_stress
+5089,,,cna1_crz1_thermal_stress
+3047,,Organic solute transporter Ostalpha domain,cna1_crz1_thermal_stress
+7943,,DUF1183 domain,cna1_crz1_thermal_stress
+2661,,Glycosyl hydrolase catalytic core,cna1_crz1_thermal_stress
+6149,,,cna1_crz1_thermal_stress
+5159,,,cna1_crz1_thermal_stress
+4681,,,cna1_crz1_thermal_stress
+3161,,,cna1_crz1_thermal_stress
+1087,,"Zinc finger, C3HC4 type domain",cna1_crz1_thermal_stress
+5412,,,cna1_crz1_thermal_stress
+647,,,cna1_crz1_thermal_stress
+7549,,FYVE zinc finger,cna1_crz1_thermal_stress
+668,,,cna1_crz1_thermal_stress
+4874,,"Probable endo-1,3(4)-beta-glucanase",cna1_crz1_thermal_stress
+2125,,,cna1_crz1_thermal_stress
+3314,,YTH domain family 2,cna1_crz1_thermal_stress
+1174,,Pheromone-regulated membrane protein 10,cna1_crz1_thermal_stress
+4478,,,cna1_crz1_thermal_stress
+6311,,,cna1_crz1_thermal_stress
+4634,,,cna1_crz1_thermal_stress
+5972,,,cna1_crz1_thermal_stress
+156,SP1/CRZ1,Zinc finger transcription factor,crz1_thermal_stress
+6508,FKS1,"1,3-Beta-D-glucan synthase",crz1_thermal_stress
+7499,CHS8,Chitin synthase,crz1_thermal_stress
+5277,,Vesicle-associated membrane protein,crz1_thermal_stress
+5615,,Syntaxin1B/2/3,crz1_thermal_stress
+6242,CFT1,Major iron permease,crz1_thermal_stress
+1683,STL1,Putative monosaccharide transporter,crz1_thermal_stress
+6290,SNF3,High-affinity glucose transporter,crz1_thermal_stress
+3426,GMT2,GDP-mannose transporter,crz1_thermal_stress
+869,PDR5,ATP-binding cassette transporter,crz1_thermal_stress
+6503,,Uridine permease,crz1_thermal_stress
+5411,,Endoglucase,crz1_thermal_stress
+3146,,Alpha-amylase,crz1_thermal_stress
+2588,,Avenacinase,crz1_thermal_stress
+6936,,Beta-glucosidase,crz1_thermal_stress
+692,,FAD dependent oxidoreductase,crz1_thermal_stress
+7770,FRE1,Ferric reductase,crz1_thermal_stress
+2958,CFO2,Ferroxidase,crz1_thermal_stress
+6241,CFO1,Ferroxidase/laccase,crz1_thermal_stress
+4514,MPK1,Mitogen-activating protein kinase,crz1_thermal_stress
+2194,,AGC/NDR protein kinase,crz1_thermal_stress
+1704,,Serine/threonine protein kinase,crz1_thermal_stress
+4380,,Peptidase,crz1_thermal_stress
+1539,,Myo-inositol-1-phosphate synthase,crz1_thermal_stress
+6016,CAP6,"Alpha-1,3-mannosyltransferase",crz1_thermal_stress
+4350,,Glycerophosphoryl diester phosphodiesterase,crz1_thermal_stress
+2458,,GTPase activating protein,crz1_thermal_stress
+5302,,,crz1_thermal_stress
+2008,OVA2,,crz1_thermal_stress
+4280,,,crz1_thermal_stress
+4752,,,crz1_thermal_stress
+1854,,Heparinase II/III family protein,crz1_thermal_stress
+7638,,,crz1_thermal_stress
+1207,,,crz1_thermal_stress
+6507,,,crz1_thermal_stress
+7873,,MIPC synthase,crz1_thermal_stress
+1796,,,crz1_thermal_stress
+6473,,,crz1_thermal_stress
+6973,,,crz1_thermal_stress
+2114,,,crz1_thermal_stress
+7723,,,crz1_thermal_stress
+1131,,,crz1_thermal_stress
+6060,,,crz1_thermal_stress
+6347,BLP2,pr4/barwin domain protein,crz1_thermal_stress
+3152,,Calcium-binding protein,crz1_thermal_stress
+2585,,,crz1_thermal_stress
+3857,,,crz1_thermal_stress
+4171,,,crz1_thermal_stress
+2169,,,crz1_thermal_stress
+261,,,crz1_thermal_stress
+5864,,,crz1_thermal_stress
+274,,,crz1_thermal_stress
+6943,,,crz1_thermal_stress
+349,,,crz1_thermal_stress
+1574,,,crz1_thermal_stress
+1070,,Class II aldolase/adducing family protein,crz1_thermal_stress
+4355,,,crz1_thermal_stress
+7388,,,crz1_thermal_stress
+1873,,,crz1_thermal_stress
+4796,CNA1,Calcineurin A catalytic subunit ,cna1_thermal_stress
+5387,,Galactose transporter ,cna1_thermal_stress
+979,CTR4,Copper uptake transporter ,cna1_thermal_stress
+3051,,Polyamine transporter ,cna1_thermal_stress
+5994,,Multidrug transporter ,cna1_thermal_stress
+1936,,Sugar transporter ,cna1_thermal_stress
+6020,SSU1,Sulfite efflux pump ,cna1_thermal_stress
+1384,,Tartrate transporter,cna1_thermal_stress
+6521,,Receptor/ Galactose-proton symporter,cna1_thermal_stress
+1925,,Tartrate transporter,cna1_thermal_stress
+5662,ITR4,Myo-inositol transporter ,cna1_thermal_stress
+3824,MIR1,Phosphate transport protein ,cna1_thermal_stress
+4015,,Amino acid transporter ,cna1_thermal_stress
+6561,,Allantoate transporter ,cna1_thermal_stress
+5993,,Transmembrane transporter Liz1p,cna1_thermal_stress
+7641,,Monosaccharide transporter ,cna1_thermal_stress
+2586,,Sugar transporter ,cna1_thermal_stress
+3912,,Membrane protein ,cna1_thermal_stress
+235,AMT1,Ammonium transporter,cna1_thermal_stress
+4414,FNX1,Multidrug resistance protein,cna1_thermal_stress
+1118,,Amino acid transporter ,cna1_thermal_stress
+3061,,Multiple drug resistance protein ,cna1_thermal_stress
+1055,,Phospholipid transporter ,cna1_thermal_stress
+3910,ITR6,Myo-inositol transporter ,cna1_thermal_stress
+4758,AMT2,Ammonium transporter ,cna1_thermal_stress
+792,,ATP-binding cassette transporter ,cna1_thermal_stress
+5130,,Polyamide transporter ,cna1_thermal_stress
+7917,,Uracil transporter FurD ,cna1_thermal_stress
+6963,,Sugar transporter ,cna1_thermal_stress
+6610,,MSF transporter ,cna1_thermal_stress
+796,MDR1,Multidrug resistance protein 1 ,cna1_thermal_stress
+904,AFLT,Aflatoxin efflux pump ,cna1_thermal_stress
+3772,HXS1,Glucose transporter ,cna1_thermal_stress
+6169,,"(R,R)-butanediol dehydrogenase ",cna1_thermal_stress
+575,CAT3,Catalase 3 ,cna1_thermal_stress
+4981,CAT1,Catalase 1,cna1_thermal_stress
+2751,,Short-chain dehydrogenase,cna1_thermal_stress
+6759,,Dehydrogenase,cna1_thermal_stress
+2577,,Oxidioreductase,cna1_thermal_stress
+1102,,Oxidoreductase,cna1_thermal_stress
+4926,,,cna1_thermal_stress
+4351,,Methylmalonate-semialdehyde dehydrogenase,cna1_thermal_stress
+4112,,Oxidoreductase,cna1_thermal_stress
+1464,FHB1,Flavohemoglobin,cna1_thermal_stress
+4326,,Malate dehydrogenase,cna1_thermal_stress
+115,,Chlorophyll synthesis pathway protein BchC,cna1_thermal_stress
+5299,,Oxidoreductase,cna1_thermal_stress
+3865,,Cytoplasmic protein,cna1_thermal_stress
+3874,,Oxidoreductase,cna1_thermal_stress
+6081,,Glucose oxidase,cna1_thermal_stress
+3555,,Acylglycerone-phosphate reductase ,cna1_thermal_stress
+1714,,Sulfonate dioxygenase,cna1_thermal_stress
+5444,,NADPH dehydrogenase,cna1_thermal_stress
+5644,,2-nitropropane dioxygenase,cna1_thermal_stress
+3194,,Saccharopine dehydrogenase,cna1_thermal_stress
+4388,SOD2,Mitochondrial manganese superoxide dismutase ,cna1_thermal_stress
+7626,,NAD-binding Rossmann fold oxidoreductase,cna1_thermal_stress
+4313,,NADPH2 dehydrogenase,cna1_thermal_stress
+1264,,Homoisocitrate dehydrogenase,cna1_thermal_stress
+6876,,α-ketoglutarate-dependent taurine dioxygenase,cna1_thermal_stress
+1627,,Amino oxidase,cna1_thermal_stress
+4467,,Succinate-semialdehyde dehydrogenase,cna1_thermal_stress
+5329,,Myo-inositol 2-dehydrogenase,cna1_thermal_stress
+6250,,,cna1_thermal_stress
+6777,,Fructosyl amino acid oxidase,cna1_thermal_stress
+5602,,1-pyrroline-5-carboxylate dehydrogenase ,cna1_thermal_stress
+6628,,Aldehyde dehydrogenase,cna1_thermal_stress
+1075,,Methylmalonate-semialdehyde dehydrogenase,cna1_thermal_stress
+5115,,Sarcosine oxidase,cna1_thermal_stress
+3998,RLM1,Transcriptional activator,cna1_thermal_stress
+4512,,Transcription factor Spt20 homolog-like,cna1_thermal_stress
+1847,,,cna1_thermal_stress
+4804,SRE1,Sterol regulatory element-binding protein,cna1_thermal_stress
+2435,BWC2,White collar 2 transcription factor,cna1_thermal_stress
+332,SIP4,,cna1_thermal_stress
+627,SOX6,Specific transcriptional repressor,cna1_thermal_stress
+3086,FZC20,Fungal specific transcription factor ,cna1_thermal_stress
+3849,ASG1,Transcriptional regulator,cna1_thermal_stress
+791,HLH1,Transcription factor bHLH041,cna1_thermal_stress
+130,HRK1,CAMK/CAMK1 protein kinase ,cna1_thermal_stress
+2531,CPK1,CMGC/MAPK/ERK protein kinase ,cna1_thermal_stress
+2389,,AGC-group protein kinase ,cna1_thermal_stress
+6568,SKS1,RAN protein kinase ,cna1_thermal_stress
+5643,,DNA polymerase delta subunit 4,cna1_thermal_stress
+6440,,DNA dependent ATPase,cna1_thermal_stress
+1013,SWD3,Chromatin binding protein ,cna1_thermal_stress
+5374,CTF18,Chromosome transmission fidelity protein 18 ,cna1_thermal_stress
+6745,,Histone H3 ,cna1_thermal_stress
+3341,MCM2,Minichromosome maintenance protein 2 ,cna1_thermal_stress
+4696,,DNA clamp loader ,cna1_thermal_stress
+6634,DPB2,DNA polymerase epsilon subunit,cna1_thermal_stress
+7909,DCM1,Meiotic recombinaase Dmc1,cna1_thermal_stress
+6166,MPH1,ATP-dependent DNA helicase MPH1,cna1_thermal_stress
+550,MSH5,DNA mismatch repair protein MSH5,cna1_thermal_stress
+519,ERG3,C-5 sterol desaturase ,cna1_thermal_stress
+1737,ERG25,C-4 methyl sterol oxidase ,cna1_thermal_stress
+6829,ERG1,Squalene monooxygenase ,cna1_thermal_stress
+6644,ERG5,C-22 sterol desaturase ,cna1_thermal_stress
+3143,,Heat shock protein (12 kDa),cna1_thermal_stress
+1446,HSP12,Heat shock protein (12 kDa),cna1_thermal_stress
+3228,,Universal stress protein,cna1_thermal_stress
+6121,,,cna1_thermal_stress
+826,,Glycerone kinase,cna1_thermal_stress
+984,,Glucose and ribitol dehydrogenase,cna1_thermal_stress
+866,,Transketolase,cna1_thermal_stress
+2230,,Phosphoketolase,cna1_thermal_stress
+1341,,Mannose-6-phosphate isomerase,cna1_thermal_stress
+6291,FPD1,Polysaccharide deacetylase,cna1_thermal_stress
+827,,Ribose 5-phosphate isomerase ,cna1_thermal_stress
+4025,,Transaldolase ,cna1_thermal_stress
+5383,,3-dehydroshikimate dehydratase,cna1_thermal_stress
+2986,YSA1,ADP-ribose pyrophosphatase,cna1_thermal_stress
+6868,,Phosphopyruvate hydratase,cna1_thermal_stress
+4744,,Mannose-6-phosphate isomerase,cna1_thermal_stress
+6931,,β-glucosidase,cna1_thermal_stress
+6923,XFP2,Xylulose 5-phosphate/fructose 6-posphate phosphoketolase,cna1_thermal_stress
+3040,,Transketolase,cna1_thermal_stress
+5652,,Cytoplasmic protein ,cna1_thermal_stress
+7445,,Transketolase,cna1_thermal_stress
+4969,UGD1,UDP-glucose 6-dehydrogenase,cna1_thermal_stress
+5264,,Alpha-amylase AmyA ,cna1_thermal_stress
+5913,,Alpha-glucosidase,cna1_thermal_stress
+2850,,"Glucan endo-1,3-α-glucosidase AGN1",cna1_thermal_stress
+6031,KRE63,β-glucan synthase,cna1_thermal_stress
+3759,,Conidiation-specific protein 6,cna1_thermal_stress
+6238,,Glutathione S-transferase,cna1_thermal_stress
+1348,,Cyanate hydratase,cna1_thermal_stress
+834,,Phosphatidylserine decarboxylase ,cna1_thermal_stress
+3084,,Endoribonuclease L-PSP ,cna1_thermal_stress
+1954,,Aldo/keto reductase,cna1_thermal_stress
+3958,,,cna1_thermal_stress
+5268,,N-acetyltransferase 9-like protein,cna1_thermal_stress
+6576,CAR1,cAMP-regulated gene 1,cna1_thermal_stress
+2182,GRE2,D-lactaldehyde dehydrogenase ,cna1_thermal_stress
+5449,CMT1,Copper metallothionein,cna1_thermal_stress
+2781,,Dihydrodipicolinate synthetase family protein ,cna1_thermal_stress
+4656,,Arginyl-tRNA-protein transferase ,cna1_thermal_stress
+4291,,Glycosyl-hydrolase,cna1_thermal_stress
+4067,,"Haloacid dehalogenase, type II",cna1_thermal_stress
+4890,,,cna1_thermal_stress
+5386,,Glutamate 5-kinase,cna1_thermal_stress
+36,,Sec14 cytosolic factor ,cna1_thermal_stress
+6500,ARG82,Arginine metabolism transcriptional control protein ,cna1_thermal_stress
+2768,,,cna1_thermal_stress
+264,,Nuclease 1,cna1_thermal_stress
+522,,C2 domain containing protein,cna1_thermal_stress
+2417,,Lipase/esterase family protein,cna1_thermal_stress
+800,,Nicotinamidase,cna1_thermal_stress
+4314,,NAD+ kinase,cna1_thermal_stress
+2226,,,cna1_thermal_stress
+2722,,Aldose reductase,cna1_thermal_stress
+3069,,Hydrolase,cna1_thermal_stress
+4440,,Thiamine pyrophosphokinase,cna1_thermal_stress
+6901,ALG7,UDP-N-acetyl-glucosamine-1-p transferase,cna1_thermal_stress
+4274,,Acyl-CoA thioesterase,cna1_thermal_stress
+6782,MNN5,"Alpha-1,2-mannosyltransferase",cna1_thermal_stress
+3070,,Compass compoment swd2,cna1_thermal_stress
+4659,,Pyruvate decarboxylase,cna1_thermal_stress
+1521,,Metallo-beta-lactmase,cna1_thermal_stress
+254,,NADH dehydrogenase ,cna1_thermal_stress
+3698,,E3 ubiquitin-protein ligase UBR7,cna1_thermal_stress
+3738,,Pantetheine-phosphate adenylyltransferase ,cna1_thermal_stress
+2427,,,cna1_thermal_stress
+2725,,Proteasome subunit,cna1_thermal_stress
+62,,26S proteasome non-ATPase regulatory subunit 3 ,cna1_thermal_stress
+1726,,FACT complex subunit SPT16,cna1_thermal_stress
+1442,,Cysteine desulfhydrase,cna1_thermal_stress
+1148,,Peptidyl prolyl cis-trans isomerase ,cna1_thermal_stress
+7779,,D-glycerate 3-kinase ,cna1_thermal_stress
+1577,,Glutamate dehydrogenase ,cna1_thermal_stress
+309,,Membrane protein,cna1_thermal_stress
+4307,URO1,Uricase,cna1_thermal_stress
+3540,,Aspartyl/glutamyl-tRNA amidotransferase subunit B,cna1_thermal_stress
+2309,,FK506-binding protein 2,cna1_thermal_stress
+4269,,Leucyl aminopeptidse,cna1_thermal_stress
+2099,,Fatty acid synthase beta subunit,cna1_thermal_stress
+6141,,dUTP diphosphatase,cna1_thermal_stress
+176,,Glutamate carboxypeptide protein,cna1_thermal_stress
+3949,,4-nitrophenylphosphatase,cna1_thermal_stress
+5653,,Malate synthase,cna1_thermal_stress
+5548,,,cna1_thermal_stress
+1565,,Biotin-[acetyl-CoA-carboxylase] ligase ,cna1_thermal_stress
+3394,,,cna1_thermal_stress
+919,,Carboxypeptidase D,cna1_thermal_stress
+1026,,Gamma-glutamyltranspeptidase 1 ,cna1_thermal_stress
+758,,Regulatory protein ral2,cna1_thermal_stress
+2100,,Fatty acid synthase subunit alpha,cna1_thermal_stress
+141,,Monooxygenase,cna1_thermal_stress
+1879,,Carboxypeptidase Y,cna1_thermal_stress
+5759,,Acetyl CoA carboxylase,cna1_thermal_stress
+236,,8-amino-7-oxononanoatesynthase ,cna1_thermal_stress
+1004,,,cna1_thermal_stress
+601,CEL1,Glycosyl hydrolase,cna1_thermal_stress
+164,,,cna1_thermal_stress
+5939,,,cna1_thermal_stress
+7939,,,cna1_thermal_stress
+6396,,,cna1_thermal_stress
+3492,,,cna1_thermal_stress
+2591,,,cna1_thermal_stress
+2070,,,cna1_thermal_stress
+2899,,,cna1_thermal_stress
+3679,,,cna1_thermal_stress
+91,,,cna1_thermal_stress
+3142,,,cna1_thermal_stress
+848,,,cna1_thermal_stress
+6109,,,cna1_thermal_stress
+3873,,,cna1_thermal_stress
+4139,,,cna1_thermal_stress
+4043,,DUF636 domain-containing protein ,cna1_thermal_stress
+1588,,Plasma membrane proteolipid 3,cna1_thermal_stress
+4943,,,cna1_thermal_stress
+4691,,,cna1_thermal_stress
+1735,,,cna1_thermal_stress
+4322,,,cna1_thermal_stress
+3058,,Hmp1 protein,cna1_thermal_stress
+1090,,,cna1_thermal_stress
+4106,,,cna1_thermal_stress
+1921,,,cna1_thermal_stress
+7870,,,cna1_thermal_stress
+6718,,,cna1_thermal_stress
+3495,,,cna1_thermal_stress
+1751,,,cna1_thermal_stress
+4585,,,cna1_thermal_stress
+3408,,,cna1_thermal_stress
+6286,,,cna1_thermal_stress
+6493,,,cna1_thermal_stress
+2524,,,cna1_thermal_stress
+2118,,,cna1_thermal_stress
+4163,,,cna1_thermal_stress
+6302,,SnoaL domain,cna1_thermal_stress
+813,,,cna1_thermal_stress
+5666,,,cna1_thermal_stress
+11,,,cna1_thermal_stress
+5167,,,cna1_thermal_stress
+6668,,,cna1_thermal_stress
+807,,,cna1_thermal_stress
+3538,,,cna1_thermal_stress
+4206,,DUF636 domain-containing protein,cna1_thermal_stress
+93,,,cna1_thermal_stress
+2362,,,cna1_thermal_stress
+3566,,,cna1_thermal_stress
+1585,,,cna1_thermal_stress
+7666,,Cysteine-rich secretory protein family,cna1_thermal_stress
+1816,,,cna1_thermal_stress
+6267,,,cna1_thermal_stress
+2043,,,cna1_thermal_stress
+1368,,,cna1_thermal_stress
+4938,,,cna1_thermal_stress
+1803,,,cna1_thermal_stress
+3232,,Lactamase ,cna1_thermal_stress
+3268,,,cna1_thermal_stress
+6395,,,cna1_thermal_stress
+1939,,,cna1_thermal_stress
+4167,,,cna1_thermal_stress
+139,,,cna1_thermal_stress
+7673,,,cna1_thermal_stress
+5891,,TDG/mug DNA glycosylase,cna1_thermal_stress
+4386,,,cna1_thermal_stress
+4880,,,cna1_thermal_stress
+7574,,,cna1_thermal_stress
+7450,,,cna1_thermal_stress
+2297,,,cna1_thermal_stress
+595,,,cna1_thermal_stress
+5399,,,cna1_thermal_stress
+3688,,,cna1_thermal_stress
+5097,,,cna1_thermal_stress
+2347,,,cna1_thermal_stress
+3704,,,cna1_thermal_stress
+465,,,cna1_thermal_stress
+4076,,,cna1_thermal_stress
+2058,,,cna1_thermal_stress
+1052,,,cna1_thermal_stress
+2129,,,cna1_thermal_stress
+3252,,,cna1_thermal_stress
+75,,,cna1_thermal_stress
+961,,,cna1_thermal_stress
+6805,,,cna1_thermal_stress
+3705,,,cna1_thermal_stress
+1691,,,cna1_thermal_stress
+3352,,,cna1_thermal_stress
+6075,,,cna1_thermal_stress
+5608,,,cna1_thermal_stress
+6800,,,cna1_thermal_stress
+7511,,Nucleolar protein 15,cna1_thermal_stress
+1643,,,cna1_thermal_stress
+7733,,,cna1_thermal_stress
+4766,,,cna1_thermal_stress
+4154,,,cna1_thermal_stress
+1621,,,cna1_thermal_stress
+2570,,,cna1_thermal_stress
+6602,,Cysteine-type peptidase,cna1_thermal_stress
+1753,,,cna1_thermal_stress
+3667,,,cna1_thermal_stress
+5686,,,cna1_thermal_stress
+6297,,,cna1_thermal_stress
+4027,,,cna1_thermal_stress
+7972,,,cna1_thermal_stress
+1031,,,cna1_thermal_stress
+3454,,,cna1_thermal_stress
+6388,,,cna1_thermal_stress
+1417,,,cna1_thermal_stress
+3991,,Integral membrane protein,cna1_thermal_stress
+1476,,,cna1_thermal_stress
+54,,,cna1_thermal_stress
+849,,,cna1_thermal_stress
+6245,,,cna1_thermal_stress
+2102,,,cna1_thermal_stress
+2253,,,cna1_thermal_stress
+1743,,,cna1_thermal_stress
+5682,,,cna1_thermal_stress
+1215,,,cna1_thermal_stress
+74,PNS1,Protein PNS1,cna1_thermal_stress
+3082,,Cupin domain-containing protein,cna1_thermal_stress
+4466,,,cna1_thermal_stress
+4892,,,cna1_thermal_stress
+454,,,cna1_thermal_stress
+6298,,,cna1_thermal_stress
+6207,,,cna1_thermal_stress
+7737,,,cna1_thermal_stress
+3002,,,cna1_thermal_stress
+2706,,,cna1_thermal_stress
+6516,,,cna1_thermal_stress
+932,,,cna1_thermal_stress
+5520,,,cna1_thermal_stress
+851,,,cna1_thermal_stress
+3685,,,cna1_thermal_stress
+2188,,,cna1_thermal_stress
+5937,,,cna1_thermal_stress
+7826,,,cna1_thermal_stress
+2444,,,cna1_thermal_stress
+453,,Mitochondrial protein,cna1_thermal_stress
+3455,,,cna1_thermal_stress
+1275,,,cna1_thermal_stress
+8019,,,cna1_thermal_stress
+4396,,,cna1_thermal_stress
+2422,,,cna1_thermal_stress
+3771,,DNA binding protein Ncp1,cna1_thermal_stress
+6082,,Delayed-type hypersensitivity antigen ,cna1_thermal_stress
+6827,,,cna1_thermal_stress
+2424,,,cna1_thermal_stress
+1493,,,cna1_thermal_stress
+2016,,DUF1479 domain-containing protein,cna1_thermal_stress
+6515,,,cna1_thermal_stress
+1656,,,cna1_thermal_stress
+936,,Lipid particle protein,cna1_thermal_stress
+1538,,,cna1_thermal_stress
+7700,,,cna1_thermal_stress
+149,,,cna1_thermal_stress
+1411,,,cna1_thermal_stress
+2735,,,cna1_thermal_stress
+1749,,,cna1_thermal_stress
+4261,,,cna1_thermal_stress
+5227,,,cna1_thermal_stress
+7463,,Separase,cna1_thermal_stress
+1995,,,cna1_thermal_stress
+7479,,,cna1_thermal_stress
+4963,,,cna1_thermal_stress
+5738,,,cna1_thermal_stress
+6583,,,cna1_thermal_stress
+6608,,,cna1_thermal_stress
+1864,,,cna1_thermal_stress
+7415,,,cna1_thermal_stress
+3856,,,cna1_thermal_stress
+1180,,,cna1_thermal_stress
+6624,,,cna1_thermal_stress
+5515,,,cna1_thermal_stress
+1977,,,cna1_thermal_stress
+7548,,Cytoplasmic protein,cna1_thermal_stress
+4707,,,cna1_thermal_stress
+6567,,,cna1_thermal_stress
+7945,,,cna1_thermal_stress
+699,,Transmembrane receptor,cna1_thermal_stress
+2882,,,cna1_thermal_stress
+6356,,Mitochondrial protein,cna1_thermal_stress
+194,,,cna1_thermal_stress
+1993,,,cna1_thermal_stress
+2192,,,cna1_thermal_stress
+1562,,,cna1_thermal_stress
+177,,,cna1_thermal_stress
+1944,,,cna1_thermal_stress
+5514,,,cna1_thermal_stress
+5637,,,cna1_thermal_stress
+5457,,Pentatricopeptide repeat protein,cna1_thermal_stress
+1244,,,cna1_thermal_stress
+6690,,,cna1_thermal_stress
+190,,,cna1_thermal_stress
+1443,,,cna1_thermal_stress
+2705,,,cna1_thermal_stress
+5129,,,cna1_thermal_stress
+798,,,cna1_thermal_stress
+474,,,cna1_thermal_stress
+6000,,Glycoprotein,cna1_thermal_stress
+2759,,,cna1_thermal_stress
+5158,,,cna1_crz1_no_stress
+5654,,,cna1_crz1_no_stress
+7498,,DUF567 domain-containing protein ,cna1_crz1_no_stress
+6347,,,cna1_crz1_no_stress
+4796,CNA1,serine/threonine-protein phosphatase 2B catalytic subunit A1 ,cna1_no_stress
+3538,,  ,cna1_no_stress
+6375,,  ,cna1_no_stress
+5331,,  ,cna1_no_stress
+3051,,Polyamine transporter ,cna1_no_stress
+2864,,,cna1_no_stress
+6203,, ,cna1_no_stress
+5803,EXG1,"Exo-β-1,3-glucanase",cna1_no_stress
+6598,, ,cna1_no_stress
+6082,,Delayed-type hypersensitivity antigen ,cna1_no_stress
+1621,,      ,cna1_no_stress
+5239,,Cytoplasmic protein ,cna1_no_stress
+2722,,Aldose reductase ,cna1_no_stress
+6666,,Glycogen phosphorylase ,cna1_no_stress
+1704,,Serine/threonine protein kinase ,cna1_no_stress
+6009,,Cyclohydrolase ,cna1_no_stress
+2264,,AFG1-family ATPase ,cna1_no_stress
+4696,,DNA clamp loader ,cna1_no_stress
+4307,URO1,Uricase ,cna1_no_stress
+1272,,  ,cna1_no_stress
+1949,,L-iditol 2-dehydrogenase ,cna1_no_stress
+2934,,,cna1_no_stress
+6918,,,cna1_no_stress
+5662,ITR4,Myo-inositol transporter,cna1_no_stress
+1223,,,cna1_no_stress
+601,,Glycosyl hydrolase ,cna1_no_stress
+3238,,Dioxygenase subfamily protein ,cna1_no_stress
+1562,,  ,cna1_no_stress
+301,,,crz1_no_stress

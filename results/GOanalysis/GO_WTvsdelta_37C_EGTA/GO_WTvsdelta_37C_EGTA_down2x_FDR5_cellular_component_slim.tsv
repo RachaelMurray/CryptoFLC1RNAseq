@@ -1,0 +1,3 @@
+ID	Name	Bgd count	Result count	Result gene list	Pct of bgd	Fold enrichment	Odds ratio	P-value	Benjamini	Bonferroni
+GO:0005618	cell wall	4	3	CNAG_03464,CNAG_03465,CNAG_06336,	75.0	6.68	23.83	0.00516986050949	0.0594533958592	0.118906791718
+GO:0030312	external encapsulating structure	4	3	CNAG_03464,CNAG_03465,CNAG_06336,	75.0	6.68	23.83	0.00516986050949	0.0594533958592	0.118906791718

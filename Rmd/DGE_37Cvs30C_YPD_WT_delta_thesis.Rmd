@@ -1,0 +1,728 @@
+---
+title: "DGE_37Cvs30C_YPD_WT_delta_thesis"
+author: "Rachael Murray"
+date: "2025-03-08"
+output: html_document
+---
+
+# Summary
+
+Differential Gene Expression 37°C vs 30°C in WT in YPD samples and 37°C vs 30°C in flc1∆ in YPD samples using DESeq2
+
+This analysis produces files:
+
+- `deseq_df_37Cvs30C_WT_YPD.txt`
+- `deglist_37Cvs30C_WT_YPD_up2x_FDR5.txt`
+- `deglist_37Cvs30C_WT_YPD_down2x_FDR5.txt`
+- `deseq_df_37Cvs30C_delta_YPD.txt`
+- `deglist_37Cvs30C_delta_YPD_up2x_FDR5.txt`
+- `deglist_37Cvs30C_delta_YPD_down2x_FDR5.txt`
+
+
+## Load count data from shared script load_count_data.Rmd
+
+```{r call_load_count_data, child = "load_count_data.Rmd"}
+```
+
+# DESeq on a subset of data, only WT in YPD
+
+```{r subset_37Cvs30C_WT_YPD, fig.height=8, fig.width=8}
+sample_sheet_37Cvs30C_WT_YPD <-
+  dplyr::filter(sample_sheet,
+                FLC1 == "WT", Media == "YPD")
+
+dds_37Cvs30C_WT_YPD <- 
+  DESeqDataSetFromMatrix(
+    countData = counts_all %>%
+      dplyr::select(sample_sheet_37Cvs30C_WT_YPD$SampleName) %>%
+      magrittr::set_rownames(counts_all$Gene),
+    colData = sample_sheet_37Cvs30C_WT_YPD,
+    design = ~ Temperature) %>%
+  DESeq()
+
+dds_37Cvs30C_WT_YPD
+```
+
+```{r results_37Cvs30C_WT_YPD}
+results(dds_37Cvs30C_WT_YPD)
+
+resultsNames(dds_37Cvs30C_WT_YPD)
+```
+
+```{r deseq_df_37Cvs30C_WT_YPD}
+deseq_df_37Cvs30C_WT_YPD <- 
+  biobroom::tidy.DESeqDataSet(dds_37Cvs30C_WT_YPD) %>%
+  dplyr::filter(term == "Temperature_37_vs_30") %>%
+  dplyr::left_join(gene_info_df,
+                   by = "gene") %>% 
+  dplyr::select(gene, 
+                geneName, 
+                baseMean, 
+                log2FC = estimate, 
+                stderror,
+                padj = p.adjusted)
+```
+
+## List DEGs most UP in 37°C vs 30°C in WT
+
+We cut off at 2x changes with 5% FDR here.
+
+```{r DEGs_WT_up, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_WT_up2x_FDR5 <- 
+  dplyr::filter(deseq_df_37Cvs30C_WT_YPD,
+                log2FC > 1, padj < 0.05) %>%
+  dplyr::arrange(desc(log2FC))
+print(DEGdf_WT_up2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_WT_up_named}
+DEGdf_WT_up2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+
+## List DEGs most DOWN in 37°C vs 30°C in WT
+
+```{r DEGs_WT_down, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_WT_down2x_FDR5 <- 
+  dplyr::filter(deseq_df_37Cvs30C_WT_YPD,
+                log2FC < -1, padj < 0.05) %>%
+  dplyr::arrange(log2FC)
+print(DEGdf_WT_down2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_30C_down_named}
+DEGdf_WT_down2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+## Volcano plot of DEGs
+
+```{r volcano_37Cvs30C_WT_YPD, fig.width = 6, fig.height = 3}
+volcano_37Cvs30C_WT_YPD <- 
+  ggplot(data = deseq_df_37Cvs30C_WT_YPD,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = 0.3, colour = "grey70") +
+  geom_point(data = DEGdf_WT_up2x_FDR5,
+             size = 0.3, colour = "darkblue") +
+  geom_point(data = DEGdf_WT_down2x_FDR5,
+             size = 0.3, colour = "darkred") +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,50), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change\n← up in 30°C       up in 37°C →",
+                     breaks = -6:6,
+                     limits = c(-6,6), expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") 
+volcano_37Cvs30C_WT_YPD
+
+#ggsave(here("WT_37Cvs30C_WT_YPD_volcano.png"), volcano_37Cvs30C_WT_YPD , width = 4, height = 3)
+```
+
+## Write outputs to files
+
+```{r write_DEGs WT}
+#deseq_df_37Cvs30C_WT_YPD %>%
+#  dplyr::mutate(
+ #   across(c(baseMean, log2FC, stderror), round, digits = 3)
+  #) %>%
+  #dplyr::mutate(padj = signif(padj, digits = 4)) %>%
+  #write_tsv(file = here::here("results", "DEGs",
+    #                          "deseq_df_37Cvs30C_WT_YPD.txt"))
+
+#DEGdf_WT_up2x_FDR5 %>%
+ # dplyr::pull(gene) %>%
+  #write_lines(file = here::here("results", "DEGs",
+   #                         "deglist_37Cvs30C_WT_YPD_up2x_FDR5.txt"))
+
+#DEGdf_WT_down2x_FDR5 %>%
+ # dplyr::pull(gene) %>%
+  #write_lines(file = here::here("results", "DEGs",
+            #                "deglist_37Cvs30C_WT_YPD_down2x_FDR5.txt"))
+```
+
+
+
+
+
+
+
+
+
+# DESeq on a subset of data, only delta in YPD
+
+```{r subset_37Cvs30C_delta_YPD, fig.height=8, fig.width=8}
+sample_sheet_37Cvs30C_delta_YPD <-
+  dplyr::filter(sample_sheet,
+                FLC1 == "delta", Media == "YPD")
+
+dds_37Cvs30C_delta_YPD <- 
+  DESeqDataSetFromMatrix(
+    countData = counts_all %>%
+      dplyr::select(sample_sheet_37Cvs30C_delta_YPD$SampleName) %>%
+      magrittr::set_rownames(counts_all$Gene),
+    colData = sample_sheet_37Cvs30C_delta_YPD,
+    design = ~ Temperature) %>%
+  DESeq()
+
+dds_37Cvs30C_delta_YPD
+```
+
+```{r results_37Cvs30C_delta_YPD}
+results(dds_37Cvs30C_delta_YPD)
+
+resultsNames(dds_37Cvs30C_delta_YPD)
+```
+
+```{r deseq_df_37Cvs30C_delta_YPD}
+deseq_df_37Cvs30C_delta_YPD <- 
+  biobroom::tidy.DESeqDataSet(dds_37Cvs30C_delta_YPD) %>%
+  dplyr::filter(term == "Temperature_37_vs_30") %>%
+  dplyr::left_join(gene_info_df,
+                   by = "gene") %>% 
+  dplyr::select(gene, 
+                geneName, 
+                baseMean, 
+                log2FC = estimate, 
+                stderror,
+                padj = p.adjusted)
+```
+
+## List DEGs most UP in 37°C vs 30°C in delta
+
+We cut off at 2x changes with 5% FDR here.
+
+```{r DEGs_WT_up, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_delta_up2x_FDR5 <- 
+  dplyr::filter(deseq_df_37Cvs30C_delta_YPD,
+                log2FC > 1, padj < 0.05) %>%
+  dplyr::arrange(desc(log2FC))
+print(DEGdf_delta_up2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_WT_up_named}
+DEGdf_delta_up2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+
+## List DEGs most DOWN in 37°C vs 30°C in delta
+
+
+```{r DEGs_WT_down, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_delta_down2x_FDR5 <- 
+  dplyr::filter(deseq_df_37Cvs30C_delta_YPD,
+                log2FC < -1, padj < 0.05) %>%
+  dplyr::arrange(log2FC)
+print(DEGdf_delta_down2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_30C_down_named}
+DEGdf_delta_down2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+## Volcano plot of DEGs
+
+```{r volcano_37Cvs30C_delta_YPD, fig.width = 6, fig.height = 3}
+volcano_37Cvs30C_delta_YPD <- 
+  ggplot(data = deseq_df_37Cvs30C_delta_YPD,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = 0.3, colour = "grey70") +
+  geom_point(data = DEGdf_delta_up2x_FDR5,
+             size = 0.3, colour = "darkblue") +
+  geom_point(data = DEGdf_delta_down2x_FDR5,
+             size = 0.3, colour = "darkred") +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,50), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change\n← up in 30°C       up in 37°C →",
+                     breaks = -6:6,
+                     limits = c(-6,6), expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") 
+volcano_37Cvs30C_delta_YPD
+
+#ggsave(here("delta_37Cvs30C_WT_YPD_volcano.png"), volcano_37Cvs30C_delta_YPD , width = 4, height = 3)
+```
+
+
+## Write outputs to files
+
+```{r write_DEGs delta}
+#deseq_df_37Cvs30C_delta_YPD %>%
+ # dplyr::mutate(
+  #  across(c(baseMean, log2FC, stderror), round, digits = 3)
+  #) %>%
+  #dplyr::mutate(padj = signif(padj, digits = 4)) %>%
+  #write_tsv(file = here::here("results", "DEGs",
+   #                           "deseq_df_37Cvs30C_delta_YPD.txt"))
+
+#DEGdf_delta_up2x_FDR5 %>%
+ # dplyr::pull(gene) %>%
+  #write_lines(file = here::here("results", "DEGs",
+   #                         "deglist_37Cvs30C_delta_YPD_up2x_FDR5.txt"))
+
+#DEGdf_delta_down2x_FDR5 %>%
+ # dplyr::pull(gene) %>%
+  #write_lines(file = here::here("results", "DEGs",
+         #                   "deglist_37Cvs30C_delta_YPD_down2x_FDR5.txt"))
+```
+
+
+
+# Gene ontology analysis of DEG between 30°C vs 37°C in WT and flc1∆
+
+The following files were uploaded to fungiDB:
+- `deglist_37Cvs30C_delta_YPD_up2x_FDR5`
+- `deglist_37Cvs30C_delta_YPD_down2x_FDR5`
+- `deglist_37Cvs30C_WT_YPD_up2x_FDR5`
+- `deglist_37Cvs30C_WT_YPD_down2x_FDR5`
+
+To help explain how growth temperature changes the transciptomes of WT and flc1∆ cells, I searched for gene ontology (GO) terms enriched in differentially expressed genes compared to all genes from C. neoformans var. grubii H99 (p-value cutoff = 0.05).  I used fungiDB to look for curated and computed GO slim terms describing biological processes, molecular functions and cellular components.
+
+```{r GO down WTvsdelta}
+# Open GO analysis for down regulated gene at 30°C in WT 
+MF_slim_30_down_WT <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_WT_YPD_down2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_WT_YPD",
+    GO_type = "MF",
+    DEG = "down"
+  )
+
+BP_slim_30_down_WT <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_WT_YPD_down2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_WT_YPD",
+    GO_type = "BP",
+    DEG = "down"
+  )
+
+CC_slim_30_down_WT <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_WT_YPD_down2x_FDR5_cellular_component_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_WT_YPD",
+    GO_type = "CC",
+    DEG = "down"
+  )
+
+GO_slim_30_down_WT <- bind_rows(
+  MF_slim_30_down_WT,
+  BP_slim_30_down_WT,
+  CC_slim_30_down_WT) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_30_down_WT$name <- factor(GO_slim_30_down_WT$name, levels = rev(GO_slim_30_down_WT$name))
+  
+
+# Open GO analysis for down regulated gene at 30°C in flc1∆
+
+MF_slim_30_down_delta <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_delta_YPD_down2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_delta_YPD",
+    GO_type = "MF",
+    DEG = "down"
+  )
+
+BP_slim_30_down_delta <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_delta_YPD_down2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_delta_YPD",
+    GO_type = "BP",
+    DEG = "down"
+  )
+
+CC_slim_30_down_delta <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_delta_YPD_down2x_FDR5_cellular_component_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_delta_YPD",
+    GO_type = "CC",
+    DEG = "down"
+  )
+
+GO_slim_30_down_delta <- bind_rows(
+  MF_slim_30_down_delta,
+  BP_slim_30_down_delta,
+  CC_slim_30_down_delta) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_30_down_delta$name <- factor(GO_slim_30_down_delta$name, levels = rev(GO_slim_30_down_delta$name))
+
+
+# Plot GO fold enrichment for down at 30°C 
+pGO_slim_30_down_WT <- ggplot(
+  data = GO_slim_30_down_WT, 
+  aes(x = 0, xend = fold_enrichment, y = name, colour = go_type, fill = go_type)
+) + 
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, fill = go_type)) +
+  geom_segment() +
+    labs(size="Genes", colour="GO term", fill = "GO term") + 
+    xlab("Fold enrichment") + 
+    ylab("") +
+    scale_x_continuous(breaks = c(0,5,10,15,20,25,30), limits = c(0,30), expand = c(0.01,0.01))
+
+# Plot GO fold enrichment for down at 37°C 
+pGO_slim_30_down_delta <- ggplot(
+  data = GO_slim_30_down_delta, 
+  aes(x = 0, xend = fold_enrichment, y = name, colour = go_type, fill = go_type)
+) + 
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, fill = go_type)) +
+  geom_segment() +
+    labs(size="Genes", colour="GO term", fill = "GO term") + 
+    xlab("Fold enrichment") + 
+    ylab("") +
+    scale_x_continuous(breaks = c(0,5,10,15,20,25,30), limits = c(0,30), expand = c(0.01,0.01))
+
+# Plot side-by-side
+plegend <- get_legend(
+  pGO_slim_30_down_delta + 
+  theme(legend.box.margin = margin(2, 2, 2, 2),
+        legend.justification = "top")
+)
+
+
+# add the legend to the row we made earlier. Give it one-third of 
+# the width of one plot (via rel_widths).
+plot_grid(
+  pGO_slim_30_down_WT + theme(legend.position="none") + ggtitle("Down 37°C vs 30°C in WT"),
+  plegend,
+  pGO_slim_30_down_delta + theme(legend.position="none") + ggtitle("Down 37°C vs 30°C in flc1∆"),
+  nrow = 2,
+  rel_widths = c(1, .4),
+  align = "v")
+
+```
+
+```{r GO down WTvsdelta}
+# Open GO analysis for up regulated gene at 30°C in WT 
+MF_slim_30_up_WT <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_WT_YPD_up2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_WT_YPD",
+    GO_type = "MF",
+    DEG = "up"
+  )
+
+BP_slim_30_up_WT <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_WT_YPD_up2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_WT_YPD",
+    GO_type = "BP",
+    DEG = "up"
+  )
+
+GO_slim_30_up_WT <- bind_rows(
+  MF_slim_30_up_WT,
+  BP_slim_30_up_WT) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_30_up_WT$name <- factor(GO_slim_30_up_WT$name, levels = rev(GO_slim_30_up_WT$name))
+  
+
+# Open GO analysis for up regulated gene at 30°C in flc1∆
+
+MF_slim_30_up_delta <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_delta_YPD_up2x_FDR5_molecular_function_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_delta_YPD",
+    GO_type = "MF",
+    DEG = "up"
+  )
+
+BP_slim_30_up_delta <- read_tsv(
+  here("results/GOanalysis/GO_37Cvs30C_delta_YPD_up2x_FDR5_biological_process_slim.tsv")
+) %>% 
+  mutate(
+    Comparison = "37Cvs30C_delta_YPD",
+    GO_type = "BP",
+    DEG = "up"
+  )
+
+
+GO_slim_30_up_delta <- bind_rows(
+  MF_slim_30_up_delta,
+  BP_slim_30_up_delta) %>%  
+  janitor::clean_names() %>% 
+  mutate(
+    go_type = factor(go_type, levels = c("BP", "MF", "CC"), labels = c("Biological process", "Molecular function", "Cellular component"))
+  ) %>% 
+  group_by(go_type) %>% 
+  arrange(desc(fold_enrichment), .by_group = T)
+
+GO_slim_30_up_delta$name <- factor(GO_slim_30_up_delta$name, levels = rev(GO_slim_30_up_delta$name))
+
+
+# Plot GO fold enrichment for up at 30°C 
+pGO_slim_30_up_WT <- ggplot(
+  data = GO_slim_30_up_WT, 
+  aes(x = 0, xend = fold_enrichment, y = name, colour = go_type, fill = go_type)
+) + 
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, fill = go_type)) +
+  geom_segment() +
+    labs(size="Genes", colour="GO term", fill = "GO term") + 
+    xlab("Fold enrichment") + 
+    ylab("") +
+    scale_x_continuous(breaks = c(0,5,10,15,20,25,30), limits = c(0,30), expand = c(0.01,0.01))
+
+# Plot GO fold enrichment for up at 37°C 
+pGO_slim_30_up_delta <- ggplot(
+  data = GO_slim_30_up_delta, 
+  aes(x = 0, xend = fold_enrichment, y = name, colour = go_type, fill = go_type)
+) + 
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, fill = go_type)) +
+  geom_segment() +
+    labs(size="Genes", colour="GO term", fill = "GO term") + 
+    xlab("Fold enrichment") + 
+    ylab("") +
+    scale_x_continuous(breaks = c(0,5,10,15,20,25,30), limits = c(0,30), expand = c(0.01,0.01))
+
+# Plot side-by-side
+plegend <- get_legend(
+  pGO_slim_30_up_delta + 
+  theme(legend.box.margin = margin(2, 2, 2, 2),
+        legend.justification = "top")
+)
+
+
+# add the legend to the row we made earlier. Give it one-third of 
+# the width of one plot (via rel_widths).
+plot_grid(
+  pGO_slim_30_up_WT + theme(legend.position="none") + ggtitle("up 37°C vs 30°C in WT"),
+  plegend,
+  pGO_slim_30_up_delta + theme(legend.position="none") + ggtitle("up 37°C vs 30°C in flc1∆"),
+  nrow = 2,
+  rel_widths = c(1, .4),
+  align = "v")
+
+
+```
+
+
+```{r}
+GOslim2 <- bind_rows(GO_slim_30_up_WT, GO_slim_30_up_delta, GO_slim_30_down_WT, GO_slim_30_down_delta) %>% 
+  mutate(comparison = factor(comparison, 
+                             levels = c("37Cvs30C_WT_YPD", "37Cvs30C_delta_YPD"),
+                             labels = c("37°C vs 30°C in WT", "37°C vs 30°C in flc1∆")),
+         deg = factor(deg, levels = c("down", "up"), labels = c("up in 30°C", "up in 37°C"))) %>% 
+  ungroup() %>%
+  group_by(go_type, comparison) %>% 
+  arrange(desc(fold_enrichment), .by_group = T) %>% 
+  filter(!name %in% c("cellular component", "molecular function", "biological process", "organelle", "intracellular anatomical structure"))
+
+GOslim2$name <- factor(GOslim2$name, levels = rev(unique(GOslim2$name)))
+
+NS_dataframe2 <- tibble(
+  name = c("sulfur compound metabolic process", "ribosome biogenesis", "structural constituent of ribosome", "structural molecule activity", "acyltransferase activity", "RNA binding", "ribosome", "carbohydrate metabolic process", "lyase activity", "cell wall", "external encapsulating structure", "carbohydrate metabolic process", "lyase activity", "oxidoreductase activity", "transmembrane transport", "transmembrane transporter activity"),
+  
+  comparison = c(rep("37°C vs 30°C in flc1∆", times = 7), rep("37°C vs 30°C in WT", times = 4), rep("37°C vs 30°C in flc1∆", times = 3), rep("37°C vs 30°C in WT", times = 2)),
+  deg = c(rep("up in 30°C", times = 11), rep("up in 37°C", times = 5))
+  ) %>% 
+  mutate(deg = factor(deg, levels = c("up in 30°C", "up in 37°C")),
+         comparison = factor(comparison, levels = c("37°C vs 30°C in WT", "37°C vs 30°C in flc1∆")))
+
+# Plot GO temrs without filling in 'NA' to make left and right plots match  
+ggplot(
+  data = GOslim2) + 
+  geom_segment(aes(x = 0, xend = fold_enrichment, y = name, linetype = go_type)) +
+  scale_linetype_manual(values = c(1,2,3)) + 
+  ggnewscale::new_scale_color() +  
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, colour = deg)) +
+  scale_colour_manual(values = c("darkred", "darkblue")) + 
+    labs(size="Number of Genes", linetype="GO term", colour = "Gene Expression") + 
+    xlab("Fold enrichment") + 
+    ylab("") + 
+   # scale_x_continuous(breaks = c(0,2,4,6,8,10, 12, 14), limits = c(0,14), expand = c(0.01,0.01)) +
+    facet_wrap2(deg~comparison, scales = "free_y", axes = "all") + 
+    theme(strip.text = element_text(colour = "white"),
+          axis.text.y = element_text(size = 10, colour = "black"),
+          axis.text.x = element_text(size = 10, colour = "black"),
+          axis.title.x = element_text(size = 12, colour = "black"),
+          legend.title = element_text(size = 12, colour = "black"),
+          legend.text = element_text(size = 10, colour = "black"),
+          legend.justification = "top",
+          legend.spacing.y = unit(1.0, 'cm'),
+          legend.box.margin = margin(t = 0, r = 0, b = 0, l = 1, unit = 'cm')) + 
+  guides(linetype = guide_legend(order=1),
+         colour = guide_legend(order=2),
+         size = guide_legend(order=3))
+
+GO_slim_plot_37Cvs30C <- ggplot(
+  data = GOslim2) + 
+  geom_segment(aes(x = 0, xend = fold_enrichment, y = name, linetype = go_type)) +
+  scale_linetype_manual(values = c(1,2,3)) + 
+  ggnewscale::new_scale_color() +  
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, colour = deg)) +
+  scale_colour_manual(values = c("darkred", "darkblue")) + 
+    labs(size="Number of Genes", linetype="GO term", colour = "Gene Expression") + 
+    xlab("Fold enrichment") + 
+    ylab("") + 
+    #scale_x_continuous(breaks = c(0,2,4,6,8,10, 12, 14), limits = c(0,14), expand = c(0.01,0.01)) +
+    #ggforce::facet_col(deg~comparison, scales = "free_y", space = "free") + 
+    theme(axis.text.x = element_text(size = 3))
+
+# Add in 'NA' symbols to make left and right plots symmertcial. The ggh4x package has a nice facet function that allows you to display the axes of all plots
+GO_slim_plot_37Cvs30C + 
+  geom_text(data = NS_dataframe2, aes(x = 0.8, y = name, label = "NF"), size = 3) + 
+    facet_grid2(deg~comparison, scale = "free_y", space = "free",  axes = "all") + 
+    theme(strip.text.y = element_blank(),
+          strip.text.x = element_text(size = 16, colour = "black", family="Arial"),
+          axis.text.y = element_text(size = 14, colour = "black", family="Arial"),
+          axis.text.x = element_text(size = 14, colour = "black", family="Arial"),
+          axis.title.x = element_text(size = 16, colour = "black", family="Arial"),
+          legend.title = element_text(size = 16, colour = "black", family="Arial"),
+          legend.text = element_text(size = 14, colour = "black", family="Arial"),
+          panel.spacing.x = unit(4, "lines"),
+          legend.justification = "top",
+          legend.spacing.y = unit(1.0, 'cm'),
+          legend.box.margin = margin(t = -0.5, r = 0, b = 0, l = 2, unit = 'cm')
+          ) + 
+  guides(linetype = guide_legend(order=1),
+         colour = guide_legend(order=2),
+         size = guide_legend(order=3))
+
+ggsave(here("GOanalysis_37Cvs30C_WT_delta_grid.png"), height = 8, width = 16, dpi = 1000, bg = "white")
+```
+
+
+
+```{r plot GO terms next to volcano 37Cvs30C WT}
+GOslim_37Cvs30C_WT_YPD <- ggplot(
+  data = GOslim2 %>% filter(comparison == "37°C vs 30°C in WT")) + 
+  geom_segment(aes(x = 0, xend = fold_enrichment, y = name, linetype = go_type)) +
+  scale_linetype_manual(values = c("solid", "twodash", "dotted")) + 
+  ggnewscale::new_scale_color() +  
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, colour = deg)) +
+  scale_colour_manual(values = c("darkred", "darkblue")) + 
+    labs(size="Number of Genes", linetype="GO term", colour = "Gene Expression") + 
+    xlab("Fold enrichment") + 
+    ylab("") + 
+    scale_x_continuous(breaks = c(0, 5, 10, 15, 20, 25, 30), limits = c(0,30), expand = c(0.01,0.01)) +
+    facet_grid2(deg~., scales = "free_y", axes = "all", space = "free") + 
+    theme(strip.text = element_text(colour = "white"),
+          axis.text.y = element_text(size = 10, colour = "black"),
+          axis.text.x = element_text(size = 10, colour = "black"),
+          axis.title.x = element_text(size = 12, colour = "black"),
+          legend.title = element_text(size = 12, colour = "black"),
+          legend.text = element_text(size = 10, colour = "black"),
+          legend.justification = "top",
+          legend.spacing.y = unit(0.3, 'cm'),
+          legend.box.margin = margin(t = 0, r = 0, b = 0, l = 1, unit = 'cm')) + 
+  guides(linetype = guide_legend(order=1),
+         colour = guide_legend(order=2),
+         size = guide_legend(order=3))
+
+#ggsave(here("GOanalysis_37Cvs30C_WT_vertical.png"), height = 5, width = 7, dpi = 1000, bg = "white")
+
+
+Volcana_GOterm_WT <- cowplot::plot_grid(volcano_37Cvs30C_WT_YPD, GOslim_37Cvs30C_WT_YPD, rel_widths = c(1:4),
+                                        labels = c('A', 'B'))
+
+ggsave(here("results/figures/37Cvs30C_WT_YPD_volcano_GOterm.png"),Volcana_GOterm_WT, height = 3.5, width = 11, dpi = 1000, bg = "white")
+```
+
+
+```{r plot GO terms next to volcano 37Cvs30C WT}
+GOslim_37Cvs30C_delta_YPD <- ggplot(
+  data = GOslim2 %>% filter(comparison == "37°C vs 30°C in flc1∆")) + 
+  geom_segment(aes(x = 0, xend = fold_enrichment, y = name, linetype = go_type)) +
+  scale_linetype_manual(values = c("solid", "twodash", "dotted")) + 
+  ggnewscale::new_scale_color() +  
+  geom_point(aes(x = fold_enrichment, y = name, size = result_count, colour = deg)) +
+  scale_colour_manual(values = c("darkred", "darkblue")) + 
+    labs(size="Number of Genes", linetype="GO term", colour = "Gene Expression") + 
+    xlab("Fold enrichment") + 
+    ylab("") + 
+    scale_x_continuous(breaks = c(0, 5, 10, 15, 20, 25, 30), limits = c(0,30), expand = c(0.01,0.01)) +
+    facet_grid2(deg~., scales = "free_y", axes = "all", space = "free") + 
+    theme(strip.text = element_text(colour = "white"),
+          axis.text.y = element_text(size = 10, colour = "black"),
+          axis.text.x = element_text(size = 10, colour = "black"),
+          axis.title.x = element_text(size = 12, colour = "black"),
+          legend.title = element_text(size = 12, colour = "black"),
+          legend.text = element_text(size = 10, colour = "black"),
+          legend.justification = "top",
+          legend.spacing.y = unit(0.3, 'cm'),
+          legend.box.margin = margin(t = 0, r = 0, b = 0, l = 1, unit = 'cm')) + 
+  guides(linetype = guide_legend(order=1),
+         colour = guide_legend(order=2),
+         size = guide_legend(order=3))
+
+Volcana_GOterm_delta <- cowplot::plot_grid(volcano_37Cvs30C_delta_YPD, GOslim_37Cvs30C_delta_YPD, rel_widths = c(1:4) , labels = c('C', 'D'))
+
+ggsave(here("results/figures/37Cvs30C_delta_YPD_volcano_GOterm.png"),Volcana_GOterm_delta, height = 3.5, width = 11, dpi = 1000, bg = "white")
+```
+
+
+
+
+
+
+
+```{r Venn_DEGs_up}
+# Turn into lists of genes
+DGE_WT <- dplyr::filter(deseq_df_37Cvs30C_WT_YPD,
+                log2FC > 0.5, padj < 0.1) %>% .$gene
+DGE_delta <- dplyr::filter(deseq_df_37Cvs30C_delta_YPD,
+                log2FC > 0.5, padj < 0.1) %>% .$gene
+
+# Add to a list object with names to display on plot
+euler_list <- list( 
+  'FLC1' = DGE_WT, 
+  'flc1∆' = DGE_delta)
+
+# Create the euler plot
+eulerr_plot <- plot(
+  euler(euler_list), 
+  quantities = TRUE, 
+  legend = TRUE,
+  fills = c("grey95", "#F9E9C8"),
+  fontsize = 20
+  ) 
+
+# Display eulerr 
+eulerr_plot
+```
+

@@ -1,0 +1,37 @@
+﻿gene,geneName,geneNameLong,geneGroup,geneGroupSpecific
+CNAG_03099,CHS1,Chitin synthase 1,cell_wall,chitin_synthase
+CNAG_03326,CHS2,Chitin synthase 2,cell_wall,chitin_synthase
+CNAG_05581,CHS3,Chitin synthase 3,cell_wall,chitin_synthase
+CNAG_00546,CHS4,Chitin synthase 4,cell_wall,chitin_synthase
+CNAG_05818,CHS5,Chitin synthase 5,cell_wall,chitin_synthase
+CNAG_06487,CHS6,Chitin synthase 6,cell_wall,chitin_synthase
+CNAG_02217,CHS7,Chitin synthase 7,cell_wall,chitin_synthase
+CNAG_07499,CHS8,Chitin synthase 8,cell_wall,chitin_synthase
+CNAG_05799,CDA1,Chitin deacetylase 1,cell_wall,chitin_deacetylase
+CNAG_01230,MP98,Chitin deacetylase 2,cell_wall,chitin_deacetylase
+CNAG_01239,CDA3,Chitin deacetylase 3,cell_wall,chitin_deacetylase
+CNAG_03412,CHI2,Chitinase ,cell_wall,chitinase
+CNAG_02598,CHI21,Chitinase ,cell_wall,chitinase
+CNAG_04245,CHI22,Chitinase ,cell_wall,chitinase
+CNAG_02351,CHI4,Endochitinase,cell_wall,chitinase
+CNAG_06678,CSR1,Putative chitin sythase regulator,cell_wall,chitin_associated
+CNAG_06727,CSR3,Chitin synthase regulator 3,cell_wall,chitin_associated
+CNAG_06898,,Chitin synthase export chaperone,cell_wall,chitin_associated
+CNAG_06508,FKS1,"1,3-beta-glucan synthase component",cell_wall,beta_1_3_glucan
+CNAG_00373,,"Glucan 1,3-beta-glucosidase",cell_wall,beta_1_3_glucan
+CNAG_05138,,"Glucan 1,3-beta-glucosidase",cell_wall,beta_1_3_glucan
+CNAG_02225,EXG104,"Glucan 1,3-beta-glucosidase",cell_wall,beta_1_3_glucan
+CNAG_06336,,"Glucan 1,3-beta-glucosidase",cell_wall,beta_1_3_glucan
+CNAG_05803,,"Exo-beta-1,3-glucanase",cell_wall,beta_1_3_glucan
+CNAG_02860,EBG1,"Endo-1,3(4)-beta-glucanase",cell_wall,beta_1_3_glucan
+CNAG_06501,,"1,3-beta-glucanosyltransferase",cell_wall,beta_1_3_glucan
+CNAG_03120,AGS1,"Alpha-1,3-glucan synthase",cell_wall,alpha_1_3_glucan
+CNAG_02850,,"Glucan endo-1,3-alpha-glucosidase",cell_wall,alpha_1_3_glucan
+CNAG_07736,,"Glucan endo-1,3-alpha-glucosidase",cell_wall,alpha_1_3_glucan
+CNAG_03648,KRE5,Glucosyltransferase,cell_wall,beta_1_6_glucan
+CNAG_00914,KRE6,Glucosidase,cell_wall,beta_1_6_glucan
+CNAG_00897,SKN1,Putative glucosidase,cell_wall,beta_1_6_glucan
+CNAG_06835,KRE61,Glucosidase,cell_wall,beta_1_6_glucan
+CNAG_06832,KRE62,Glucosidase,cell_wall,beta_1_6_glucan
+CNAG_06031,KRE63,Beta-glucan synthesis-associated protein,cell_wall,beta_1_6_glucan
+CNAG_05815,KRE64,Glucosidase,cell_wall,beta_1_6_glucan

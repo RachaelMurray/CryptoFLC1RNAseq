@@ -103,22 +103,27 @@ write_lines(c("# counts_quantseqfwd_CryptoRNAseqFLC1_tidy.txt",
               "#   TPM: Transcripts per million (normalized Count for each sample)",
               "# "),
             file = file_counts_long)
-write_tsv(counts_bygene_long %>% select(-Condition), file = file_counts_long, col_names = TRUE, append = TRUE)
+#write_tsv(counts_bygene_long %>% select(-Condition), file = file_counts_long, col_names = TRUE, append = TRUE)
 ```
 
 ## Plot some individual genes
 
-
-```{r plot_my_gene, dependson = "make_tidy_counts", fig.height = 8, fig.width = 8.5}
+```{r plot_my_gene, dependson = "make_tidy_counts"}
 plot_my_genes_TPM <- function(mygenes = "CNAG_06125",
-                                  mydata = counts_bygene_long) {
+                              mydata = counts_bygene_long,
+                              mymedia = c("YPD", "YPD_EGTA", "YPD_CFW"),
+                              mytemperature = c(30, 37)){
     ggplot(data = filter(mydata, 
-                         Geneid %in% mygenes),
-           aes(x = Condition, y = TPM, colour = FLC1)) +
-        geom_point(aes(shape = BioRep)) +
-         stat_summary(aes(group=FLC1), fun.min="mean",fun.max="mean",
-                     geom="errorbar",linewidth=1,width=0.2) +
-        scale_y_log10() +
+                         Geneid %in% mygenes,
+                         Media %in% mymedia,
+                         Temperature %in% mytemperature),
+                         aes(x = Condition, y = TPM, colour = FLC1)) +
+        geom_point(aes(shape = BioRep), size = 1, alpha = 0.7) +
+        stat_summary(aes(group=FLC1), fun.min="mean",fun.max="mean",
+                     geom="errorbar",linewidth=1,width=0.4) +  
+        guides(shape = guide_legend(override.aes = list(size = 1, alpha = 1)),
+               color = guide_legend(override.aes = list(linetype = 1, shape = NA))) +
+        #scale_y_log10() +
         theme(axis.title.x=element_blank()) + 
         facet_grid(.~Geneid) 
 }
@@ -137,6 +142,281 @@ plot_my_genes_TPM("CNAG_02714") + labs(title = "EFB1"),
 rows = 3)
 
 
+cowplot::plot_grid(
+  plot_my_genes_TPM("CNAG_00327") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_01656") + labs(title = "")
+)
+
+plot_my_genes_TPM("CNAG_01653") + labs(title = "CIG1")
+plot_my_genes_TPM("CNAG_00522") + labs(title = "TRICALBIN")
+plot_my_genes_TPM("CNAG_02045") + labs(title = "")
+plot_my_genes_TPM("CNAG_04105") + labs(title = "")
+plot_my_genes_TPM("CNAG_05785") + labs(title = "")
+plot_my_genes_TPM("CNAG_06241") + labs(title = "")
+
+
+plot_my_genes_TPM("CNAG_01824") + labs(title = "TRICALBIN")
+plot_my_genes_TPM("CNAG_00522") + labs(title = "TRICALBIN")
+plot_my_genes_TPM("CNAG_04200") + labs(title = "TRICALBIN")
+
+
+
+
+
+plot_grid(
+  plot_my_genes_TPM("CNAG_06060") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_03597") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_00923") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06381") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_03595") + labs(title = "")
+)
+
+
+plot_grid(
+  plot_my_genes_TPM("CNAG_01446") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_05666") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_04553") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_00981") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_02877") + labs(title = "")
+)
+
+
+
+plot_grid(
+  plot_my_genes_TPM("CNAG_01954") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_02526") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_00587") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_04142") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_01223") + labs(title = "")
+)
+
+plot_grid(
+  plot_my_genes_TPM("CNAG_00162") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06297") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06102") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_00443") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06438") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_01539") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_00828") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06578") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_01621") + labs(title = "")
+)
+
+
+
+CNAG_03597
+
+CNAG_02892
+
+CNAG_05785
+
+CNAG_02045
+CNAG_04837
+CNAG_00522
+CNAG_01653
+
+
+plot_grid(
+  plot_my_genes_TPM("CNAG_01446") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_05256") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06291") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06698") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06438") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_05258") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06576") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_02877") + labs(title = ""),
+  plot_my_genes_TPM("CNAG_03465") + labs(title = "")
+)
+
+
+
+plot_grid(
+plot_my_genes_TPM("CNAG_00036") + labs(title = ""),		
+plot_my_genes_TPM("CNAG_01585") + labs(title = ""),		
+plot_my_genes_TPM("CNAG_02718") + labs(title = ""),		
+plot_my_genes_TPM("CNAG_03495") + labs(title = ""),		
+plot_my_genes_TPM("CNAG_03572") + labs(title = ""),		
+plot_my_genes_TPM("CNAG_03667") + labs(title = ""),		
+plot_my_genes_TPM("CNAG_03857") + labs(title = ""),		
+plot_my_genes_TPM("CNAG_04142") + labs(title = ""),		
+plot_my_genes_TPM("CNAG_04157") + labs(title = ""),		
+plot_my_genes_TPM("CNAG_04183") + labs(title = ""),
+plot_my_genes_TPM("CNAG_06297") + labs(title = "")
+)
+
+
+plot_my_genes_TPM("CNAG_02008") + labs(title = "OVA1")
+plot_my_genes_TPM("CNAG_00036") + labs(title = "SEC14")
+plot_my_genes_TPM("CNAG_01653") + labs(title = "CIG1")
+
+
+
+
+
+
+# Zinc transporter
+plot_my_genes_TPM("CNAG_00895") + labs(title = "ZIP1")
+plot_my_genes_TPM("CNAG_03398") + labs(title = "ZIP2")
+
+# Iron uptake 
+
+
+plot_grid(
+plot_my_genes_TPM("CNAG_00979") + labs(title = "CTR4"),
+plot_my_genes_TPM("CNAG_07701") + labs(title = "CTR1"),
+plot_my_genes_TPM("CNAG_02775") + labs(title = "BIM1")
+)
+
+plot_my_genes_TPM("CNAG_03315") + labs(title = "")
+CNAG_00110
+CNAG_00979
+CNAG_02864
+
+
+plot_grid(
+plot_my_genes_TPM("CNAG_05135") + labs(title = "PMR1-like"),
+plot_my_genes_TPM("CNAG_05592") + labs(title = "PMR1-like")
+)
+
+
+plot_my_genes_TPM("CNAG_00066") + labs(title = "FLC type II")
+plot_my_genes_TPM("CNAG_03751") + labs(title = "MID1")
+
 ```
+
+# Glucan metabolic genes upregulated by EGTA in the delta mutant
+
+```{r}
+cowplot::plot_grid(
+  plot_my_genes_TPM("CNAG_06931", mymedia = c("YPD","YPD_EGTA"), mytemperature = 37) + labs(title = "Beta-glucosidase"),
+  plot_my_genes_TPM("CNAG_00393", mymedia = c("YPD","YPD_EGTA"), mytemperature = 37) + labs(title = "1,4-alpha-glucan-branching enzyme"),
+  plot_my_genes_TPM("CNAG_00897", mymedia = c("YPD","YPD_EGTA"), mytemperature = 37) + labs(title = "putative glucosidase"),
+  plot_my_genes_TPM("CNAG_04879", mymedia = c("YPD","YPD_EGTA"), mytemperature = 37) + labs(title = "Glycogen debranching enzyme")
+)
+```
+
+# Cell wall gene down in WT vs FLC1∆ at 37°C 
+
+```{r}
+
+cowplot::plot_grid(
+  plot_my_genes_TPM("CNAG_06508", mymedia = c("YPD","YPD_EGTA"), mytemperature = c(37, 30)) + labs(title = "FKS1"),
+  plot_my_genes_TPM("CNAG_06835", mymedia = c("YPD","YPD_EGTA"), mytemperature = c(37, 30)) + labs(title = "KRE61"),
+  plot_my_genes_TPM("CNAG_06031", mymedia = c("YPD","YPD_EGTA"), mytemperature = c(37, 30)) + labs(title = "KRE63"),
+  plot_my_genes_TPM("CNAG_05818", mymedia = c("YPD","YPD_EGTA"), mytemperature = c(37, 30)) + labs(title = "CHS5"),
+  plot_my_genes_TPM("CNAG_02217", mymedia = c("YPD","YPD_EGTA"), mytemperature = c(37, 30)) + labs(title = "CHS7")
+)
+```
+
+
+
+
+
+
+
+
+
+
+# Hypothetic proteins upregulated by EGTA in the delta mutant
+
+```{r}
+cowplot::plot_grid(
+  plot_my_genes_TPM("CNAG_04877", mymedia = c("YPD","YPD_EGTA"), mytemperature = 37) + labs(title = ""),
+  plot_my_genes_TPM("CNAG_00091", mymedia = c("YPD","YPD_EGTA"), mytemperature = 37) + labs(title = ""),
+  plot_my_genes_TPM("CNAG_07912", mymedia = c("YPD","YPD_EGTA"), mytemperature = 37) + labs(title = ""),
+  plot_my_genes_TPM("CNAG_06109", mymedia = c("YPD","YPD_EGTA"), mytemperature = 37) + labs(title = ""),
+  plot_my_genes_TPM("CNAG_00984", mymedia = c("YPD","YPD_EGTA"), mytemperature = 37) + labs(title = "glucose and ribitol dehydrogenase"))
+
+```
+
+
+```{r}
+cowplot::plot_grid(
+  plot_my_genes_TPM("CNAG_00979", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "CTR4"),
+  plot_my_genes_TPM("CNAG_07701", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "CTR1"),
+  plot_my_genes_TPM("CNAG_02775", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "BIM1"),
+  plot_my_genes_TPM("CNAG_02217", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "CHS7"),
+  plot_my_genes_TPM("CNAG_06487", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "CHS6"),
+  plot_my_genes_TPM("CNAG_00876", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "FRE7"),
+  plot_my_genes_TPM("CNAG_07334", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "FRE4"),
+  plot_my_genes_TPM("CNAG_03498", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "FRE201"),
+  plot_my_genes_TPM("CNAG_01653", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "CIG2"),
+  plot_my_genes_TPM("CNAG_03398", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "ZIP2"),
+  plot_my_genes_TPM("CNAG_06576", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "CAR1"),
+  plot_my_genes_TPM("CNAG_06291", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "FPD1"),
+  plot_my_genes_TPM("CNAG_01341", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "ISP3"),
+  plot_my_genes_TPM("CNAG_00091", mymedia = c("YPD", "YPD_EGTA"), mytemperature = 37) + labs(title = "CNAG_00091")
+  )
+```
+
+```{r}
+plot_my_genes_TPM("CNAG_03385")
+plot_my_genes_TPM("CNAG_03385")
+plot_my_genes_TPM("CNAG_01446")
+plot_my_genes_TPM("CNAG_05387")
+
+```
+
+```{r}
+TFs <- read_csv(here("TFlist.csv")) %>% 
+  mutate(gene = paste("CNAG_", gene, sep = "")) %>% 
+  mutate(Geneid = gene)
+
+TFs %>% 
+  left_join(counts_bygene_long)
+```
+# Differential expression of transciption factors in WT vs FLC1 at 30°C and/or 37°C
+
+```{r}
+cowplot::plot_grid(
+  plot_my_genes_TPM("CNAG_04837", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "MLN1"),
+  plot_my_genes_TPM("CNAG_04457", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "FZC30"),
+  plot_my_genes_TPM("CNAG_00559", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "BZP3"),
+  plot_my_genes_TPM("CNAG_01841", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "GLN3"),
+  plot_my_genes_TPM("CNAG_05431", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "RIM101"),
+  plot_my_genes_TPM("CNAG_02877", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "FZC51"),
+  plot_my_genes_TPM("CNAG_05861", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "FKH101"),
+  plot_my_genes_TPM("CNAG_04804", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "SRE1"),
+  plot_my_genes_TPM("CNAG_06276", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "CEP3"),
+  plot_my_genes_TPM("CNAG_02516", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "HLH5"),
+  plot_my_genes_TPM("CNAG_00239", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "YAP1"),
+  plot_my_genes_TPM("CNAG_00871", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "CLR3"),
+  plot_my_genes_TPM("CNAG_03998", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "RLM1"),
+  plot_my_genes_TPM("CNAG_00828", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "SIP401"),
+  plot_my_genes_TPM("CNAG_03346", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "BZP4"),
+  plot_my_genes_TPM("CNAG_00791", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "HLH1"),
+  plot_my_genes_TPM("CNAG_02476", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "YRM101"),
+  plot_my_genes_TPM("CNAG_02774", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "MAL13"),
+  plot_my_genes_TPM("CNAG_01551", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "GAT201"),
+  plot_my_genes_TPM("CNAG_00156", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37)) + labs(title = "CRZ1")) 
+
+
+ggsave(here("TPM_plots_TFs_30C_37C_YPD.png"), width = 15, height = 10, bg = "white")
+
+
+```
+
+
+
+```{r}
+plot_my_genes_TPM("CNAG_00091", mymedia = c("YPD", "YPD_EGTA"), mytemperature = c(30,37))
+plot_my_genes_TPM("CNAG_04891", mymedia = c("YPD", "YPD_EGTA", "YPD_CFW"), mytemperature = c(30,37))
+
+cowplot::plot_grid(
+plot_my_genes_TPM("CNAG_01954", mymedia = c("YPD"), mytemperature = c(30,37)),
+plot_my_genes_TPM("CNAG_02526", mymedia = c("YPD"), mytemperature = c(30,37)),
+plot_my_genes_TPM("CNAG_00587", mymedia = c("YPD"), mytemperature = c(30,37)),
+plot_my_genes_TPM("CNAG_04142", mymedia = c("YPD"), mytemperature = c(30,37)),
+plot_my_genes_TPM("CNAG_01223", mymedia = c("YPD"), mytemperature = c(30,37)),
+plot_my_genes_TPM("CNAG_00162", mymedia = c("YPD"), mytemperature = c(30,37)),
+plot_my_genes_TPM("CNAG_05667", mymedia = c("YPD"), mytemperature = c(30,37)),
+plot_my_genes_TPM("CNAG_02526", mymedia = c("YPD"), mytemperature = c(30,37))
+)
+
+CNAG_02526
+CNAG_01954
+CNAG_01653
+```
+
 
 

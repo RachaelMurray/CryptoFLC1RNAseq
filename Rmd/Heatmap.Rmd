@@ -153,13 +153,14 @@ hclust_log2FC_dendrodf <-
 plot_dendrogram_log2FC_m10 <- 
   ggplot(data = hclust_log2FC_dendrodf$segments) + 
   geom_segment(aes(x = x, xend = xend, y = y, yend = yend)) +
-  # geom_label(data = hclust_log2FC_dendrodf$labels %>%
-  #              filter(label %in% c("CNAG_06963", "CNAG_03143")),
-  #            aes(x = x, y = y, label = label)) +
+   geom_text(data = hclust_log2FC_dendrodf$labels,
+             aes(x = x, y = (y-0.1), label = label), size = 1) +
   theme_void() +
   scale_y_reverse() +
   coord_flip(expand = FALSE, clip = "off")
 plot_dendrogram_log2FC_m10
+
+#ggsave(here("big_dendrogram.png"), height = 30)
 ```
 
 ## Plot the log2 fold-change in same order as clustering dendrogram
@@ -171,11 +172,31 @@ deseq_df_Condition_mincount_10_dorder <-
   mutate(gene_dorder = 
            factor(gene,
                   levels = log2FC_Condition_m10_wide$gene[hclust_log2FC$order],
-                  ordered = TRUE)
+                  ordered = TRUE),
+         Condition = 
+           factor(Condition ,
+                  levels = c(
+                    "WT_30_Y",
+                    "WT_37_Y",
+                    "WT_37_E",
+                    "WT_37_C",
+                    "WT_37_CE",
+                    "FL_30_Y",
+                    "FL_37_Y",
+                    "FL_37_E",
+                    "FL_37_C",
+                    "FL_37_CE"))
          )
 
 plot_log2FC_m10_dorder <- 
-  ggplot(data = deseq_df_Condition_mincount_10_dorder,
+  ggplot(data = deseq_df_Condition_mincount_10_dorder %>% 
+           filter(!Condition %in% c(
+                      "WT_30_Y",
+                      "FL_30_Y",
+                      "WT_37_C",
+                      "WT_37_CE",   
+                      "FL_37_C",
+                      "FL_37_CE")),
          aes(x = Condition, fill = log2FC, y = gene_dorder)) +
   geom_tile() +
   scale_fill_gradient2(low = "cyan", mid = "black", high = "yellow",
@@ -194,7 +215,11 @@ plot_log2FC_m10_dorder
 # ggsave(filename = "../results/clustered_heatmap_CryptoWakeupMediumTemperatureTime_tall.pdf", 
 #       plot_log2FC_m1_dorder + theme(axis.text.y = element_text(size = 2)),
 #       width = 6, height = 72, limitsize = FALSE)
+
+
 ```
+
+
 
 The next code chunk selects individual genes to highlight, so we can see where they are on the heatmap. Commenting out for now but could be useful later.
 
@@ -264,7 +289,7 @@ plot_grid(
   ncol = 1,
   rel_heights = c(1,7))
 
-ggsave(filename = "../results/clustered_heatmap_Condition.png", width = 6, height = 6)
+#ggsave(filename = "../results/clustered_heatmap_Condition.png", width = 6, height = 6)
 
 ```
 

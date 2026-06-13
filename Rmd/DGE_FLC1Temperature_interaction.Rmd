@@ -1,0 +1,165 @@
+---
+title: "Differential Gene Expression of FLC1 and Temperature effects with interactions"
+author: "Rachael Murray"
+date: "2024-12-09"
+output: html_document
+---
+
+# Summary
+
+Differential Gene Expression of WT vs delta and 37°C vs 30°C with interaction, in YPD samples, using DESeq2.
+
+This analysis produces files focused on the interaction term:
+
+- `deseq_df_FLC1Temperatureinteraction.txt`
+- `deglist_FLC1Temperatureinteraction_up2x_FDR5.txt`
+- `deglist_FLC1Temperatureinteraction_down2x_FDR5.txt`
+
+
+
+## Load count data from shared script load_count_data.Rmd
+
+```{r call_load_count_data, child = "load_count_data.Rmd"}
+```
+
+# DESeq on a subset of data, only 37C in YPD
+
+```{r subset_FLC1Temperatureinteraction, fig.height=8, fig.width=8}
+sample_sheet_FLC1Temperatureinteraction <-
+  dplyr::filter(sample_sheet,
+                Media == "YPD", Temperature %in% c(30, 37)) %>%
+  dplyr::mutate(Temperature = factor(Temperature, 
+                              levels = c(30,37),
+                              labels = c("30C","37C")))
+
+dds_FLC1Temperatureinteraction <- 
+  DESeqDataSetFromMatrix(
+    countData = counts_all %>%
+      dplyr::select(sample_sheet_FLC1Temperatureinteraction$SampleName) %>%
+      magrittr::set_rownames(counts_all$Gene),
+    colData = sample_sheet_FLC1Temperatureinteraction,
+    design = ~ FLC1 + Temperature + FLC1:Temperature) %>%
+  DESeq()
+
+dds_FLC1Temperatureinteraction
+```
+```{r results_FLC1Temperatureinteraction}
+results(dds_FLC1Temperatureinteraction)
+
+resultsNames(dds_FLC1Temperatureinteraction)
+```
+
+```{r deseq_df_FLC1Temperatureinteraction}
+deseq_df_FLC1Temperatureinteraction <- 
+  biobroom::tidy.DESeqDataSet(dds_FLC1Temperatureinteraction) %>%
+  dplyr::filter(term == "FLC1WT.Temperature37C") %>%
+  dplyr::left_join(gene_info_df,
+                   by = "gene") %>% 
+  dplyr::select(gene, 
+                geneName, 
+                baseMean, 
+                log2FC = estimate, 
+                stderror,
+                padj = p.adjusted)
+```
+
+## List DEGs most UP in WT vs delta
+
+We cut off at 2x changes with 5% FDR here.
+
+
+```{r DEGs_WT_up, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_interact_up2x_FDR5 <- 
+  dplyr::filter(deseq_df_FLC1Temperatureinteraction,
+                log2FC > 1, padj < 0.05) %>%
+  dplyr::arrange(desc(log2FC))
+print(DEGdf_interact_up2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_WT_up_named}
+DEGdf_interact_up2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+
+## List DEGs most DOWN in WT vs delta
+
+
+```{r DEGs_WT_down, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_interact_down2x_FDR5 <- 
+  dplyr::filter(deseq_df_FLC1Temperatureinteraction,
+                log2FC < -1, padj < 0.05) %>%
+  dplyr::arrange(log2FC)
+print(DEGdf_interact_down2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_37C_down_named}
+DEGdf_interact_down2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+## Volcano plot of DEGs
+
+ADD volcano plots for the other terms as sanity check?
+
+```{r volcano_FLC1Temperatureinteraction, fig.width = 6, fig.height = 3}
+volcano_FLC1Temperatureinteraction <- 
+  ggplot(data = deseq_df_FLC1Temperatureinteraction,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = 0.5, colour = "grey50") +
+  geom_point(data = DEGdf_interact_up2x_FDR5,
+             size = 1, colour = "darkblue") +
+  geom_point(data = DEGdf_interact_down2x_FDR5,
+             size = 1, colour = "darkred") +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,20), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change,\nInteraction term FLC1 and Temperature",
+                     breaks = -5:5,
+                     limits = c(-4,4), expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") 
+volcano_FLC1Temperatureinteraction
+```
+
+The volcano plot shows extensive differential effects of Temperature in flc1∆ compared to wild-type cells.
+
+
+
+## Write outputs to files
+
+```{r write_DEGs}
+deseq_df_FLC1Temperatureinteraction %>%
+  dplyr::mutate(
+    across(c(baseMean, log2FC, stderror), round, digits = 3)
+  ) %>%
+  dplyr::mutate(padj = signif(padj, digits = 4)) %>%
+  write_tsv(file = here::here("results", "DEGs",
+                              "deseq_df_FLC1Temperatureinteraction.txt"))
+
+DEGdf_interact_up2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_FLC1Temperatureinteraction_up2x_FDR5.txt"))
+
+DEGdf_interact_down2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_FLC1Temperatureinteraction_down2x_FDR5.txt"))
+```
+
+# Session Info
+
+Package versions, etc., that ran this file.
+
+```{r session_info,results="show",message=TRUE}
+sessionInfo()
+```

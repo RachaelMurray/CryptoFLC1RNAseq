@@ -1,0 +1,146 @@
+---
+title: "Overlap in DGE in Flc1∆ vs WT and the Chow et al. 2017 Crz1 and Cna1 DGE dataset"
+author: "Rachael Murray"
+date: "2024-12-19"
+output: html_document
+---
+
+# Summary 
+
+Find out how similar the transcriptomes are of crz1∆, cna1∆ and flc1∆ cells relative to WT at 37°C by comparing differential expressed genes in our dataset (flc1∆) with Chow et al. 2017 (crz1∆ and cna1∆). 
+
+## Load packages
+```{r load R packages, include = F}
+library(here)
+library(dplyr)
+library(tidyr)
+library(janitor)
+library(ggplot2)
+library(readr)
+library(eulerr)
+library(ggvenn)
+library(stringr)
+library(cowplot)
+library(gridExtra)
+```
+
+## Load differential expressed gene summary from Chow et al. 2017 
+
+```{r load DGE chow2017}
+DGE_chow2017 <- read_csv(
+  here::here("Chow2017_Crz1_Cna1_targets", "Chow2017_DEG_summary.csv")
+) %>% 
+  mutate(GeneID = case_when(nchar(GeneID) == 4 ~ paste("CNAG_0", GeneID, sep = ""),
+                            nchar(GeneID) == 3 ~ paste("CNAG_00", GeneID, sep = ""),
+                            nchar(GeneID) == 2 ~ paste("CNAG_000", GeneID, sep = ""),
+                            nchar(GeneID) == 1 ~ paste("CNAG_0000", GeneID, sep = ""))) %>% 
+  mutate(Dataset = factor(Dataset, levels = 
+           c("cna1_crz1_thermal_stress", 
+             "crz1_thermal_stress", 
+             "cna1_thermal_stress", 
+             "cna1_crz1_no_stress",
+             "cna1_no_stress", 
+             "crz1_no_stress")))
+```
+## Load differentially expressed gene summary for Flc1∆ vs WT at 37°C
+
+```{r load DGE list WTvsdelta 37C}
+
+deglist_WTvsdelta_37C_up <- read_delim(
+  here::here("results", "DEGs", "deglist_WTvsdelta_37C_YPD_up2x_FDR5.txt"), 
+  delim = " ", 
+  col_names = "GeneID"
+)
+
+deglist_WTvsdelta_37C_down <- read_delim(
+  here::here("results", "DEGs", "deglist_WTvsdelta_37C_YPD_down2x_FDR5.txt"), 
+  delim = " ", 
+  col_names = "GeneID"
+)
+
+deglist_WTvsdelta_37C <- bind_rows(
+  deglist_WTvsdelta_37C_up, deglist_WTvsdelta_37C_down
+)
+```
+## Plot Venn of DGEs, Flc1∆ cells vs WT at 37°C only
+```{r}
+# Turn into lists of genes
+FLC1_DGE <- deglist_WTvsdelta_37C$GeneID
+CRZ1_CNA1_DGE <- unique(DGE_chow2017$GeneID)  
+
+# Add to a list object with names to display on plot
+euler_list <- list( 
+  'DGE Flc1' = FLC1_DGE, 
+  'DGE Crz1 and/or Cna1' = CRZ1_CNA1_DGE)
+
+# Create the euler plot
+eulerr_plot <- plot(
+  euler(euler_list), 
+  quantities = TRUE, 
+  legend = TRUE,
+  fills = c("#ECCD97", "#9975DB", "grey90"),
+  fontsize = 20
+  ) 
+
+# Draw the plot with a title 
+A <- grid.arrange(grobs = list(eulerr_plot), top = "Differential expressed genes in Flc1∆ cells at 37°C vs WT\n and crz1∆ and cna1∆ cells vs WT with or without thermal stress")
+
+
+A
+```
+## Genes in common
+```{r}
+DGE_chow2017 %>% 
+  filter(GeneID %in% deglist_WTvsdelta_37C$GeneID)
+```
+
+## Load differentially expressed gene summary for Flc1∆ vs WT at 30°C
+
+```{r load DGE list WTvsdelta 30C}
+
+deglist_WTvsdelta_30C_up <- read_delim(
+  here::here("results", "DEGs", "deglist_WTvsdelta_30C_YPD_up2x_FDR5.txt"), 
+  delim = " ", 
+  col_names = "GeneID"
+)
+
+deglist_WTvsdelta_30C_down <- read_delim(
+  here::here("results", "DEGs", "deglist_WTvsdelta_30C_YPD_down2x_FDR5.txt"), 
+  delim = " ", 
+  col_names = "GeneID"
+)
+
+deglist_WTvsdelta_30C <- bind_rows(
+  deglist_WTvsdelta_30C_up, deglist_WTvsdelta_30C_down
+)
+```
+
+
+## Plot Venn of DGEs, Flc1∆ cells vs WT at 37°C only
+```{r}
+# Turn into lists of genes
+FLC1_DGE_37 <- deglist_WTvsdelta_37C$GeneID
+FLC1_DGE_30 <- deglist_WTvsdelta_30C$GeneID
+CRZ1_CNA1_DGE <- unique(DGE_chow2017$GeneID)  
+
+# Add to a list object with names to display on plot
+euler_list <- list( 
+  'DGE Flc1 37°C' = FLC1_DGE_37, 
+  'DGE Flc1 30°C' = FLC1_DGE_30,
+  'DGE Crz1 and/or Cna1' = CRZ1_CNA1_DGE)
+
+# Create the euler plot
+eulerr_plot <- plot(
+  euler(euler_list), 
+  quantities = TRUE, 
+  legend = TRUE,
+  #fills = c("#ECCD97", "#9975DB", "grey90"),
+  fontsize = 20
+  ) 
+
+# Draw the plot with a title 
+A <- grid.arrange(grobs = list(eulerr_plot), top = "Differential expressed genes in Flc1∆ cells at 37°C or 30°C vs WT\n and crz1∆ and cna1∆ cells vs WT with or without thermal stress")
+
+
+A
+```

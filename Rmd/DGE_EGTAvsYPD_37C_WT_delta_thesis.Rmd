@@ -1,0 +1,357 @@
+---
+title: "DGE_EGTAvsYPD_37C_WT_delta_thesis"
+author: "Rachael Murray"
+date: "2025-03-04"
+output: html_document
+---
+
+# Summary
+
+Differential Gene Expression +EGTA vs -EGTA in WT and +EGTA vs -EGTA in flc1∆ at 37°C samples, using DESeq2
+
+This analysis produces files:
+
+- `deseq_df_EGTAvsYPD_WT_37C.txt`
+- `deglist_EGTAvsYPD_WT_37C_up2x_FDR5.txt`
+- `deglist_EGTAvsYPD_WT_37C_down2x_FDR5.txt`
+- `deseq_df_EGTAvsYPD_delta_37C.txt`
+- `deglist_EGTAvsYPD_WT_delta_up2x_FDR5.txt`
+- `deglist_EGTAvsYPD_WT_delta_down2x_FDR5.txt`
+
+## EGTA vs YPD in WT at 37°C
+
+### Load count data from shared script load_count_data.Rmd
+
+```{r call_load_count_data, child = "load_count_data.Rmd"}
+```
+
+### DESeq on a subset of data, only WT in YPD
+
+```{r subset_EGTAvsYPD_WT_37C, fig.height=8, fig.width=8}
+sample_sheet_EGTAvsYPD_WT_37C <-
+  dplyr::filter(sample_sheet,
+                FLC1 == "WT", 
+                Media %in% c("YPD", "YPD_EGTA"), 
+                Temperature == "37"
+  )
+
+dds_EGTAvsYPD_WT_37C <- 
+  DESeqDataSetFromMatrix(
+    countData = counts_all %>%
+      dplyr::select(sample_sheet_EGTAvsYPD_WT_37C$SampleName) %>%
+      magrittr::set_rownames(counts_all$Gene),
+    colData = sample_sheet_EGTAvsYPD_WT_37C,
+    design = ~ Media) %>%
+  DESeq()
+
+dds_EGTAvsYPD_WT_37C
+```
+
+
+```{r results_EGTAvsYPD_WT_37C}
+results(dds_EGTAvsYPD_WT_37C)
+
+resultsNames(dds_EGTAvsYPD_WT_37C)
+```
+
+```{r deseq_df_EGTAvsYPD_WT_37C}
+deseq_df_EGTAvsYPD_WT_37C <- 
+  biobroom::tidy.DESeqDataSet(dds_EGTAvsYPD_WT_37C) %>%
+  dplyr::filter(term == "Media_YPD_EGTA_vs_YPD") %>%
+  dplyr::left_join(gene_info_df,
+                   by = "gene") %>% 
+  dplyr::select(gene, 
+                geneName, 
+                baseMean, 
+                log2FC = estimate, 
+                stderror,
+                padj = p.adjusted)
+
+```
+
+
+
+### List DEGs most UP in EGTA vs YPD in WT at 37°C
+
+We cut off at 2x changes with 5% FDR here.
+
+```{r DEGs_EGTA_up_WT, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_EGTA_WT_up2x_FDR5 <- 
+  dplyr::filter(deseq_df_EGTAvsYPD_WT_37C,
+                log2FC > 1, padj < 0.05) %>%
+  dplyr::arrange(desc(log2FC))
+print(DEGdf_EGTA_WT_up2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_EGTA_up_named_WT}
+DEGdf_EGTA_WT_up2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+
+### List DEGs most DOWN in EGTA vs YPD in WT at 37°C
+
+```{r DEGs_EGTA_down_WT, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_EGTA_WT_down2x_FDR5 <- 
+  dplyr::filter(deseq_df_EGTAvsYPD_WT_37C,
+                log2FC < -1, padj < 0.05) %>%
+  dplyr::arrange(log2FC)
+print(DEGdf_EGTA_WT_down2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_30C_down_named_WT}
+DEGdf_EGTA_WT_down2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+### Volcano plot of DEGs
+
+```{r volcano_EGTAvsYPD_WT_37C, fig.width = 6, fig.height = 3}
+volcano_EGTAvsYPD_WT_37C <- 
+  ggplot(data = deseq_df_EGTAvsYPD_WT_37C,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = 0.3, colour = "grey70") +
+  geom_point(data = DEGdf_EGTA_WT_up2x_FDR5,
+             size = 0.3, colour = "darkblue") +
+  geom_point(data = DEGdf_EGTA_WT_down2x_FDR5,
+             size = 0.3, colour = "darkred") +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,50), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change\n← up in YPD       up in YPD + EGTA →",
+                     breaks = -4:4,
+                     limits = c(-4,4), expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") 
+volcano_EGTAvsYPD_WT_37C
+
+ggsave(here("EGTAvsYPD_WT_37C_volcano.png"), volcano_EGTAvsYPD_WT_37C, width = 4, height = 3)
+```
+
+
+### Write outputs to files
+
+```{r write_DEGs_WT}
+deseq_df_EGTAvsYPD_WT_37C %>%
+  dplyr::mutate(
+    across(c(baseMean, log2FC, stderror), round, digits = 3)
+  ) %>%
+  dplyr::mutate(padj = signif(padj, digits = 4)) %>%
+  write_tsv(file = here::here("results", "DEGs",
+                              "deseq_df_EGTAvsYPD_WT_37C.txt"))
+
+DEGdf_EGTA_WT_up2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_EGTAvsYPD_WT_37C_up2x_FDR5.txt"))
+
+DEGdf_EGTA_WT_down2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_EGTAvsYPD_WT_37C_down2x_FDR5.txt"))
+```
+
+
+## EGTA vs YPD in flc1∆ at 37°C
+
+### DESeq on a subset of data, only delta in YPD
+
+```{r subset_EGTAvsYPD_delta_37C, fig.height=8, fig.width=8}
+sample_sheet_EGTAvsYPD_delta_37C <-
+  dplyr::filter(sample_sheet,
+                FLC1 == "delta", 
+                Media %in% c("YPD", "YPD_EGTA"), 
+                Temperature == "37"
+  )
+
+dds_EGTAvsYPD_delta_37C <- 
+  DESeqDataSetFromMatrix(
+    countData = counts_all %>%
+      dplyr::select(sample_sheet_EGTAvsYPD_delta_37C$SampleName) %>%
+      magrittr::set_rownames(counts_all$Gene),
+    colData = sample_sheet_EGTAvsYPD_delta_37C,
+    design = ~ Media) %>%
+  DESeq()
+
+dds_EGTAvsYPD_delta_37C
+```
+
+
+
+```{r results_EGTAvsYPD_delta_37C}
+results(dds_EGTAvsYPD_delta_37C)
+
+resultsNames(dds_EGTAvsYPD_delta_37C)
+```
+
+```{r deseq_df_EGTAvsYPD_delta_37C}
+deseq_df_EGTAvsYPD_delta_37C <- 
+  biobroom::tidy.DESeqDataSet(dds_EGTAvsYPD_delta_37C) %>%
+  dplyr::filter(term == "Media_YPD_EGTA_vs_YPD") %>%
+  dplyr::left_join(gene_info_df,
+                   by = "gene") %>% 
+  dplyr::select(gene, 
+                geneName, 
+                baseMean, 
+                log2FC = estimate, 
+                stderror,
+                padj = p.adjusted)
+
+```
+
+
+
+### List DEGs most UP in EGTA vs YPD in delta at 37°C
+
+We cut off at 2x changes with 5% FDR here.
+
+```{r DEGs_EGTA_up_delta, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_EGTA_delta_up2x_FDR5 <- 
+  dplyr::filter(deseq_df_EGTAvsYPD_delta_37C,
+                log2FC > 1, padj < 0.05) %>%
+  dplyr::arrange(desc(log2FC))
+print(DEGdf_EGTA_delta_up2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_EGTA_up_named_delta}
+DEGdf_EGTA_delta_up2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+
+### List DEGs most DOWN in EGTA vs YPD in delta at 37°C
+
+
+```{r DEGs_EGTA_down_delta, fig.width = 6, fig.height = 3}
+# Make data frames of DEGs up and down, arranged by log2FC
+DEGdf_EGTA_delta_down2x_FDR5 <- 
+  dplyr::filter(deseq_df_EGTAvsYPD_delta_37C,
+                log2FC < -1, padj < 0.05) %>%
+  dplyr::arrange(log2FC)
+print(DEGdf_EGTA_delta_down2x_FDR5, n = 20)
+```
+
+Print the top 20 *named* DEGs
+
+```{r DEGs_30C_down_named_delta}
+DEGdf_EGTA_delta_down2x_FDR5 %>%
+  dplyr::filter(!is.na(geneName)) %>%
+  print(n = 20)
+```
+
+### Volcano plot of DEGs
+
+```{r volcano_EGTAvsYPD_delta_37C, fig.width = 6, fig.height = 3}
+volcano_EGTAvsYPD_delta_37C <- 
+  ggplot(data = deseq_df_EGTAvsYPD_delta_37C,
+         aes(x = log2FC, y = -log10(padj)) ) +
+  geom_point(size = 0.3, colour = "grey70") +
+  geom_point(data = DEGdf_EGTA_delta_up2x_FDR5,
+             size = 0.3, colour = "darkblue") +
+  geom_point(data = DEGdf_EGTA_delta_down2x_FDR5,
+             size = 0.3, colour = "darkred") +
+  scale_y_continuous("-log10(p)",
+                     limits = c(0,50), expand = c(0,0),
+                     oob=scales::squish) +
+  scale_x_continuous("log2 fold-change\n← up in YPD       up in YPD + EGTA →",
+                     breaks = -4:4,
+                     limits = c(-4,4), expand = c(0.01,0.01),
+                     oob = scales::squish) +
+  coord_cartesian(clip = "off") 
+volcano_EGTAvsYPD_delta_37C
+
+ggsave(here("EGTAvsYPD_delta_37C_volcano.png"), volcano_EGTAvsYPD_delta_37C, width = 4, height = 3)
+```
+
+
+### Write outputs to files
+
+```{r write_DEGs_delta}
+deseq_df_EGTAvsYPD_delta_37C %>%
+  dplyr::mutate(
+    across(c(baseMean, log2FC, stderror), round, digits = 3)
+  ) %>%
+  dplyr::mutate(padj = signif(padj, digits = 4)) %>%
+  write_tsv(file = here::here("results", "DEGs",
+                              "deseq_df_EGTAvsYPD_delta_37C.txt"))
+
+DEGdf_EGTA_delta_up2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_EGTAvsYPD_delta_37C_up2x_FDR5.txt"))
+
+DEGdf_EGTA_delta_down2x_FDR5 %>%
+  dplyr::pull(gene) %>%
+  write_lines(file = here::here("results", "DEGs",
+                            "deglist_EGTAvsYPD_delta_37C_down2x_FDR5.txt"))
+```
+
+
+
+```{r}
+# Turn into lists of genes
+EGTA_up_WT <- DEGdf_EGTA_WT_up2x_FDR5$gene
+EGTA_up_delta <- DEGdf_EGTA_delta_up2x_FDR5$gene
+
+# Add to a list object with names to display on plot
+euler_list_EGTA_up <- list( 
+  'FLC1' = EGTA_up_WT , 
+  'flc1∆' = EGTA_up_delta)
+
+# Create the euler plot
+eulerr_plot_EGTA_up <- plot(
+  euler(euler_list_EGTA_up), 
+  quantities = TRUE, 
+  legend = TRUE,
+  fills = c("lightblue2", "#F9E9C8"),
+  fontsize = 20
+  ) 
+
+# Display eulerr 
+eulerr_plot_EGTA_up
+
+png(file=here("eulerr_plot_EGTA_up.png"))
+eulerr_plot_EGTA_up
+dev.off()
+```
+
+```{r}
+# Turn into lists of genes
+EGTA_down_WT <- DEGdf_EGTA_WT_down2x_FDR5$gene
+EGTA_down_delta <- DEGdf_EGTA_delta_down2x_FDR5$gene
+
+# Add to a list object with names to display on plot
+euler_list_EGTA_down <- list( 
+  'FLC1' = EGTA_down_WT , 
+  'flc1∆' = EGTA_down_delta)
+
+# Create the euler plot
+eulerr_plot_EGTA_down <- plot(
+  euler(euler_list_EGTA_down), 
+  quantities = TRUE, 
+  legend = TRUE,
+  fills = c("grey95", "#F9E9C8"),
+  fontsize = 20
+  ) 
+
+# Display eulerr 
+eulerr_plot_EGTA_down
+
+png(file=here("eulerr_plot_EGTA_down.png"))
+eulerr_plot_EGTA_down
+dev.off()
+```
+
+

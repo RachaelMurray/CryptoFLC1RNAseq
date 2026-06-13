@@ -21,6 +21,11 @@ library(GGally)
 library(here)
 library(DESeq2)
 library(biobroom)
+library(eulerr)
+library(ggh4x)
+library(qdap)
+library(ggtext)
+library(ggvenn)
 
 theme_set(theme_cowplot(font_size = 12) +
     theme(# panel.grid.major = element_line(colour = "grey80", size = 0.5),

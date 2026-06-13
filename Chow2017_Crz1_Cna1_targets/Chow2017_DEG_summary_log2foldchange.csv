@@ -1,0 +1,657 @@
+﻿gene,gene_name,log2_foldchange,gene_description,crz1,cna1
+4796,CNA1,-1.77,Calcineurin A catalytic subunit ,,yes
+5387,,-1.91,Galactose transporter ,,yes
+979,CTR4,-1.8,Copper uptake transporter ,,yes
+3051,,-1.71,Polyamine transporter ,,yes
+5994,,-1.51,Multidrug transporter ,,yes
+1936,,-1.49,Sugar transporter ,,yes
+6020,SSU1,-1.3,Sulfite efflux pump ,,yes
+1384,,-1.24,Tartrate transporter,,yes
+6521,,-1.19,Receptor/ Galactose-proton symporter,,yes
+1925,,-1.13,Tartrate transporter,,yes
+5662,ITR4,-1.13,Myo-inositol transporter ,,yes
+3824,MIR1,-1.05,Phosphate transport protein ,,yes
+4015,,-1.04,Amino acid transporter ,,yes
+6561,,-1.02,Allantoate transporter ,,yes
+5993,,-1.02,Transmembrane transporter Liz1p,,yes
+7641,,-1.02,Monosaccharide transporter ,,yes
+2586,,-1,Sugar transporter ,,yes
+3912,,1.07,Membrane protein ,,yes
+235,AMT1,1.07,Ammonium transporter,,yes
+4414,FNX1,1.1,Multidrug resistance protein,,yes
+1118,,1.12,Amino acid transporter ,,yes
+3061,,1.18,Multiple drug resistance protein ,,yes
+1055,,1.18,Phospholipid transporter ,,yes
+3910,ITR6,1.19,Myo-inositol transporter ,,yes
+4758,AMT2,1.34,Ammonium transporter ,,yes
+792,,1.41,ATP-binding cassette transporter ,,yes
+5130,,1.46,Polyamide transporter ,,yes
+7917,,1.59,Uracil transporter FurD ,,yes
+6963,,1.65,Sugar transporter ,,yes
+6610,,1.67,MSF transporter ,,yes
+796,MDR1,1.71,Multidrug resistance protein 1 ,,yes
+904,AFLT,1.75,Aflatoxin efflux pump ,,yes
+3772,HXS1,1.85,Glucose transporter ,,yes
+6169,,-1.91,"(R,R)-butanediol dehydrogenase ",,yes
+575,CAT3,-1.66,Catalase 3 ,,yes
+4981,CAT1,-1.63,Catalase 1,,yes
+2751,,-1.56,Short-chain dehydrogenase,,yes
+6759,,-1.54,Dehydrogenase,,yes
+2577,,-1.51,Oxidioreductase,,yes
+1102,,-1.43,Oxidoreductase,,yes
+4926,,-1.39,,,yes
+4351,,-1.32,Methylmalonate-semialdehyde dehydrogenase,,yes
+4112,,-1.27,Oxidoreductase,,yes
+1464,FHB1,-1.24,Flavohemoglobin,,yes
+4326,,-1.24,Malate dehydrogenase,,yes
+115,,-1.16,Chlorophyll synthesis pathway protein BchC,,yes
+5299,,-1.13,Oxidoreductase,,yes
+3865,,-1.11,Cytoplasmic protein,,yes
+3874,,-1.11,Oxidoreductase,,yes
+6081,,-1.11,Glucose oxidase,,yes
+3555,,-1.09,Acylglycerone-phosphate reductase ,,yes
+1714,,-1.07,Sulfonate dioxygenase,,yes
+5444,,-1.07,NADPH dehydrogenase,,yes
+5644,,-1.03,2-nitropropane dioxygenase,,yes
+3194,,-1.04,Saccharopine dehydrogenase,,yes
+4388,SOD2,-1,Mitochondrial manganese superoxide dismutase ,,yes
+7626,,1.02,NAD-binding Rossmann fold oxidoreductase,,yes
+4313,,1.07,NADPH2 dehydrogenase,,yes
+1264,,1.1,Homoisocitrate dehydrogenase,,yes
+6876,,1.13,α-ketoglutarate-dependent taurine dioxygenase,,yes
+1627,,1.14,Amino oxidase,,yes
+4467,,1.16,Succinate-semialdehyde dehydrogenase,,yes
+5329,,1.2,Myo-inositol 2-dehydrogenase,,yes
+6250,,1.29,,,yes
+6777,,1.28,Fructosyl amino acid oxidase,,yes
+5602,,1.31,1-pyrroline-5-carboxylate dehydrogenase ,,yes
+6628,,1.35,Aldehyde dehydrogenase,,yes
+1075,,1.44,Methylmalonate-semialdehyde dehydrogenase,,yes
+5115,,1.53,Sarcosine oxidase,,yes
+3998,RLM1,-1.29,Transcriptional activator,,yes
+4512,,-1.11,Transcription factor Spt20 homolog-like,,yes
+1847,,-1.08,,,yes
+4804,SRE1,-1.05,Sterol regulatory element-binding protein,,yes
+2435,BWC2,-1.04,White collar 2 transcription factor,,yes
+332,SIP4,1.09,,,yes
+627,SOX6,1.1,Specific transcriptional repressor,,yes
+3086,FZC20,1.36,Fungal specific transcription factor ,,yes
+3849,ASG1,1.39,Transcriptional regulator,,yes
+791,HLH1,1.45,Transcription factor bHLH041,,yes
+130,HRK1,-1.1,CAMK/CAMK1 protein kinase ,,yes
+2531,CPK1,1.05,CMGC/MAPK/ERK protein kinase ,,yes
+2389,,1.36,AGC-group protein kinase ,,yes
+6568,SKS1,1.38,RAN protein kinase ,,yes
+5643,,-1.38,DNA polymerase delta subunit 4,,yes
+6440,,-1.17,DNA dependent ATPase,,yes
+1013,SWD3,-1.03,Chromatin binding protein ,,yes
+5374,CTF18,1.03,Chromosome transmission fidelity protein 18 ,,yes
+6745,,1.05,Histone H3 ,,yes
+3341,MCM2,1.09,Minichromosome maintenance protein 2 ,,yes
+4696,,1.12,DNA clamp loader ,,yes
+6634,DPB2,1.12,DNA polymerase epsilon subunit,,yes
+7909,DCM1,1.21,Meiotic recombinaase Dmc1,,yes
+6166,MPH1,1.34,ATP-dependent DNA helicase MPH1,,yes
+550,MSH5,1.46,DNA mismatch repair protein MSH5,,yes
+519,ERG3,-1.67,C-5 sterol desaturase ,,yes
+1737,ERG25,-1.39,C-4 methyl sterol oxidase ,,yes
+6829,ERG1,-1.02,Squalene monooxygenase ,,yes
+6644,ERG5,-1,C-22 sterol desaturase ,,yes
+3143,,-3.31,Heat shock protein (12 kDa),,yes
+1446,HSP12,-1.61,Heat shock protein (12 kDa),,yes
+3228,,-1.59,Universal stress protein,,yes
+6121,,-1.35,,,yes
+826,,-1.98,Glycerone kinase,,yes
+984,,-1.76,Glucose and ribitol dehydrogenase,,yes
+866,,-1.75,Transketolase,,yes
+2230,,-1.64,Phosphoketolase,,yes
+1341,,-1.6,Mannose-6-phosphate isomerase,,yes
+6291,FPD1,-1.5,Polysaccharide deacetylase,,yes
+827,,-1.54,Ribose 5-phosphate isomerase ,,yes
+4025,,-1.53,Transaldolase ,,yes
+5383,,-1.51,3-dehydroshikimate dehydratase,,yes
+2986,YSA1,-1.5,ADP-ribose pyrophosphatase,,yes
+6868,,-1.5,Phosphopyruvate hydratase,,yes
+4744,,-1.38,Mannose-6-phosphate isomerase,,yes
+6931,,-1.3,β-glucosidase,,yes
+6923,XFP2,-1.24,Xylulose 5-phosphate/fructose 6-posphate phosphoketolase,,yes
+3040,,-1.24,Transketolase,,yes
+5652,,-1.04,Cytoplasmic protein ,,yes
+7445,,1.08,Transketolase,,yes
+4969,UGD1,1.08,UDP-glucose 6-dehydrogenase,,yes
+5264,,1.33,Alpha-amylase AmyA ,,yes
+5913,,1.89,Alpha-glucosidase,,yes
+2850,,1.02,"Glucan endo-1,3-α-glucosidase AGN1",,yes
+6031,KRE63,1.06,β-glucan synthase,,yes
+3759,,-3.31,Conidiation-specific protein 6,,yes
+6238,,-2.32,Glutathione S-transferase,,yes
+1348,,-1.64,Cyanate hydratase,,yes
+834,,-1.62,Phosphatidylserine decarboxylase ,,yes
+3084,,-1.56,Endoribonuclease L-PSP ,,yes
+1954,,-1.42,Aldo/keto reductase,,yes
+3958,,-1.41,,,yes
+5268,,-1.37,N-acetyltransferase 9-like protein,,yes
+6576,CAR1,-1.37,cAMP-regulated gene 1,,yes
+2182,GRE2,-1.3,D-lactaldehyde dehydrogenase ,,yes
+5449,CMT1,-1.25,Copper metallothionein,,yes
+2781,,-1.25,Dihydrodipicolinate synthetase family protein ,,yes
+4656,,-1.24,Arginyl-tRNA-protein transferase ,,yes
+4291,,-1.23,Glycosyl-hydrolase,,yes
+4067,,-1.22,"Haloacid dehalogenase, type II",,yes
+4890,,-1.2,,,yes
+5386,,-1.2,Glutamate 5-kinase,,yes
+36,,-1.17,Sec14 cytosolic factor ,,yes
+6500,ARG82,-1.16,Arginine metabolism transcriptional control protein ,,yes
+2768,,-1.16,,,yes
+264,,-1.16,Nuclease 1,,yes
+522,,-1.16,C2 domain containing protein,,yes
+2417,,-1.15,Lipase/esterase family protein,,yes
+800,,-1.11,Nicotinamidase,,yes
+4314,,-1.11,NAD+ kinase,,yes
+2226,,-1.1,,,yes
+2722,,-1.1,Aldose reductase,,yes
+3069,,-1.1,Hydrolase,,yes
+4440,,-1.07,Thiamine pyrophosphokinase,,yes
+6901,ALG7,-1.07,UDP-N-acetyl-glucosamine-1-p transferase,,yes
+4274,,-1.06,Acyl-CoA thioesterase,,yes
+6782,MNN5,-1.06,"Alpha-1,2-mannosyltransferase",,yes
+3070,,-1.04,Compass compoment swd2,,yes
+4659,,-1.03,Pyruvate decarboxylase,,yes
+1521,,-1.03,Metallo-beta-lactmase,,yes
+254,,-1.01,NADH dehydrogenase ,,yes
+3698,,-1.01,E3 ubiquitin-protein ligase UBR7,,yes
+3738,,-1.01,Pantetheine-phosphate adenylyltransferase ,,yes
+2427,,-1,,,yes
+2725,,1,Proteasome subunit,,yes
+62,,1.01,26S proteasome non-ATPase regulatory subunit 3 ,,yes
+1726,,1.01,FACT complex subunit SPT16,,yes
+1442,,1.05,Cysteine desulfhydrase,,yes
+1148,,1.03,Peptidyl prolyl cis-trans isomerase ,,yes
+7779,,1.03,D-glycerate 3-kinase ,,yes
+1577,,1.07,Glutamate dehydrogenase ,,yes
+309,,1.08,Membrane protein,,yes
+4307,URO1,1.08,Uricase,,yes
+3540,,1.09,Aspartyl/glutamyl-tRNA amidotransferase subunit B,,yes
+2309,,1.11,FK506-binding protein 2,,yes
+4269,,1.15,Leucyl aminopeptidse,,yes
+2099,,1.17,Fatty acid synthase beta subunit,,yes
+6141,,1.17,dUTP diphosphatase,,yes
+176,,1.21,Glutamate carboxypeptide protein,,yes
+3949,,1.25,4-nitrophenylphosphatase,,yes
+5653,,1.25,Malate synthase,,yes
+5548,,1.26,,,yes
+1565,,1.27,Biotin-[acetyl-CoA-carboxylase] ligase ,,yes
+3394,,1.28,,,yes
+919,,1.32,Carboxypeptidase D,,yes
+1026,,1.37,Gamma-glutamyltranspeptidase 1 ,,yes
+758,,1.41,Regulatory protein ral2,,yes
+2100,,1.43,Fatty acid synthase subunit alpha,,yes
+141,,1.43,Monooxygenase,,yes
+1879,,1.48,Carboxypeptidase Y,,yes
+5759,,1.63,Acetyl CoA carboxylase,,yes
+236,,1.65,8-amino-7-oxononanoatesynthase ,,yes
+1004,,1.69,,,yes
+601,CEL1,1.79,Glycosyl hydrolase,,yes
+164,,2,,,yes
+5939,,-2.22,,,yes
+7939,,-2.13,,,yes
+6396,,-2.09,,,yes
+3492,,-2.09,,,yes
+2591,,-2.08,,,yes
+2070,,-2.07,,,yes
+2899,,-2.07,,,yes
+3679,,-1.95,,,yes
+91,,-1.93,,,yes
+3142,,-1.93,,,yes
+848,,-1.91,,,yes
+6109,,-1.88,,,yes
+3873,,-1.83,,,yes
+4139,,-1.79,,,yes
+4043,,-1.79,DUF636 domain-containing protein ,,yes
+1588,,-1.79,Plasma membrane proteolipid 3,,yes
+4943,,-1.78,,,yes
+4691,,-1.77,,,yes
+1735,,-1.73,,,yes
+4322,,-1.72,,,yes
+3058,,-1.7,Hmp1 protein,,yes
+1090,,-1.67,,,yes
+4106,,-1.66,,,yes
+1921,,-1.65,,,yes
+7870,,-1.63,,,yes
+6718,,-1.61,,,yes
+3495,,-1.6,,,yes
+1751,,-1.57,,,yes
+4585,,-1.55,,,yes
+3408,,-1.52,,,yes
+6286,,-1.44,,,yes
+6493,,-1.44,,,yes
+2524,,-1.44,,,yes
+2118,,-1.43,,,yes
+4163,,-1.43,,,yes
+6302,,-1.43,SnoaL domain,,yes
+813,,-1.42,,,yes
+5666,,-1.41,,,yes
+11,,-1.41,,,yes
+5167,,-1.4,,,yes
+6668,,-1.4,,,yes
+807,,-1.39,,,yes
+3538,,-1.38,,,yes
+4206,,-1.38,DUF636 domain-containing protein,,yes
+93,,-1.37,,,yes
+2362,,-1.36,,,yes
+3566,,-1.35,,,yes
+1585,,-1.35,,,yes
+7666,,-1.35,Cysteine-rich secretory protein family,,yes
+1816,,-1.34,,,yes
+6267,,-1.34,,,yes
+2043,,-1.33,,,yes
+1368,,-1.32,,,yes
+4938,,-1.32,,,yes
+1803,,-1.31,,,yes
+3232,,-1.31,Lactamase ,,yes
+3268,,-1.31,,,yes
+6395,,-1.29,,,yes
+1939,,-1.29,,,yes
+4167,,-1.28,,,yes
+139,,-1.27,,,yes
+7673,,-1.27,,,yes
+5891,,-1.26,TDG/mug DNA glycosylase,,yes
+4386,,-1.25,,,yes
+4880,,-1.25,,,yes
+7574,,-1.25,,,yes
+7450,,-1.25,,,yes
+2297,,-1.24,,,yes
+595,,-1.24,,,yes
+5399,,-1.23,,,yes
+3688,,-1.23,,,yes
+5097,,-1.23,,,yes
+2347,,-1.22,,,yes
+3704,,-1.21,,,yes
+465,,-1.21,,,yes
+4076,,-1.21,,,yes
+2058,,-1.2,,,yes
+1052,,-1.2,,,yes
+2129,,-1.2,,,yes
+3252,,-1.19,,,yes
+75,,-1.19,,,yes
+961,,-1.18,,,yes
+6805,,-1.17,,,yes
+3705,,-1.17,,,yes
+1691,,-1.17,,,yes
+3352,,-1.16,,,yes
+6075,,-1.15,,,yes
+5608,,-1.15,,,yes
+6800,,-1.15,,,yes
+7511,,-1.14,Nucleolar protein 15,,yes
+1643,,-1.13,,,yes
+7733,,-1.13,,,yes
+4766,,-1.13,,,yes
+4154,,-1.13,,,yes
+1621,,-1.12,,,yes
+2570,,-1.12,,,yes
+6602,,-1.12,Cysteine-type peptidase,,yes
+1753,,-1.11,,,yes
+3667,,-1.11,,,yes
+5686,,-1.1,,,yes
+6297,,-1.1,,,yes
+4027,,-1.1,,,yes
+7972,,-1.1,,,yes
+1031,,-1.1,,,yes
+3454,,-1.1,,,yes
+6388,,-1.09,,,yes
+1417,,-1.09,,,yes
+3991,,-1.09,Integral membrane protein,,yes
+1476,,-1.08,,,yes
+54,,-1.08,,,yes
+849,,-1.07,,,yes
+6245,,-1.07,,,yes
+2102,,-1.07,,,yes
+2253,,-1.07,,,yes
+1743,,-1.07,,,yes
+5682,,-1.07,,,yes
+1215,,-1.06,,,yes
+74,PNS1,-1.06,Protein PNS1,,yes
+3082,,-1.05,Cupin domain-containing protein,,yes
+4466,,-1.05,,,yes
+4892,,-1.05,,,yes
+454,,-1.05,,,yes
+6298,,-1.05,,,yes
+6207,,-1.05,,,yes
+7737,,-1.05,,,yes
+3002,,-1.05,,,yes
+2706,,-1.04,,,yes
+6516,,-1.04,,,yes
+932,,-1.04,,,yes
+5520,,-1.03,,,yes
+851,,-1.03,,,yes
+3685,,-1.02,,,yes
+2188,,-1.02,,,yes
+5937,,-1.02,,,yes
+7826,,-1.02,,,yes
+2444,,-1.02,,,yes
+453,,-1.02,Mitochondrial protein,,yes
+3455,,-1.01,,,yes
+1275,,-1.01,,,yes
+8019,,-1.01,,,yes
+4396,,-1.01,,,yes
+2422,,-1.01,,,yes
+3771,,-1.01,DNA binding protein Ncp1,,yes
+6082,,-1.01,Delayed-type hypersensitivity antigen ,,yes
+6827,,-1,,,yes
+2424,,-1,,,yes
+1493,,-1,,,yes
+2016,,-1,DUF1479 domain-containing protein,,yes
+6515,,-1,,,yes
+1656,,1,,,yes
+936,,1,Lipid particle protein,,yes
+1538,,1.02,,,yes
+7700,,1.02,,,yes
+149,,1.03,,,yes
+1411,,1.03,,,yes
+2735,,1.03,,,yes
+1749,,1.03,,,yes
+4261,,1.03,,,yes
+5227,,1.04,,,yes
+7463,,1.04,Separase,,yes
+1995,,1.05,,,yes
+7479,,1.06,,,yes
+4963,,1.06,,,yes
+5738,,1.08,,,yes
+6583,,1.08,,,yes
+6608,,1.09,,,yes
+1864,,1.09,,,yes
+7415,,1.1,,,yes
+3856,,1.1,,,yes
+1180,,1.11,,,yes
+6624,,1.12,,,yes
+5515,,1.13,,,yes
+1977,,1.16,,,yes
+7548,,1.16,Cytoplasmic protein,,yes
+4707,,1.18,,,yes
+6567,,1.19,,,yes
+7945,,1.19,,,yes
+699,,1.19,Transmembrane receptor,,yes
+2882,,1.2,,,yes
+6356,,1.24,Mitochondrial protein,,yes
+194,,1.25,,,yes
+1993,,1.25,,,yes
+2192,,1.25,,,yes
+1562,,1.26,,,yes
+177,,1.27,,,yes
+1944,,1.27,,,yes
+5514,,1.28,,,yes
+5637,,1.3,,,yes
+5457,,1.31,Pentatricopeptide repeat protein,,yes
+1244,,1.34,,,yes
+6690,,1.35,,,yes
+190,,1.38,,,yes
+1443,,1.38,,,yes
+2705,,1.48,,,yes
+5129,,1.49,,,yes
+798,,1.52,,,yes
+474,,1.62,,,yes
+6000,,1.79,Glycoprotein,,yes
+2759,,2.4,,,yes
+156,SP1/CRZ1,-1.29,Zinc finger transcription factor,yes,
+6508,FKS1,-1.07,"1,3-Beta-D-glucan synthase",yes,
+7499,CHS8,-1.02,Chitin synthase,yes,
+5277,,-1.47,Vesicle-associated membrane protein,yes,
+5615,,-1.17,Syntaxin1B/2/3,yes,
+6242,CFT1,1,Major iron permease,yes,
+1683,STL1,1.02,Putative monosaccharide transporter,yes,
+6290,SNF3,1.03,High-affinity glucose transporter,yes,
+3426,GMT2,1.04,GDP-mannose transporter,yes,
+869,PDR5,1.24,ATP-binding cassette transporter,yes,
+6503,,1.34,Uridine permease,yes,
+5411,,-1.29,Endoglucase,yes,
+3146,,-1.07,Alpha-amylase,yes,
+2588,,1.01,Avenacinase,yes,
+6936,,1.03,Beta-glucosidase,yes,
+692,,-1.18,FAD dependent oxidoreductase,yes,
+7770,FRE1,-1.04,Ferric reductase,yes,
+2958,CFO2,1.01,Ferroxidase,yes,
+6241,CFO1,1.12,Ferroxidase/laccase,yes,
+4514,MPK1,-1.83,Mitogen-activating protein kinase,yes,
+2194,,-1.62,AGC/NDR protein kinase,yes,
+1704,,-1.46,Serine/threonine protein kinase,yes,
+4380,,-1.54,Peptidase,yes,
+1539,,-1.48,Myo-inositol-1-phosphate synthase,yes,
+6016,CAP6,-1.15,"Alpha-1,3-mannosyltransferase",yes,
+4350,,-1.11,Glycerophosphoryl diester phosphodiesterase,yes,
+2458,,-1.01,GTPase activating protein,yes,
+5302,,-2.12,,yes,
+2008,OVA2,-1.87,,yes,
+4280,,-1.83,,yes,
+4752,,-1.69,,yes,
+1854,,-1.61,Heparinase II/III family protein,yes,
+7638,,-1.57,,yes,
+1207,,-1.47,,yes,
+6507,,-1.44,,yes,
+7873,,-1.35,MIPC synthase,yes,
+1796,,-1.43,,yes,
+6473,,-1.4,,yes,
+6973,,-1.35,,yes,
+2114,,-1.32,,yes,
+7723,,-1.31,,yes,
+1131,,-1.25,,yes,
+6060,,-1.23,,yes,
+6347,BLP2,-1.2,pr4/barwin domain protein,yes,
+3152,,-1.17,Calcium-binding protein,yes,
+2585,,-1.17,,yes,
+3857,,-1.16,,yes,
+4171,,-1.14,,yes,
+2169,,-1.11,,yes,
+261,,-1.09,,yes,
+5864,,-1.08,,yes,
+274,,-1.06,,yes,
+6943,,-1.01,,yes,
+349,,1.02,,yes,
+1574,,1.06,,yes,
+1070,,1.08,Class II aldolase/adducing family protein,yes,
+4355,,1.17,,yes,
+7388,,1.35,,yes,
+1873,,1.48,,yes,
+1230,CDA2,-2.47,Chitin deactylase 2,,yes
+6835,KRE61,-2.36,Glucosidase,,yes
+546,CHS6,-2.17,Chitin synthase 6,,yes
+5803,EXG1,-2.09,"Exo-β-1,3-glucanase",,yes
+5818,CHS5,-1.91,Chitin synthase 5,,yes
+6336,BGL2,-1.78,"Glucan 1,3 β-glucosidase",,yes
+6501,GAS1,-1.75,"1,3-β-glucanosyltransferase",,yes
+5458,,-1.68,"Endo-1,3(4)-β-glucanase",,yes
+5138,SPR1,-1.61,"Exo-β-1,3-glucanase",,yes
+3412,CTS1,-1.3,Chitinase 1,,yes
+2217,CHS7,-1.26,Chitin synthase 7,,yes
+663,,-1.18,,,yes
+3135,,-1.33,Magnesium transporter NIPA2,,yes
+3242,RIM2,-1.25,Peroxisomal membrane protein,,yes
+25,VCX1,-1.14,Calcium ion transporter,,yes
+1232,PMC1,-1.09,Calcium-transporting ATPase,,yes
+5632,,-1.85,Cation-independent mannose-6-phosphate receptor ,,yes
+7406,MFα,-1.49,Pheromone alpha,,yes
+7407,MFα3,-1.11,Fungal mating-type pheromone,,yes
+407,,-3.42,Glyoxal oxidase,,yes
+2030,,-1.95,Glyoxal oxidase,,yes
+3464,LAC2,-1.71,Laccase,,yes
+5731,,-1.24,Glyoxal oxidase,,yes
+2415,,-1.1,Annexin XIV,,yes
+3316,RDI1,-1.02,Rho GDP-dissociation inhibitor 1,,yes
+4634,,-1.02,,,yes
+7725,ROX1,-2.94,Specific transcriptional repressor,,yes
+6658,,-1.62,Rhomboid family membrane protein,,yes
+5889,,-1.61,SH3YL1 protein,,yes
+5521,,-1.42,Aldose reductase,,yes
+5072,,-1.32,Endopeptidase,,yes
+6748,UTP7,-1.26,U3 snoRNA-associated protein 7 ,,yes
+3463,LSP1,-1.19,Sphingolipid long chain base-responsive protein ,,yes
+6499,,-1.17,Ppapdc1 protein,,yes
+2602,,-1.16,Flavonol synthase ,,yes
+3019,,-1.12,Long-chain acyl-CoA synthase,,yes
+4016,,-1.09,,,yes
+3599,,1.13,Mandelate racemase/muconate lactonizing enzyme,,yes
+4523,,1.6,Glyceraldehyde 3-phosphate dehydrogenase,,yes
+588,,-5.25,Ricin-type beta-trefoil lectin domain,,yes
+4891,,-4.45,Ricin-type beta-trefoil lectin domain,,yes
+2864,,-3.83,,,yes
+3223,,-3.47,Ser-Thr-rich glycosyl-phosphatidyl-inositol-anchored membrane family,,yes
+2526,,-3.41,,,yes
+4903,,-3.18,,,yes
+2685,,-3.1,Fasciclin domain,,yes
+5641,,-3.04,,,yes
+1081,,-2.98,NADH(P)-binding  domain,,yes
+2156,,-2.87,,,yes
+5916,,-2.77,,,yes
+5158,,-2.74,,,yes
+7981,,-2.57,,,yes
+1506,,-2.55,,,yes
+587,,-2.53,,,yes
+3007,,-2.45,,,yes
+5660,,-2.4,,,yes
+5654,,-2.32,SUR7/PalI family domain,,yes
+586,,-2.26,,,yes
+3783,,-2.25,ubiE/COQ5 methyltransferase family,,yes
+3224,,-2.24,,,yes
+691,,-2.2,,,yes
+5915,,-2.18,,,yes
+7498,,-2.1,DUF567 domain containing protein,,yes
+6863,,-2.09,,,yes
+3782,,-2.09,,,yes
+1942,,-1.98,,,yes
+3154,,-1.96,,,yes
+5448,,-1.86,,,yes
+485,,-1.82,,,yes
+3227,,-1.75,Avr1-like family domain,,yes
+4459,,-1.74,,,yes
+4606,,-1.67,,,yes
+7658,,-1.66,,,yes
+1121,,-1.65,,,yes
+301,,-1.61,,,yes
+4094,,-1.58,,,yes
+2510,,-1.57,,,yes
+4256,,-1.53,Zinc finger with UFM1-specific peptidase domain ,,yes
+1525,,-1.53,,,yes
+1272,,-1.51,,,yes
+4737,,-1.5,,,yes
+5089,,-1.49,,,yes
+3047,,-1.46,Organic solute transporter Ostalpha domain,,yes
+7943,,-1.45,DUF1183 domain,,yes
+2661,,-1.4,Glycosyl hydrolase catalytic core,,yes
+6149,,-1.4,,,yes
+5159,,-1.39,,,yes
+4681,,-1.33,,,yes
+3161,,-1.32,,,yes
+1087,,-1.31,"Zinc finger, C3HC4 type domain",,yes
+5412,,-1.25,,,yes
+647,,-1.24,,,yes
+7549,,-1.23,FYVE zinc finger,,yes
+668,,-1.22,,,yes
+4874,,-1.2,"Probable endo-1,3(4)-beta-glucanase",,yes
+2125,,-1.11,,,yes
+3314,,-1.08,YTH domain family 2,,yes
+1174,,-1.07,Pheromone-regulated membrane protein 10,,yes
+4478,,-1.07,,,yes
+6311,,-1.03,,,yes
+4634,,-1.02,,,yes
+5972,,1.36,,,yes
+1230,CDA2,-2.13,Chitin deactylase 2,yes,
+6835,KRE61,-1.47,Glucosidase,yes,
+546,CHS6,-2.58,Chitin synthase 6,yes,
+5803,EXG1,-1.38,"Exo-β-1,3-glucanase",yes,
+5818,CHS5,-2.99,Chitin synthase 5,yes,
+6336,BGL2,-2.22,"Glucan 1,3 β-glucosidase",yes,
+6501,GAS1,-2.29,"1,3-β-glucanosyltransferase",yes,
+5458,,-1.33,"Endo-1,3(4)-β-glucanase",yes,
+5138,SPR1,-1.85,"Exo-β-1,3-glucanase",yes,
+3412,CTS1,-1.09,Chitinase 1,yes,
+2217,CHS7,-1.7,Chitin synthase 7,yes,
+663,,-1.17,,yes,
+3135,,-1.82,Magnesium transporter NIPA2,yes,
+3242,RIM2,-1.02,Peroxisomal membrane protein,yes,
+25,VCX1,-1.09,Calcium ion transporter,yes,
+1232,PMC1,-1.85,Calcium-transporting ATPase,yes,
+5632,,-1.34,Cation-independent mannose-6-phosphate receptor ,yes,
+7406,MFα,-1.56,Pheromone alpha,yes,
+7407,MFα3,-1.31,Fungal mating-type pheromone,yes,
+407,,-2.66,Glyoxal oxidase,yes,
+2030,,-2.21,Glyoxal oxidase,yes,
+3464,LAC2,-1.75,Laccase,yes,
+5731,,-1.77,Glyoxal oxidase,yes,
+2415,,-1.62,Annexin XIV,yes,
+3316,RDI1,-1.86,Rho GDP-dissociation inhibitor 1,yes,
+4634,,-1.04,,yes,
+7725,ROX1,-3.42,Specific transcriptional repressor,yes,
+6658,,-1.82,Rhomboid family membrane protein,yes,
+5889,,-1.15,SH3YL1 protein,yes,
+5521,,-1.09,Aldose reductase,yes,
+5072,,-1.32,Endopeptidase,yes,
+6748,UTP7,-1.55,U3 snoRNA-associated protein 7 ,yes,
+3463,LSP1,-1.19,Sphingolipid long chain base-responsive protein ,yes,
+6499,,-1.32,Ppapdc1 protein,yes,
+2602,,-1.03,Flavonol synthase ,yes,
+3019,,-1.26,Long-chain acyl-CoA synthase,yes,
+4016,,-1.35,,yes,
+3599,,1.08,Mandelate racemase/muconate lactonizing enzyme,yes,
+4523,,1.37,Glyceraldehyde 3-phosphate dehydrogenase,yes,
+588,,-4.72,Ricin-type beta-trefoil lectin domain,yes,
+4891,,-4.12,Ricin-type beta-trefoil lectin domain,yes,
+2864,,-3.34,,yes,
+3223,,-4.16,Ser-Thr-rich glycosyl-phosphatidyl-inositol-anchored membrane family,yes,
+2526,,-2.38,,yes,
+4903,,-1.13,,yes,
+2685,,-1.93,Fasciclin domain,yes,
+5641,,-2.08,,yes,
+1081,,-2.43,NADH(P)-binding  domain,yes,
+2156,,-3.14,,yes,
+5916,,-2.4,,yes,
+5158,,-3.18,,yes,
+7981,,-1.39,,yes,
+1506,,-3.45,,yes,
+587,,-2.49,,yes,
+3007,,-1.5,,yes,
+5660,,-1.49,,yes,
+5654,,-2.19,SUR7/PalI family domain,yes,
+586,,-1.86,,yes,
+3783,,-2.04,ubiE/COQ5 methyltransferase family,yes,
+3224,,-2.04,,yes,
+691,,-2.91,,yes,
+5915,,-1.77,,yes,
+7498,,-3.17,DUF567 domain containing protein,yes,
+6863,,-1.36,,yes,
+3782,,-1.58,,yes,
+1942,,-1.36,,yes,
+3154,,-2.8,,yes,
+5448,,-1.05,,yes,
+485,,-1.38,,yes,
+3227,,-1.01,Avr1-like family domain,yes,
+4459,,-1.34,,yes,
+4606,,-1.54,,yes,
+7658,,-1.59,,yes,
+1121,,-1.63,,yes,
+301,,-2.23,,yes,
+4094,,-1.06,,yes,
+2510,,-2.33,,yes,
+4256,,-1.22,Zinc finger with UFM1-specific peptidase domain ,yes,
+1525,,-1.56,,yes,
+1272,,-2.9,,yes,
+4737,,-1.09,,yes,
+5089,,-1.15,,yes,
+3047,,-1.28,Organic solute transporter Ostalpha domain,yes,
+7943,,-1.06,DUF1183 domain,yes,
+2661,,-1.95,Glycosyl hydrolase catalytic core,yes,
+6149,,-1.48,,yes,
+5159,,-1.74,,yes,
+4681,,-1.94,,yes,
+3161,,-1.14,,yes,
+1087,,-1.37,"Zinc finger, C3HC4 type domain",yes,
+5412,,-2.95,,yes,
+647,,-2.37,,yes,
+7549,,-1.53,FYVE zinc finger,yes,
+668,,-1.63,,yes,
+4874,,-1.45,"Probable endo-1,3(4)-beta-glucanase",yes,
+2125,,-1.07,,yes,
+3314,,-1.45,YTH domain family 2,yes,
+1174,,-1.02,Pheromone-regulated membrane protein 10,yes,
+4478,,-1.1,,yes,
+6311,,-1.41,,yes,
+4634,,-1.04,,yes,
+5972,,1.14,,yes,
